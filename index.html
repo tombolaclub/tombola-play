@@ -3,228 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TombolaPlay | Play • Win • Celebrate</title>
+<title>TombolaPlay</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  font-family:Arial,sans-serif;
-  background:#0b1020;
-  color:#fff;
-}
-
-header{
-  padding:16px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#121a30;
-  position:sticky;
-  top:0;
-  z-index:100;
-  border-bottom:1px solid #28334f;
-}
-
-.logo{
-  font-size:25px;
-  font-weight:800;
-}
-
-.logo span{
-  color:#fbbf24;
-}
-
-.menu-btn{
-  background:#fbbf24;
-  color:#111;
-  padding:10px 14px;
-  border-radius:8px;
-  font-weight:bold;
-}
-
-.hero{
-  padding:45px 20px;
-  text-align:center;
-  background:
-  radial-gradient(circle at top,#263c77 0,#0b1020 60%);
-}
-
-.badge{
-  display:inline-block;
-  background:#f59e0b;
-  color:#111;
-  padding:8px 15px;
-  border-radius:30px;
-  font-weight:bold;
-  margin-bottom:15px;
-}
-
-.hero h1{
-  font-size:42px;
-  margin-bottom:12px;
-}
-
-.hero p{
-  color:#cbd5e1;
-  font-size:17px;
-}
-
-.game-card{
-  max-width:700px;
-  margin:25px auto 0;
-  padding:25px;
-  border-radius:22px;
-  background:#18233f;
-  box-shadow:0 15px 50px #0006;
-}
-
-.game-card h2{
-  color:#fbbf24;
-  margin-bottom:10px;
-}
-
-.game-date{
-  color:#cbd5e1;
-  margin-bottom:22px;
-}
-
-.countdown{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:20px 0;
-}
-
-.time-box{
-  background:#0b1020;
-  border:1px solid #34415f;
-  padding:12px;
-  min-width:65px;
-  border-radius:10px;
-}
-
-.time-box strong{
-  display:block;
-  font-size:25px;
-  color:#fbbf24;
-}
-
-.time-box small{
-  color:#94a3b8;
-}
-
-.btn{
-  border:none;
-  border-radius:10px;
-  padding:14px 20px;
-  margin:5px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.primary{
-  background:#22c55e;
-  color:white;
-}
-
-.secondary{
-  background:#f59e0b;
-  color:#111;
-}
-
-.section{
-  max-width:1000px;
-  margin:auto;
-  padding:45px 20px;
-}
-
-.section-title{
-  text-align:center;
-  margin-bottom:25px;
-  font-size:28px;
-}
-
-.features{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-}
-
-.feature{
-  background:#18233f;
-  padding:22px;
-  border-radius:15px;
-  text-align:center;
-}
-
-.feature .icon{
-  font-size:32px;
-  margin-bottom:10px;
-}
-
-.feature p{
-  color:#94a3b8;
-  margin-top:8px;
-  line-height:1.5;
-}
-
-.coming{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-}
-
-.coming-card{
-  background:#18233f;
-  border-radius:15px;
-  padding:20px;
-  border:1px solid #28334f;
-}
-
-.coming-card h3{
-  color:#fbbf24;
-  margin-bottom:10px;
-}
-
-.coming-card p{
-  color:#cbd5e1;
-  margin-bottom:15px;
-}
-
-.status{
-  color:#22c55e;
-  font-weight:bold;
-}
-
-footer{
-  background:#121a30;
-  padding:25px;
-  text-align:center;
-  color:#94a3b8;
-}
-
-@media(max-width:700px){
-
-  .hero h1{
-    font-size:32px;
-  }
-
-  .features,
-  .coming{
-    grid-template-columns:1fr;
-  }
-
-  .time-box{
-    min-width:58px;
-    padding:10px 5px;
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#0b1020;color:white}
+header{padding:16px 20px;background:#121a30;text-align:center}
+.logo{font-size:26px;font-weight:bold}
+.logo span{color:#fbbf24}
+.page{display:none}
+.page.active{display:block}
+.hero{text-align:center;padding:50px 20px;background:radial-gradient(circle at top,#263c77,#0b1020 65%)}
+.badge{display:inline-block;background:#f59e0b;color:#111;padding:8px 15px;border-radius:25px;font-weight:bold}
+.hero h1{font-size:38px;margin:18px 0 10px}
+.hero p{color:#cbd5e1}
+.card{max-width:750px;margin:25px auto;padding:25px;background:#18233f;border-radius:20px}
+.game-card{text-align:center}
+.countdown{display:flex;justify-content:center;gap:8px;margin:20px 0}
+.time-box{background:#0b1020;padding:12px;min-width:60px;border-radius:10px}
+.time-box strong{display:block;font-size:24px;color:#fbbf24}
+.time-box small{color:#94a3b8}
+.btn{border:0;padding:14px 20px;border-radius:10px;margin:5px;font-size:16px;font-weight:bold;cursor:pointer}
+.primary{background:#22c55e;color:white}
+.secondary{background:#f59e0b;color:#111}
+.back{background:#475569;color:white}
+input{width:100%;padding:13px;margin:7px 0 15px;border-radius:8px;border:1px solid #475569;background:#0b1020;color:white;font-size:16px}
+.ticket{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;background:#64748b;padding:5px;border-radius:8px;margin:20px auto;max-width:600px}
+.cell{height:45px;background:white;color:#111;display:flex;align-items:center;justify-content:center;font-weight:bold;border-radius:3px}
+.empty{background:#cbd5e1}
+.ticket-box{border:3px solid transparent;cursor:pointer}
+.ticket-box.selected{border-color:#22c55e}
+.message{text-align:center;background:#22c55e;padding:15px;border-radius:10px;display:none;margin-top:15px}
+.message.show{display:block}
+footer{text-align:center;padding:25px;color:#94a3b8}
+@media(max-width:600px){
+.hero h1{font-size:30px}
+.cell{height:35px;font-size:13px}
+.time-box{min-width:55px;padding:9px 5px}
 }
 </style>
 </head>
@@ -232,233 +47,262 @@ footer{
 <body>
 
 <header>
-  <div class="logo">🎰 Tombola<span>Play</span></div>
-
-  <button class="menu-btn" onclick="alert('Menu coming soon!')">
-    ☰ Menu
-  </button>
+<div class="logo">🎰 Tombola<span>Play</span></div>
 </header>
 
+<!-- HOME PAGE -->
+<section id="home" class="page active">
 
-<section class="hero">
+<div class="hero">
 
-  <div class="badge">🔥 NEXT BUMPER GAME</div>
+<div class="badge">🔥 NEXT BUMPER GAME</div>
 
-  <h1>Play Tombola. Win Big. 🎉</h1>
+<h1>Play Tombola. Win Big. 🎉</h1>
 
-  <p>Book your ticket and join the next exciting Tombola game.</p>
+<p>Book your ticket and join the next exciting game.</p>
 
+<div class="card game-card">
 
-  <div class="game-card">
+<h2>🏆 TombolaPlay Bumper</h2>
 
-    <h2>🏆 TombolaPlay Bumper</h2>
+<p id="gameDateText">Loading...</p>
 
-    <p class="game-date" id="gameDateText">
-      Loading next game...
-    </p>
+<div class="countdown">
 
+<div class="time-box">
+<strong id="days">00</strong>
+<small>Days</small>
+</div>
 
-    <div class="countdown">
+<div class="time-box">
+<strong id="hours">00</strong>
+<small>Hours</small>
+</div>
 
-      <div class="time-box">
-        <strong id="days">00</strong>
-        <small>Days</small>
-      </div>
+<div class="time-box">
+<strong id="minutes">00</strong>
+<small>Minutes</small>
+</div>
 
-      <div class="time-box">
-        <strong id="hours">00</strong>
-        <small>Hours</small>
-      </div>
+<div class="time-box">
+<strong id="seconds">00</strong>
+<small>Seconds</small>
+</div>
 
-      <div class="time-box">
-        <strong id="minutes">00</strong>
-        <small>Minutes</small>
-      </div>
+</div>
 
-      <div class="time-box">
-        <strong id="seconds">00</strong>
-        <small>Seconds</small>
-      </div>
+<button class="btn primary" onclick="showPage('booking')">
+🎟️ BOOK YOUR TICKET
+</button>
 
-    </div>
+</div>
 
-
-    <button class="btn primary" onclick="bookTicket()">
-      🎟️ BOOK YOUR TICKET
-    </button>
-
-    <button class="btn secondary" onclick="checkTickets()">
-      🔎 CHECK AVAILABLE TICKETS
-    </button>
-
-  </div>
+</div>
 
 </section>
 
 
-<section class="section">
+<!-- BOOKING PAGE -->
+<section id="booking" class="page">
 
-  <h2 class="section-title">Why Play With Us?</h2>
+<div class="card">
 
-  <div class="features">
+<button class="btn back" onclick="showPage('home')">
+⬅️ Back
+</button>
 
-    <div class="feature">
-      <div class="icon">🎟️</div>
-      <h3>Easy Ticket</h3>
-      <p>Choose and book your Tombola ticket easily.</p>
-    </div>
+<h2 style="text-align:center;margin:15px">
+🎟️ Book Your Tombola Ticket
+</h2>
 
-    <div class="feature">
-      <div class="icon">🎲</div>
-      <h3>Live Game</h3>
-      <p>Watch live numbers and play in real time.</p>
-    </div>
+<p style="text-align:center;color:#cbd5e1">
+Generate a ticket and select it.
+</p>
 
-    <div class="feature">
-      <div class="icon">🏆</div>
-      <h3>Win Prizes</h3>
-      <p>Quick 7 and Full House winner rewards.</p>
-    </div>
+<div id="ticketArea"></div>
 
-  </div>
+<div style="text-align:center">
 
-</section>
+<button class="btn secondary" onclick="generateTicket()">
+🎲 Generate New Ticket
+</button>
 
+</div>
 
-<section class="section">
+<label>Your Name</label>
+<input type="text" id="playerName" placeholder="Enter your name">
 
-  <h2 class="section-title">📅 Coming Games</h2>
+<label>Phone Number</label>
+<input type="tel" id="playerPhone" placeholder="Enter phone number">
 
-  <div class="coming">
+<button class="btn primary" style="width:100%" onclick="bookTicket()">
+✅ BOOK TICKET
+</button>
 
-    <div class="coming-card">
-      <h3>🔥 Bumper Game</h3>
-      <p>Today • Evening</p>
-      <div class="status">● Tickets Available</div>
-    </div>
+<div class="message" id="message"></div>
 
-    <div class="coming-card">
-      <h3>🎰 Weekend Special</h3>
-      <p>Saturday • 7:00 PM</p>
-      <div class="status">● Tickets Available</div>
-    </div>
-
-    <div class="coming-card">
-      <h3>🏆 Mega Tombola</h3>
-      <p>Sunday • 8:00 PM</p>
-      <div class="status">● Coming Soon</div>
-    </div>
-
-  </div>
+</div>
 
 </section>
 
 
 <footer>
-  <p>© 2026 TombolaPlay • Play Responsibly</p>
+© 2026 TombolaPlay • Play Responsibly
 </footer>
 
 
 <script>
 
-/* NEXT GAME TIME
-   Change this date and time anytime */
-
-const gameDate = new Date(
-  new Date().getTime() + 24 * 60 * 60 * 1000
-);
+let ticketNumbers=[];
 
 
-/* SHOW DATE */
+/* PAGE */
 
-document.getElementById("gameDateText").innerText =
-  gameDate.toLocaleString(
-    "en-IN",
-    {
-      weekday:"long",
-      year:"numeric",
-      month:"long",
-      day:"numeric",
-      hour:"2-digit",
-      minute:"2-digit"
-    }
-  );
+function showPage(page){
+
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
+
+document.getElementById(page)
+.classList.add("active");
+
+if(page==="booking" && ticketNumbers.length===0){
+generateTicket();
+}
+
+}
+
+
+/* TICKET */
+
+function generateTicket(){
+
+ticketNumbers=[];
+
+while(ticketNumbers.length<15){
+
+let n=Math.floor(Math.random()*90)+1;
+
+if(!ticketNumbers.includes(n)){
+ticketNumbers.push(n);
+}
+
+}
+
+ticketNumbers.sort((a,b)=>a-b);
+
+let area=document.getElementById("ticketArea");
+
+area.innerHTML="";
+
+let ticket=document.createElement("div");
+
+ticket.className="ticket ticket-box selected";
+
+for(let i=0;i<27;i++){
+
+let cell=document.createElement("div");
+
+if(i<15){
+
+cell.className="cell";
+
+cell.innerText=ticketNumbers[i];
+
+}else{
+
+cell.className="cell empty";
+
+}
+
+ticket.appendChild(cell);
+
+}
+
+area.appendChild(ticket);
+
+}
+
+
+/* BOOK */
+
+function bookTicket(){
+
+let name=document.getElementById("playerName").value.trim();
+
+let phone=document.getElementById("playerPhone").value.trim();
+
+let message=document.getElementById("message");
+
+if(!name || !phone){
+
+alert("Please enter your name and phone number.");
+
+return;
+
+}
+
+message.innerHTML=
+"🎉 <b>Ticket Booked Successfully!</b><br><br>"+
+"Player: "+name+"<br>"+
+"Ticket Numbers: "+ticketNumbers.join(", ");
+
+message.classList.add("show");
+
+}
 
 
 /* COUNTDOWN */
 
+const gameDate=new Date(
+new Date().getTime()+24*60*60*1000
+);
+
+document.getElementById("gameDateText").innerText=
+gameDate.toLocaleString("en-IN");
+
+
 function updateCountdown(){
 
-  const now = new Date().getTime();
+let now=new Date().getTime();
 
-  const distance = gameDate.getTime() - now;
+let distance=gameDate-now;
 
-  if(distance <= 0){
+if(distance<=0)return;
 
-    document.getElementById("days").innerText = "00";
-    document.getElementById("hours").innerText = "00";
-    document.getElementById("minutes").innerText = "00";
-    document.getElementById("seconds").innerText = "00";
+let d=Math.floor(distance/(1000*60*60*24));
 
-    return;
-  }
+let h=Math.floor(
+(distance%(1000*60*60*24))/
+(1000*60*60)
+);
 
-  const days =
-    Math.floor(distance / (1000*60*60*24));
+let m=Math.floor(
+(distance%(1000*60*60))/
+(1000*60)
+);
 
-  const hours =
-    Math.floor(
-      (distance%(1000*60*60*24)) /
-      (1000*60*60)
-    );
+let s=Math.floor(
+(distance%(1000*60))/1000
+);
 
-  const minutes =
-    Math.floor(
-      (distance%(1000*60*60)) /
-      (1000*60)
-    );
+document.getElementById("days").innerText=
+String(d).padStart(2,"0");
 
-  const seconds =
-    Math.floor(
-      (distance%(1000*60)) /
-      1000
-    );
+document.getElementById("hours").innerText=
+String(h).padStart(2,"0");
 
-  document.getElementById("days").innerText =
-    String(days).padStart(2,"0");
+document.getElementById("minutes").innerText=
+String(m).padStart(2,"0");
 
-  document.getElementById("hours").innerText =
-    String(hours).padStart(2,"0");
+document.getElementById("seconds").innerText=
+String(s).padStart(2,"0");
 
-  document.getElementById("minutes").innerText =
-    String(minutes).padStart(2,"0");
-
-  document.getElementById("seconds").innerText =
-    String(seconds).padStart(2,"0");
 }
-
 
 setInterval(updateCountdown,1000);
 
 updateCountdown();
-
-
-/* BUTTONS */
-
-function bookTicket(){
-
-  alert(
-    "Ticket booking system will open next!"
-  );
-}
-
-
-function checkTickets(){
-
-  alert(
-    "Available tickets page will open next!"
-  );
-}
 
 </script>
 
