@@ -7,39 +7,201 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#0b1020;color:white}
-header{padding:16px 20px;background:#121a30;text-align:center}
-.logo{font-size:26px;font-weight:bold}
-.logo span{color:#fbbf24}
-.page{display:none}
-.page.active{display:block}
-.hero{text-align:center;padding:50px 20px;background:radial-gradient(circle at top,#263c77,#0b1020 65%)}
-.badge{display:inline-block;background:#f59e0b;color:#111;padding:8px 15px;border-radius:25px;font-weight:bold}
-.hero h1{font-size:38px;margin:18px 0 10px}
-.hero p{color:#cbd5e1}
-.card{max-width:750px;margin:25px auto;padding:25px;background:#18233f;border-radius:20px}
-.game-card{text-align:center}
-.countdown{display:flex;justify-content:center;gap:8px;margin:20px 0}
-.time-box{background:#0b1020;padding:12px;min-width:60px;border-radius:10px}
-.time-box strong{display:block;font-size:24px;color:#fbbf24}
-.time-box small{color:#94a3b8}
-.btn{border:0;padding:14px 20px;border-radius:10px;margin:5px;font-size:16px;font-weight:bold;cursor:pointer}
-.primary{background:#22c55e;color:white}
-.secondary{background:#f59e0b;color:#111}
-.back{background:#475569;color:white}
-input{width:100%;padding:13px;margin:7px 0 15px;border-radius:8px;border:1px solid #475569;background:#0b1020;color:white;font-size:16px}
-.ticket{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;background:#64748b;padding:5px;border-radius:8px;margin:20px auto;max-width:600px}
-.cell{height:45px;background:white;color:#111;display:flex;align-items:center;justify-content:center;font-weight:bold;border-radius:3px}
-.empty{background:#cbd5e1}
-.ticket-box{border:3px solid transparent;cursor:pointer}
-.ticket-box.selected{border-color:#22c55e}
-.message{text-align:center;background:#22c55e;padding:15px;border-radius:10px;display:none;margin-top:15px}
-.message.show{display:block}
-footer{text-align:center;padding:25px;color:#94a3b8}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#0b1020;
+  color:white;
+}
+
+header{
+  padding:16px;
+  background:#121a30;
+  text-align:center;
+}
+
+.logo{
+  font-size:27px;
+  font-weight:bold;
+}
+
+.logo span{
+  color:#fbbf24;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+.hero{
+  text-align:center;
+  padding:45px 18px;
+  background:radial-gradient(circle at top,#263c77,#0b1020 65%);
+}
+
+.badge{
+  display:inline-block;
+  background:#f59e0b;
+  color:#111;
+  padding:8px 15px;
+  border-radius:25px;
+  font-weight:bold;
+}
+
+.hero h1{
+  font-size:36px;
+  margin:18px 0 10px;
+}
+
+.hero p{
+  color:#cbd5e1;
+}
+
+.card{
+  max-width:750px;
+  margin:25px auto;
+  padding:24px;
+  background:#18233f;
+  border-radius:20px;
+}
+
+.center{
+  text-align:center;
+}
+
+.countdown{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin:20px 0;
+}
+
+.time-box{
+  background:#0b1020;
+  padding:12px;
+  min-width:60px;
+  border-radius:10px;
+}
+
+.time-box strong{
+  display:block;
+  font-size:24px;
+  color:#fbbf24;
+}
+
+.time-box small{
+  color:#94a3b8;
+}
+
+.btn{
+  border:0;
+  padding:14px 20px;
+  border-radius:10px;
+  margin:5px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.primary{
+  background:#22c55e;
+  color:white;
+}
+
+.whatsapp{
+  background:#25D366;
+  color:white;
+  width:100%;
+  margin-top:15px;
+}
+
+.back{
+  background:#475569;
+  color:white;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  margin:8px 0 15px;
+  border-radius:8px;
+  border:1px solid #475569;
+  background:#0b1020;
+  color:white;
+  font-size:16px;
+}
+
+label{
+  display:block;
+  margin-top:10px;
+  color:#cbd5e1;
+  font-weight:bold;
+}
+
+.ticket{
+  display:grid;
+  grid-template-columns:repeat(9,1fr);
+  gap:3px;
+  background:#64748b;
+  padding:5px;
+  border-radius:8px;
+  margin:20px auto;
+  max-width:600px;
+}
+
+.cell{
+  height:45px;
+  background:white;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  border-radius:3px;
+}
+
+.empty{
+  background:#cbd5e1;
+}
+
+.message{
+  display:none;
+  margin-top:15px;
+  padding:15px;
+  border-radius:10px;
+  background:#22c55e;
+  text-align:center;
+}
+
+.message.show{
+  display:block;
+}
+
+footer{
+  text-align:center;
+  padding:25px;
+  color:#94a3b8;
+}
+
 @media(max-width:600px){
-.hero h1{font-size:30px}
-.cell{height:35px;font-size:13px}
-.time-box{min-width:55px;padding:9px 5px}
+
+  .hero h1{
+    font-size:30px;
+  }
+
+  .cell{
+    height:35px;
+    font-size:13px;
+  }
+
+  .time-box{
+    min-width:55px;
+    padding:9px 5px;
+  }
 }
 </style>
 </head>
@@ -47,25 +209,29 @@ footer{text-align:center;padding:25px;color:#94a3b8}
 <body>
 
 <header>
-<div class="logo">🎰 Tombola<span>Play</span></div>
+  <div class="logo">🎰 Tombola<span>Play</span></div>
 </header>
 
-<!-- HOME PAGE -->
+
+<!-- HOME -->
+
 <section id="home" class="page active">
 
 <div class="hero">
 
 <div class="badge">🔥 NEXT BUMPER GAME</div>
 
-<h1>Play Tombola. Win Big. 🎉</h1>
+<h1>Play Tombola. Win Big! 🎉</h1>
 
-<p>Book your ticket and join the next exciting game.</p>
+<p>Book your ticket through WhatsApp.</p>
 
-<div class="card game-card">
+
+<div class="card center">
 
 <h2>🏆 TombolaPlay Bumper</h2>
 
-<p id="gameDateText">Loading...</p>
+<p id="gameDateText"></p>
+
 
 <div class="countdown">
 
@@ -91,8 +257,12 @@ footer{text-align:center;padding:25px;color:#94a3b8}
 
 </div>
 
-<button class="btn primary" onclick="showPage('booking')">
+
+<button class="btn primary"
+onclick="showPage('booking')">
+
 🎟️ BOOK YOUR TICKET
+
 </button>
 
 </div>
@@ -102,44 +272,66 @@ footer{text-align:center;padding:25px;color:#94a3b8}
 </section>
 
 
-<!-- BOOKING PAGE -->
+<!-- BOOKING -->
+
 <section id="booking" class="page">
 
 <div class="card">
 
-<button class="btn back" onclick="showPage('home')">
+<button class="btn back"
+onclick="showPage('home')">
+
 ⬅️ Back
+
 </button>
 
-<h2 style="text-align:center;margin:15px">
-🎟️ Book Your Tombola Ticket
+
+<h2 class="center">
+🎟️ Book Your Ticket
 </h2>
 
-<p style="text-align:center;color:#cbd5e1">
-Generate a ticket and select it.
-</p>
 
 <div id="ticketArea"></div>
 
-<div style="text-align:center">
 
-<button class="btn secondary" onclick="generateTicket()">
-🎲 Generate New Ticket
+<div class="center">
+
+<button class="btn primary"
+onclick="generateTicket()">
+
+🎲 Generate Ticket
+
 </button>
 
 </div>
 
-<label>Your Name</label>
-<input type="text" id="playerName" placeholder="Enter your name">
 
-<label>Phone Number</label>
-<input type="tel" id="playerPhone" placeholder="Enter phone number">
+<label>Player Name</label>
 
-<button class="btn primary" style="width:100%" onclick="bookTicket()">
-✅ BOOK TICKET
+<input
+type="text"
+id="playerName"
+placeholder="Enter your name">
+
+
+<label>WhatsApp Number</label>
+
+<input
+type="tel"
+id="playerPhone"
+placeholder="Enter WhatsApp number">
+
+
+<button
+class="btn whatsapp"
+onclick="bookOnWhatsApp()">
+
+💬 BOOK TICKET ON WHATSAPP
+
 </button>
 
-<div class="message" id="message"></div>
+
+<div id="message" class="message"></div>
 
 </div>
 
@@ -147,7 +339,9 @@ Generate a ticket and select it.
 
 
 <footer>
-© 2026 TombolaPlay • Play Responsibly
+
+© 2026 TombolaPlay
+
 </footer>
 
 
@@ -156,12 +350,19 @@ Generate a ticket and select it.
 let ticketNumbers=[];
 
 
+/* YOUR WHATSAPP NUMBER */
+
+const whatsappNumber="919101151835";
+
+
 /* PAGE */
 
 function showPage(page){
 
 document.querySelectorAll(".page")
-.forEach(p=>p.classList.remove("active"));
+.forEach(function(p){
+p.classList.remove("active");
+});
 
 document.getElementById(page)
 .classList.add("active");
@@ -173,7 +374,7 @@ generateTicket();
 }
 
 
-/* TICKET */
+/* GENERATE TICKET */
 
 function generateTicket(){
 
@@ -181,37 +382,48 @@ ticketNumbers=[];
 
 while(ticketNumbers.length<15){
 
-let n=Math.floor(Math.random()*90)+1;
+let number=
+Math.floor(Math.random()*90)+1;
 
-if(!ticketNumbers.includes(n)){
-ticketNumbers.push(n);
+if(!ticketNumbers.includes(number)){
+ticketNumbers.push(number);
 }
 
 }
 
-ticketNumbers.sort((a,b)=>a-b);
+ticketNumbers.sort(function(a,b){
+return a-b;
+});
 
-let area=document.getElementById("ticketArea");
+
+let area=
+document.getElementById("ticketArea");
 
 area.innerHTML="";
 
-let ticket=document.createElement("div");
 
-ticket.className="ticket ticket-box selected";
+let ticket=
+document.createElement("div");
+
+ticket.className="ticket";
+
 
 for(let i=0;i<27;i++){
 
-let cell=document.createElement("div");
+let cell=
+document.createElement("div");
 
 if(i<15){
 
 cell.className="cell";
 
-cell.innerText=ticketNumbers[i];
+cell.innerText=
+ticketNumbers[i];
 
 }else{
 
-cell.className="cell empty";
+cell.className=
+"cell empty";
 
 }
 
@@ -224,87 +436,175 @@ area.appendChild(ticket);
 }
 
 
-/* BOOK */
+/* WHATSAPP BOOKING */
 
-function bookTicket(){
+function bookOnWhatsApp(){
 
-let name=document.getElementById("playerName").value.trim();
+let name=
+document.getElementById("playerName")
+.value.trim();
 
-let phone=document.getElementById("playerPhone").value.trim();
+let phone=
+document.getElementById("playerPhone")
+.value.trim();
 
-let message=document.getElementById("message");
 
-if(!name || !phone){
+if(!name){
 
-alert("Please enter your name and phone number.");
+alert("Please enter your name.");
 
 return;
 
 }
 
-message.innerHTML=
-"🎉 <b>Ticket Booked Successfully!</b><br><br>"+
-"Player: "+name+"<br>"+
-"Ticket Numbers: "+ticketNumbers.join(", ");
 
-message.classList.add("show");
+if(!phone){
+
+alert("Please enter your WhatsApp number.");
+
+return;
+
+}
+
+
+if(ticketNumbers.length!==15){
+
+alert("Please generate a ticket first.");
+
+return;
+
+}
+
+
+/* MESSAGE */
+
+let message=
+
+"🎰 *TOMBOLAPLAY TICKET BOOKING*%0A"+
+"%0A"+
+"👤 *Player:* "+encodeURIComponent(name)+
+"%0A"+
+"📱 *WhatsApp:* "+encodeURIComponent(phone)+
+"%0A"+
+"🎟️ *Ticket Numbers:* "+
+encodeURIComponent(ticketNumbers.join(", "))+
+"%0A"+
+"%0A"+
+"🏆 *Game:* TombolaPlay Bumper"+
+"%0A"+
+"⏳ *Status:* Booking Request";
+
+
+/* WHATSAPP URL */
+
+let url=
+"https://wa.me/"+
+whatsappNumber+
+"?text="+
+message;
+
+
+/* OPEN WHATSAPP */
+
+window.open(url,"_blank");
+
+
+/* LOCAL MESSAGE */
+
+let box=
+document.getElementById("message");
+
+box.innerHTML=
+"✅ Booking details WhatsApp me open ho gaye hain.<br>"+
+"Please press <b>Send</b> to confirm.";
+
+box.classList.add("show");
 
 }
 
 
 /* COUNTDOWN */
 
-const gameDate=new Date(
-new Date().getTime()+24*60*60*1000
+const gameDate=
+new Date(
+new Date().getTime()+
+24*60*60*1000
 );
 
-document.getElementById("gameDateText").innerText=
+
+document.getElementById(
+"gameDateText"
+).innerText=
 gameDate.toLocaleString("en-IN");
 
 
 function updateCountdown(){
 
-let now=new Date().getTime();
+let now=
+new Date().getTime();
 
-let distance=gameDate-now;
+let distance=
+gameDate.getTime()-now;
 
-if(distance<=0)return;
 
-let d=Math.floor(distance/(1000*60*60*24));
+if(distance<=0){
 
-let h=Math.floor(
+return;
+
+}
+
+
+let d=
+Math.floor(
+distance/(1000*60*60*24)
+);
+
+let h=
+Math.floor(
 (distance%(1000*60*60*24))/
 (1000*60*60)
 );
 
-let m=Math.floor(
+let m=
+Math.floor(
 (distance%(1000*60*60))/
 (1000*60)
 );
 
-let s=Math.floor(
-(distance%(1000*60))/1000
+let s=
+Math.floor(
+(distance%(1000*60))/
+1000
 );
 
-document.getElementById("days").innerText=
+
+document.getElementById("days")
+.innerText=
 String(d).padStart(2,"0");
 
-document.getElementById("hours").innerText=
+document.getElementById("hours")
+.innerText=
 String(h).padStart(2,"0");
 
-document.getElementById("minutes").innerText=
+document.getElementById("minutes")
+.innerText=
 String(m).padStart(2,"0");
 
-document.getElementById("seconds").innerText=
+document.getElementById("seconds")
+.innerText=
 String(s).padStart(2,"0");
 
 }
 
-setInterval(updateCountdown,1000);
+
+setInterval(
+updateCountdown,
+1000
+);
 
 updateCountdown();
 
 </script>
 
 </body>
-</html>
+  </html>
