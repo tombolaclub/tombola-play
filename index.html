@@ -1,1 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TombolaPlay</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      text-align: center;
+    }
+
+    header {
+      padding: 25px;
+      background: #1f2937;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      color: #9ca3af;
+    }
+
+    .game-box {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #1f2937;
+      border-radius: 20px;
+    }
+
+    .number {
+      width: 160px;
+      height: 160px;
+      margin: 25px auto;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f59e0b;
+      color: black;
+      font-size: 70px;
+      font-weight: bold;
+    }
+
+    button {
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #22c55e;
+      color: white;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .history {
+      margin-top: 30px;
+    }
+
+    #numbers {
+      margin-top: 15px;
+      line-height: 2;
+      color: #fbbf24;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🎰 TombolaPlay</h1>
+    <p class="subtitle">Play • Draw • Win</p>
+  </header>
+
+  <div class="game-box">
+    <h2>Current Number</h2>
+
+    <div class="number" id="currentNumber">?</div>
+
+    <button onclick="drawNumber()">🎲 Draw Number</button>
+
+    <div class="history">
+      <h3>Called Numbers</h3>
+      <div id="numbers">No numbers drawn yet</div>
+    </div>
+  </div>
+
+  <script>
+    let availableNumbers = [];
+    let calledNumbers = [];
+
+    for (let i = 1; i <= 90; i++) {
+      availableNumbers.push(i);
+    }
+
+    function drawNumber() {
+      if (availableNumbers.length === 0) {
+        alert("All numbers have been drawn!");
+        return;
+      }
+
+      const randomIndex = Math.floor(
+        Math.random() * availableNumbers.length
+      );
+
+      const number = availableNumbers.splice(randomIndex, 1)[0];
+
+      calledNumbers.push(number);
+
+      document.getElementById("currentNumber").innerText = number;
+      document.getElementById("numbers").innerText =
+        calledNumbers.join(", ");
+    }
+  </script>
+
+</body>
+</html>
