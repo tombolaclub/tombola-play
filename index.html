@@ -1,132 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TombolaPlay</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TombolaPlay</title>
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111827;
-      color: white;
-      text-align: center;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    header {
-      padding: 25px;
-      background: #1f2937;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111827;
+  color: white;
+  text-align: center;
+}
 
-    h1 {
-      margin: 0;
-      font-size: 32px;
-    }
+header {
+  padding: 22px;
+  background: #1f2937;
+}
 
-    .subtitle {
-      color: #9ca3af;
-    }
+h1 {
+  margin: 0;
+  font-size: 32px;
+}
 
-    .game-box {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 30px;
-      background: #1f2937;
-      border-radius: 20px;
-    }
+.subtitle {
+  color: #9ca3af;
+}
 
-    .number {
-      width: 160px;
-      height: 160px;
-      margin: 25px auto;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f59e0b;
-      color: black;
-      font-size: 70px;
-      font-weight: bold;
-    }
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
 
-    button {
-      border: none;
-      padding: 15px 30px;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      background: #22c55e;
-      color: white;
-    }
+.game-box {
+  background: #1f2937;
+  padding: 25px;
+  border-radius: 20px;
+}
 
-    button:hover {
-      transform: scale(1.05);
-    }
+.number {
+  width: 150px;
+  height: 150px;
+  margin: 20px auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f59e0b;
+  color: #111;
+  font-size: 65px;
+  font-weight: bold;
+}
 
-    .history {
-      margin-top: 30px;
-    }
+button {
+  border: none;
+  padding: 14px 22px;
+  margin: 5px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    #numbers {
-      margin-top: 15px;
-      line-height: 2;
-      color: #fbbf24;
-    }
-  </style>
+.draw-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.reset-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.board-title {
+  margin-top: 35px;
+}
+
+.number-board {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.board-number {
+  padding: 12px 5px;
+  background: #374151;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.called {
+  background: #f59e0b;
+  color: black;
+}
+
+.history {
+  margin-top: 25px;
+}
+
+#history {
+  color: #fbbf24;
+  line-height: 1.8;
+  word-wrap: break-word;
+}
+
+@media (max-width: 600px) {
+  .number-board {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .number {
+    width: 130px;
+    height: 130px;
+    font-size: 55px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <header>
-    <h1>🎰 TombolaPlay</h1>
-    <p class="subtitle">Play • Draw • Win</p>
-  </header>
+<header>
+  <h1>🎰 TombolaPlay</h1>
+  <p class="subtitle">Play • Draw • Win</p>
+</header>
+
+<div class="container">
 
   <div class="game-box">
+
     <h2>Current Number</h2>
 
     <div class="number" id="currentNumber">?</div>
 
-    <button onclick="drawNumber()">🎲 Draw Number</button>
+    <button class="draw-btn" onclick="drawNumber()">
+      🎲 Draw Number
+    </button>
+
+    <button class="reset-btn" onclick="resetGame()">
+      🔄 Reset Game
+    </button>
 
     <div class="history">
       <h3>Called Numbers</h3>
-      <div id="numbers">No numbers drawn yet</div>
+      <div id="history">No numbers drawn yet</div>
     </div>
+
   </div>
 
-  <script>
-    let availableNumbers = [];
-    let calledNumbers = [];
+  <h2 class="board-title">🔢 Number Board</h2>
 
-    for (let i = 1; i <= 90; i++) {
-      availableNumbers.push(i);
-    }
+  <div class="number-board" id="numberBoard"></div>
 
-    function drawNumber() {
-      if (availableNumbers.length === 0) {
-        alert("All numbers have been drawn!");
-        return;
-      }
+</div>
 
-      const randomIndex = Math.floor(
-        Math.random() * availableNumbers.length
-      );
+<script>
 
-      const number = availableNumbers.splice(randomIndex, 1)[0];
+let availableNumbers = [];
+let calledNumbers = [];
 
-      calledNumbers.push(number);
+function createBoard() {
 
-      document.getElementById("currentNumber").innerText = number;
-      document.getElementById("numbers").innerText =
-        calledNumbers.join(", ");
-    }
-  </script>
+  const board = document.getElementById("numberBoard");
+
+  board.innerHTML = "";
+
+  for (let i = 1; i <= 90; i++) {
+
+    const numberBox = document.createElement("div");
+
+    numberBox.className = "board-number";
+
+    numberBox.id = "number-" + i;
+
+    numberBox.innerText = i;
+
+    board.appendChild(numberBox);
+  }
+}
+
+function startGame() {
+
+  availableNumbers = [];
+
+  calledNumbers = [];
+
+  for (let i = 1; i <= 90; i++) {
+
+    availableNumbers.push(i);
+  }
+
+  document.getElementById("currentNumber").innerText = "?";
+
+  document.getElementById("history").innerText =
+    "No numbers drawn yet";
+
+  createBoard();
+}
+
+function drawNumber() {
+
+  if (availableNumbers.length === 0) {
+
+    alert("🎉 All numbers have been drawn!");
+
+    return;
+  }
+
+  const randomIndex =
+    Math.floor(Math.random() * availableNumbers.length);
+
+  const number =
+    availableNumbers.splice(randomIndex, 1)[0];
+
+  calledNumbers.push(number);
+
+  document.getElementById("currentNumber").innerText = number;
+
+  document.getElementById("history").innerText =
+    calledNumbers.join(", ");
+
+  document
+    .getElementById("number-" + number)
+    .classList.add("called");
+}
+
+function resetGame() {
+
+  const confirmReset =
+    confirm("Do you want to reset the game?");
+
+  if (confirmReset) {
+
+    startGame();
+  }
+}
+
+startGame();
+
+</script>
 
 </body>
 </html>
