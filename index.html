@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>TombolaPlay</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
   font-family:Arial,sans-serif;
@@ -15,91 +22,45 @@ body{
 }
 
 header{
-  padding:16px;
   background:#121a30;
+  padding:15px;
   text-align:center;
-}
-
-.logo{
-  font-size:27px;
+  font-size:26px;
   font-weight:bold;
 }
 
-.logo span{
+header span{
   color:#fbbf24;
 }
 
 .page{
   display:none;
+  padding:20px;
 }
 
 .page.active{
   display:block;
 }
 
-.hero{
-  text-align:center;
-  padding:45px 18px;
-  background:radial-gradient(circle at top,#263c77,#0b1020 65%);
-}
-
-.badge{
-  display:inline-block;
-  background:#f59e0b;
-  color:#111;
-  padding:8px 15px;
-  border-radius:25px;
-  font-weight:bold;
-}
-
-.hero h1{
-  font-size:36px;
-  margin:18px 0 10px;
-}
-
-.hero p{
-  color:#cbd5e1;
-}
-
 .card{
-  max-width:750px;
-  margin:25px auto;
-  padding:24px;
+  max-width:800px;
+  margin:15px auto;
+  padding:20px;
   background:#18233f;
-  border-radius:20px;
+  border-radius:18px;
 }
 
 .center{
   text-align:center;
 }
 
-.countdown{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  margin:20px 0;
+h1,h2,h3{
+  margin-bottom:15px;
 }
 
-.time-box{
-  background:#0b1020;
-  padding:12px;
-  min-width:60px;
-  border-radius:10px;
-}
-
-.time-box strong{
-  display:block;
-  font-size:24px;
-  color:#fbbf24;
-}
-
-.time-box small{
-  color:#94a3b8;
-}
-
-.btn{
+button{
   border:0;
-  padding:14px 20px;
+  padding:13px 18px;
   border-radius:10px;
   margin:5px;
   font-size:16px;
@@ -107,26 +68,29 @@ header{
   cursor:pointer;
 }
 
-.primary{
+.green{
   background:#22c55e;
   color:white;
 }
 
-.whatsapp{
-  background:#25D366;
-  color:white;
-  width:100%;
-  margin-top:15px;
+.orange{
+  background:#f59e0b;
+  color:#111;
 }
 
-.back{
-  background:#475569;
+.red{
+  background:#ef4444;
+  color:white;
+}
+
+.blue{
+  background:#3b82f6;
   color:white;
 }
 
 input{
   width:100%;
-  padding:14px;
+  padding:13px;
   margin:8px 0 15px;
   border-radius:8px;
   border:1px solid #475569;
@@ -135,11 +99,38 @@ input{
   font-size:16px;
 }
 
-label{
-  display:block;
-  margin-top:10px;
-  color:#cbd5e1;
+.current-number{
+  width:150px;
+  height:150px;
+  margin:20px auto;
+  border-radius:50%;
+  background:#fbbf24;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:70px;
   font-weight:bold;
+  box-shadow:0 0 30px #fbbf24;
+}
+
+.number-board{
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:5px;
+  margin-top:20px;
+}
+
+.number{
+  background:#24314f;
+  padding:10px 2px;
+  text-align:center;
+  border-radius:6px;
+}
+
+.called{
+  background:#22c55e;
+  color:white;
 }
 
 .ticket{
@@ -150,11 +141,10 @@ label{
   padding:5px;
   border-radius:8px;
   margin:20px auto;
-  max-width:600px;
 }
 
 .cell{
-  height:45px;
+  min-height:40px;
   background:white;
   color:#111;
   display:flex;
@@ -168,40 +158,40 @@ label{
   background:#cbd5e1;
 }
 
-.message{
+.marked{
+  background:#22c55e !important;
+  color:white;
+}
+
+.status{
+  padding:10px;
+  border-radius:8px;
+  margin:10px 0;
+  text-align:center;
+  background:#24314f;
+}
+
+.hidden{
   display:none;
-  margin-top:15px;
-  padding:15px;
-  border-radius:10px;
-  background:#22c55e;
-  text-align:center;
-}
-
-.message.show{
-  display:block;
-}
-
-footer{
-  text-align:center;
-  padding:25px;
-  color:#94a3b8;
 }
 
 @media(max-width:600px){
 
-  .hero h1{
-    font-size:30px;
-  }
+.number-board{
+  grid-template-columns:repeat(10,1fr);
+}
 
-  .cell{
-    height:35px;
-    font-size:13px;
-  }
+.number{
+  font-size:12px;
+  padding:8px 1px;
+}
 
-  .time-box{
-    min-width:55px;
-    padding:9px 5px;
-  }
+.current-number{
+  width:120px;
+  height:120px;
+  font-size:55px;
+}
+
 }
 </style>
 </head>
@@ -209,7 +199,7 @@ footer{
 <body>
 
 <header>
-  <div class="logo">🎰 Tombola<span>Play</span></div>
+🎰 Tombola<span>Play</span>
 </header>
 
 
@@ -217,55 +207,32 @@ footer{
 
 <section id="home" class="page active">
 
-<div class="hero">
-
-<div class="badge">🔥 NEXT BUMPER GAME</div>
+<div class="card center">
 
 <h1>Play Tombola. Win Big! 🎉</h1>
 
-<p>Book your ticket through WhatsApp.</p>
+<p>Book your ticket and join the live game.</p>
 
-
-<div class="card center">
-
-<h2>🏆 TombolaPlay Bumper</h2>
-
-<p id="gameDateText"></p>
-
-
-<div class="countdown">
-
-<div class="time-box">
-<strong id="days">00</strong>
-<small>Days</small>
-</div>
-
-<div class="time-box">
-<strong id="hours">00</strong>
-<small>Hours</small>
-</div>
-
-<div class="time-box">
-<strong id="minutes">00</strong>
-<small>Minutes</small>
-</div>
-
-<div class="time-box">
-<strong id="seconds">00</strong>
-<small>Seconds</small>
-</div>
-
-</div>
-
-
-<button class="btn primary"
+<button class="green"
 onclick="showPage('booking')">
 
-🎟️ BOOK YOUR TICKET
+🎟️ BOOK TICKET
 
 </button>
 
-</div>
+<button class="orange"
+onclick="showPage('live')">
+
+🔴 JOIN LIVE GAME
+
+</button>
+
+<button class="blue"
+onclick="showPage('admin')">
+
+👨‍💼 HOST PANEL
+
+</button>
 
 </div>
 
@@ -278,25 +245,17 @@ onclick="showPage('booking')">
 
 <div class="card">
 
-<button class="btn back"
-onclick="showPage('home')">
-
-⬅️ Back
-
+<button onclick="showPage('home')">
+⬅ Back
 </button>
 
-
-<h2 class="center">
-🎟️ Book Your Ticket
-</h2>
-
+<h2 class="center">🎟️ Book Your Ticket</h2>
 
 <div id="ticketArea"></div>
 
-
 <div class="center">
 
-<button class="btn primary"
+<button class="orange"
 onclick="generateTicket()">
 
 🎲 Generate Ticket
@@ -305,76 +264,241 @@ onclick="generateTicket()">
 
 </div>
 
-
-<label>Player Name</label>
+<label>Name</label>
 
 <input
-type="text"
 id="playerName"
 placeholder="Enter your name">
-
 
 <label>WhatsApp Number</label>
 
 <input
-type="tel"
 id="playerPhone"
 placeholder="Enter WhatsApp number">
 
-
 <button
-class="btn whatsapp"
+class="green"
+style="width:100%"
 onclick="bookOnWhatsApp()">
 
-💬 BOOK TICKET ON WHATSAPP
+💬 BOOK ON WHATSAPP
 
 </button>
-
-
-<div id="message" class="message"></div>
 
 </div>
 
 </section>
 
 
-<footer>
+<!-- LIVE GAME -->
 
-© 2026 TombolaPlay
+<section id="live" class="page">
 
-</footer>
+<div class="card center">
+
+<button onclick="showPage('home')">
+⬅ Back
+</button>
+
+<h2>🔴 LIVE TOMBOLA GAME</h2>
+
+<div class="status" id="gameStatus">
+Waiting for host...
+</div>
+
+<div class="current-number" id="currentNumber">
+--
+</div>
+
+<h3>Latest Number</h3>
+
+</div>
+
+
+<div class="card">
+
+<h3 class="center">🔢 Called Numbers</h3>
+
+<div class="number-board" id="numberBoard"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3 class="center">🏆 Winners</h3>
+
+<div id="winnerList">
+
+Quick 7: Waiting...<br><br>
+
+Full House: Waiting...
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ADMIN -->
+
+<section id="admin" class="page">
+
+<div class="card">
+
+<button onclick="showPage('home')">
+⬅ Back
+</button>
+
+<h2 class="center">👨‍💼 HOST CONTROL PANEL</h2>
+
+<label>Game Date</label>
+
+<input type="date" id="gameDate">
+
+<label>Game Time</label>
+
+<input type="time" id="gameTime">
+
+<label>Number Interval (Seconds)</label>
+
+<input
+type="number"
+id="drawInterval"
+value="5"
+min="3">
+
+<div class="center">
+
+<button
+class="blue"
+onclick="createGame()">
+
+📅 CREATE GAME
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="card center">
+
+<h3>Game Controls</h3>
+
+<button
+class="green"
+onclick="startGame()">
+
+▶ START GAME
+
+</button>
+
+<button
+class="orange"
+onclick="pauseGame()">
+
+⏸ PAUSE
+
+</button>
+
+<button
+class="blue"
+onclick="resumeGame()">
+
+▶ RESUME
+
+</button>
+
+<button
+class="red"
+onclick="finishGame()">
+
+⏹ FINISH
+
+</button>
+
+</div>
+
+
+<div class="card center">
+
+<h3>Current Number</h3>
+
+<div class="current-number" id="adminNumber">
+--
+</div>
+
+</div>
+
+</section>
 
 
 <script>
 
-let ticketNumbers=[];
+/* =====================================
+   SUPABASE SETTINGS
+   PASTE YOUR DETAILS BELOW
+===================================== */
+
+const SUPABASE_URL =
+"PASTE_YOUR_PROJECT_URL_HERE";
+
+const SUPABASE_KEY =
+"PASTE_YOUR_PUBLISHABLE_OR_ANON_KEY_HERE";
 
 
-/* YOUR WHATSAPP NUMBER */
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-const whatsappNumber="919101151835";
+
+/* =====================================
+   SETTINGS
+===================================== */
+
+const whatsappNumber =
+"919101151835";
+
+let ticketNumbers = [];
+
+let currentGameId = null;
+
+let calledNumbers = [];
+
+let gameTimer = null;
 
 
-/* PAGE */
+/* =====================================
+   PAGE
+===================================== */
 
 function showPage(page){
 
 document.querySelectorAll(".page")
-.forEach(function(p){
-p.classList.remove("active");
+.forEach(function(item){
+
+item.classList.remove("active");
+
 });
 
 document.getElementById(page)
 .classList.add("active");
 
-if(page==="booking" && ticketNumbers.length===0){
-generateTicket();
+if(page==="live"){
+loadLiveGame();
 }
 
 }
 
 
-/* GENERATE TICKET */
+/* =====================================
+   GENERATE TICKET
+===================================== */
 
 function generateTicket(){
 
@@ -382,11 +506,13 @@ ticketNumbers=[];
 
 while(ticketNumbers.length<15){
 
-let number=
+let n =
 Math.floor(Math.random()*90)+1;
 
-if(!ticketNumbers.includes(number)){
-ticketNumbers.push(number);
+if(!ticketNumbers.includes(n)){
+
+ticketNumbers.push(n);
+
 }
 
 }
@@ -395,35 +521,30 @@ ticketNumbers.sort(function(a,b){
 return a-b;
 });
 
-
-let area=
+let area =
 document.getElementById("ticketArea");
 
 area.innerHTML="";
 
-
-let ticket=
+let ticket =
 document.createElement("div");
 
 ticket.className="ticket";
 
-
 for(let i=0;i<27;i++){
 
-let cell=
+let cell =
 document.createElement("div");
 
 if(i<15){
 
 cell.className="cell";
 
-cell.innerText=
-ticketNumbers[i];
+cell.innerText=ticketNumbers[i];
 
 }else{
 
-cell.className=
-"cell empty";
+cell.className="cell empty";
 
 }
 
@@ -436,175 +557,516 @@ area.appendChild(ticket);
 }
 
 
-/* WHATSAPP BOOKING */
+/* =====================================
+   WHATSAPP BOOKING
+===================================== */
 
 function bookOnWhatsApp(){
 
-let name=
+let name =
 document.getElementById("playerName")
 .value.trim();
 
-let phone=
+let phone =
 document.getElementById("playerPhone")
 .value.trim();
 
 
-if(!name){
+if(!name || !phone){
 
-alert("Please enter your name.");
-
-return;
-
-}
-
-
-if(!phone){
-
-alert("Please enter your WhatsApp number.");
+alert("Please enter name and WhatsApp number.");
 
 return;
 
 }
 
 
-if(ticketNumbers.length!==15){
+if(ticketNumbers.length===0){
 
-alert("Please generate a ticket first.");
+alert("Please generate a ticket.");
 
 return;
 
 }
 
 
-/* MESSAGE */
-
-let message=
-
-"🎰 *TOMBOLAPLAY TICKET BOOKING*%0A"+
-"%0A"+
-"👤 *Player:* "+encodeURIComponent(name)+
-"%0A"+
-"📱 *WhatsApp:* "+encodeURIComponent(phone)+
-"%0A"+
-"🎟️ *Ticket Numbers:* "+
+let text =
+"🎰 *TOMBOLAPLAY BOOKING*%0A%0A"+
+"👤 Name: "+encodeURIComponent(name)+"%0A"+
+"📱 WhatsApp: "+encodeURIComponent(phone)+"%0A"+
+"🎟️ Numbers: "+
 encodeURIComponent(ticketNumbers.join(", "))+
-"%0A"+
-"%0A"+
-"🏆 *Game:* TombolaPlay Bumper"+
-"%0A"+
-"⏳ *Status:* Booking Request";
+"%0A%0A"+
+"Status: Booking Request";
 
 
-/* WHATSAPP URL */
+window.open(
 
-let url=
 "https://wa.me/"+
 whatsappNumber+
 "?text="+
-message;
+text,
 
+"_blank"
 
-/* OPEN WHATSAPP */
-
-window.open(url,"_blank");
-
-
-/* LOCAL MESSAGE */
-
-let box=
-document.getElementById("message");
-
-box.innerHTML=
-"✅ Booking details WhatsApp me open ho gaye hain.<br>"+
-"Please press <b>Send</b> to confirm.";
-
-box.classList.add("show");
+);
 
 }
 
 
-/* COUNTDOWN */
+/* =====================================
+   CREATE GAME
+===================================== */
 
-const gameDate=
-new Date(
-new Date().getTime()+
-24*60*60*1000
-);
+async function createGame(){
 
+let date =
+document.getElementById("gameDate").value;
 
-document.getElementById(
-"gameDateText"
-).innerText=
-gameDate.toLocaleString("en-IN");
+let time =
+document.getElementById("gameTime").value;
 
-
-function updateCountdown(){
-
-let now=
-new Date().getTime();
-
-let distance=
-gameDate.getTime()-now;
+let interval =
+document.getElementById("drawInterval").value;
 
 
-if(distance<=0){
+if(!date || !time){
+
+alert("Please select game date and time.");
 
 return;
 
 }
 
 
-let d=
-Math.floor(
-distance/(1000*60*60*24)
-);
+let result =
+await supabaseClient
+.from("games")
+.insert({
 
-let h=
-Math.floor(
-(distance%(1000*60*60*24))/
-(1000*60*60)
-);
+title:"TombolaPlay Bumper",
 
-let m=
-Math.floor(
-(distance%(1000*60*60))/
-(1000*60)
-);
+game_date:date,
 
-let s=
-Math.floor(
-(distance%(1000*60))/
-1000
-);
+game_time:time,
+
+draw_interval:parseInt(interval),
+
+status:"upcoming"
+
+})
+.select();
 
 
-document.getElementById("days")
-.innerText=
-String(d).padStart(2,"0");
+if(result.error){
 
-document.getElementById("hours")
-.innerText=
-String(h).padStart(2,"0");
+alert(result.error.message);
 
-document.getElementById("minutes")
-.innerText=
-String(m).padStart(2,"0");
-
-document.getElementById("seconds")
-.innerText=
-String(s).padStart(2,"0");
+return;
 
 }
 
 
+currentGameId =
+result.data[0].id;
+
+alert("Game created successfully!");
+
+}
+
+
+/* =====================================
+   START GAME
+===================================== */
+
+async function startGame(){
+
+if(!currentGameId){
+
+let result =
+await supabaseClient
+.from("games")
+.select("*")
+.order("created_at",
+{ascending:false})
+.limit(1);
+
+
+if(result.data &&
+result.data.length>0){
+
+currentGameId =
+result.data[0].id;
+
+}else{
+
+alert("Please create a game first.");
+
+return;
+
+}
+
+}
+
+
+calledNumbers=[];
+
+
+await supabaseClient
+.from("games")
+.update({
+
+status:"live",
+
+called_numbers:[],
+
+current_number:null
+
+})
+.eq("id",currentGameId);
+
+
+document.getElementById(
+"gameStatus"
+).innerText=
+"🔴 LIVE GAME RUNNING";
+
+
+let interval =
+document.getElementById(
+"drawInterval"
+).value;
+
+
+drawNumber();
+
+
+gameTimer =
 setInterval(
-updateCountdown,
-1000
+
+drawNumber,
+
+parseInt(interval)*1000
+
 );
 
-updateCountdown();
+}
+
+
+/* =====================================
+   DRAW NUMBER
+===================================== */
+
+async function drawNumber(){
+
+if(calledNumbers.length>=90){
+
+finishGame();
+
+return;
+
+}
+
+
+let number;
+
+
+do{
+
+number =
+Math.floor(Math.random()*90)+1;
+
+}
+
+while(calledNumbers.includes(number));
+
+
+calledNumbers.push(number);
+
+
+document.getElementById(
+"adminNumber"
+).innerText=number;
+
+
+speakNumber(number);
+
+
+await supabaseClient
+.from("games")
+.update({
+
+current_number:number,
+
+called_numbers:calledNumbers,
+
+status:"live"
+
+})
+.eq("id",currentGameId);
+
+
+updateBoard(calledNumbers);
+
+}
+
+
+/* =====================================
+   SPEAK NUMBER
+===================================== */
+
+function speakNumber(number){
+
+window.speechSynthesis.cancel();
+
+let speech =
+new SpeechSynthesisUtterance(
+"Number " + number
+);
+
+speech.lang="en-IN";
+
+speech.rate=0.8;
+
+window.speechSynthesis.speak(speech);
+
+}
+
+
+/* =====================================
+   PAUSE
+===================================== */
+
+async function pauseGame(){
+
+clearInterval(gameTimer);
+
+
+await supabaseClient
+.from("games")
+.update({
+
+status:"paused"
+
+})
+.eq("id",currentGameId);
+
+
+}
+
+
+/* =====================================
+   RESUME
+===================================== */
+
+async function resumeGame(){
+
+let interval =
+document.getElementById(
+"drawInterval"
+).value;
+
+
+await supabaseClient
+.from("games")
+.update({
+
+status:"live"
+
+})
+.eq("id",currentGameId);
+
+
+gameTimer =
+setInterval(
+
+drawNumber,
+
+parseInt(interval)*1000
+
+);
+
+}
+
+
+/* =====================================
+   FINISH
+===================================== */
+
+async function finishGame(){
+
+clearInterval(gameTimer);
+
+
+await supabaseClient
+.from("games")
+.update({
+
+status:"finished"
+
+})
+.eq("id",currentGameId);
+
+
+alert("Game Finished!");
+
+}
+
+
+/* =====================================
+   LIVE GAME LOAD
+===================================== */
+
+async function loadLiveGame(){
+
+let result =
+await supabaseClient
+.from("games")
+.select("*")
+.order("created_at",
+{ascending:false})
+.limit(1);
+
+
+if(!result.data ||
+result.data.length===0){
+
+return;
+
+}
+
+
+let game =
+result.data[0];
+
+
+currentGameId =
+game.id;
+
+
+document.getElementById(
+"gameStatus"
+).innerText =
+game.status.toUpperCase();
+
+
+document.getElementById(
+"currentNumber"
+).innerText =
+game.current_number || "--";
+
+
+calledNumbers =
+game.called_numbers || [];
+
+
+updateBoard(calledNumbers);
+
+}
+
+
+/* =====================================
+   NUMBER BOARD
+===================================== */
+
+function updateBoard(numbers){
+
+let board =
+document.getElementById(
+"numberBoard"
+);
+
+board.innerHTML="";
+
+
+for(let i=1;i<=90;i++){
+
+let box =
+document.createElement("div");
+
+box.className="number";
+
+box.innerText=i;
+
+
+if(numbers.includes(i)){
+
+box.classList.add("called");
+
+}
+
+
+board.appendChild(box);
+
+}
+
+}
+
+
+/* =====================================
+   REALTIME
+===================================== */
+
+supabaseClient
+.channel("games-live")
+.on(
+
+"postgres_changes",
+
+{
+
+event:"UPDATE",
+
+schema:"public",
+
+table:"games"
+
+},
+
+function(payload){
+
+let game =
+payload.new;
+
+
+document.getElementById(
+"currentNumber"
+).innerText =
+game.current_number || "--";
+
+
+document.getElementById(
+"gameStatus"
+).innerText =
+game.status.toUpperCase();
+
+
+calledNumbers =
+game.called_numbers || [];
+
+
+updateBoard(calledNumbers);
+
+
+if(game.current_number){
+
+speakNumber(
+game.current_number
+);
+
+}
+
+}
+
+)
+.subscribe();
+
+
+/* INITIAL */
+
+updateBoard([]);
 
 </script>
 
 </body>
-  </html>
+</html>
