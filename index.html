@@ -3,123 +3,224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TombolaPlay</title>
+<title>TombolaPlay Host</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#0f172a;
+  color:white;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #111827;
-  color: white;
-  text-align: center;
+header{
+  background:#1e293b;
+  padding:18px;
+  text-align:center;
+  box-shadow:0 2px 10px #0005;
 }
 
-header {
-  padding: 22px;
-  background: #1f2937;
+header h1{
+  margin:0;
+  font-size:30px;
 }
 
-h1 {
-  margin: 0;
-  font-size: 32px;
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
 }
 
-.subtitle {
-  color: #9ca3af;
+.page{
+  display:none;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
+.page.active{
+  display:block;
 }
 
-.game-box {
-  background: #1f2937;
-  padding: 25px;
-  border-radius: 20px;
+.card{
+  background:#1e293b;
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:18px;
+  box-shadow:0 5px 20px #0004;
 }
 
-.number {
-  width: 150px;
-  height: 150px;
-  margin: 20px auto;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f59e0b;
-  color: #111;
-  font-size: 65px;
-  font-weight: bold;
+.center{
+  text-align:center;
 }
 
-button {
-  border: none;
-  padding: 14px 22px;
-  margin: 5px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
+.big-title{
+  font-size:38px;
+  margin:30px 0 10px;
 }
 
-.draw-btn {
-  background: #22c55e;
-  color: white;
+.subtitle{
+  color:#cbd5e1;
 }
 
-.reset-btn {
-  background: #ef4444;
-  color: white;
+button{
+  border:0;
+  border-radius:10px;
+  padding:14px 20px;
+  margin:5px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-.board-title {
-  margin-top: 35px;
+.primary{
+  background:#22c55e;
+  color:white;
 }
 
-.number-board {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 8px;
-  margin-top: 15px;
+.blue{
+  background:#3b82f6;
+  color:white;
 }
 
-.board-number {
-  padding: 12px 5px;
-  background: #374151;
-  border-radius: 8px;
-  font-weight: bold;
+.orange{
+  background:#f59e0b;
+  color:#111;
 }
 
-.called {
-  background: #f59e0b;
-  color: black;
+.red{
+  background:#ef4444;
+  color:white;
 }
 
-.history {
-  margin-top: 25px;
+.gray{
+  background:#475569;
+  color:white;
 }
 
-#history {
-  color: #fbbf24;
-  line-height: 1.8;
-  word-wrap: break-word;
+input{
+  width:100%;
+  padding:13px;
+  margin:7px 0 15px;
+  border-radius:8px;
+  border:1px solid #475569;
+  background:#0f172a;
+  color:white;
+  font-size:16px;
 }
 
-@media (max-width: 600px) {
-  .number-board {
-    grid-template-columns: repeat(6, 1fr);
+label{
+  display:block;
+  text-align:left;
+  color:#cbd5e1;
+  font-weight:bold;
+}
+
+.current{
+  width:160px;
+  height:160px;
+  margin:20px auto;
+  border-radius:50%;
+  background:#f59e0b;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:65px;
+  font-weight:bold;
+  box-shadow:0 0 30px #f59e0b88;
+}
+
+.status{
+  text-align:center;
+  color:#fbbf24;
+  font-weight:bold;
+  margin:10px;
+}
+
+.board{
+  display:grid;
+  grid-template-columns:repeat(10,1fr);
+  gap:5px;
+}
+
+.num{
+  background:#334155;
+  padding:10px 3px;
+  border-radius:6px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.called{
+  background:#f59e0b;
+  color:#111;
+}
+
+.ticket{
+  display:grid;
+  grid-template-columns:repeat(9,1fr);
+  gap:3px;
+  background:#64748b;
+  padding:5px;
+  max-width:650px;
+  margin:15px auto;
+  border-radius:8px;
+}
+
+.ticket-cell{
+  min-height:45px;
+  background:white;
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  border-radius:3px;
+}
+
+.ticket-empty{
+  background:#cbd5e1;
+}
+
+.ticket-hit{
+  background:#22c55e;
+  color:white;
+  text-decoration:line-through;
+}
+
+.winner{
+  display:none;
+  background:#16a34a;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+.winner.show{
+  display:block;
+}
+
+.history{
+  color:#fbbf24;
+  line-height:1.8;
+  word-break:break-word;
+}
+
+@media(max-width:600px){
+  .board{
+    grid-template-columns:repeat(6,1fr);
   }
 
-  .number {
-    width: 130px;
-    height: 130px;
-    font-size: 55px;
+  .ticket-cell{
+    min-height:36px;
+    font-size:13px;
+  }
+
+  .big-title{
+    font-size:30px;
   }
 }
 </style>
@@ -129,121 +230,537 @@ button {
 
 <header>
   <h1>🎰 TombolaPlay</h1>
-  <p class="subtitle">Play • Draw • Win</p>
+  <div>Host Game</div>
 </header>
 
 <div class="container">
 
-  <div class="game-box">
+<!-- PAGE 1 -->
+<section id="page1" class="page active">
+  <div class="card center">
+    <div class="big-title">🎰 TombolaPlay</div>
+    <p class="subtitle">
+      Create and host your own Tombola game
+    </p>
 
-    <h2>Current Number</h2>
+    <button class="primary" onclick="openSetup()">
+      ▶️ START GAME
+    </button>
+  </div>
+</section>
 
-    <div class="number" id="currentNumber">?</div>
 
-    <button class="draw-btn" onclick="drawNumber()">
-      🎲 Draw Number
+<!-- PAGE 2 -->
+<section id="page2" class="page">
+
+  <div class="card">
+
+    <h2>⚙️ Game Setup</h2>
+
+    <label>Game Date</label>
+    <input type="date" id="gameDate">
+
+    <label>Game Time</label>
+    <input type="time" id="gameTime">
+
+    <label>Number of Tickets</label>
+    <input type="number" id="ticketCount" value="1" min="1" max="100">
+
+    <label>Auto Draw Interval (seconds)</label>
+    <input type="number" id="interval" value="5" min="2" max="60">
+
+    <button class="primary" onclick="createGame()">
+      🎟️ CREATE GAME
     </button>
 
-    <button class="reset-btn" onclick="resetGame()">
-      🔄 Reset Game
+    <button class="gray" onclick="showPage(1)">
+      ⬅️ Back
     </button>
 
-    <div class="history">
-      <h3>Called Numbers</h3>
-      <div id="history">No numbers drawn yet</div>
+  </div>
+
+</section>
+
+
+<!-- PAGE 3 -->
+<section id="page3" class="page">
+
+  <div class="card center">
+
+    <h2 id="gameTitle">🎰 Live Tombola</h2>
+
+    <p id="gameInfo"></p>
+
+    <div class="current" id="currentNumber">?</div>
+
+    <div class="status" id="gameStatus">
+      Ready to start
+    </div>
+
+    <button class="primary" id="autoButton" onclick="toggleAutoDraw()">
+      ▶️ START AUTO DRAW
+    </button>
+
+    <button class="orange" onclick="drawNumber()">
+      🎲 DRAW NOW
+    </button>
+
+    <button class="red" onclick="resetGame()">
+      🔄 RESET
+    </button>
+
+  </div>
+
+
+  <div class="winner" id="winnerBox"></div>
+
+
+  <div class="card">
+
+    <h2>🎟️ Host Ticket</h2>
+
+    <div class="ticket" id="ticket"></div>
+
+    <div class="center">
+      <button class="blue" onclick="generateTicket()">
+        🎟️ NEW TICKET
+      </button>
     </div>
 
   </div>
 
-  <h2 class="board-title">🔢 Number Board</h2>
 
-  <div class="number-board" id="numberBoard"></div>
+  <div class="card">
+
+    <h2>⚡ Game Status</h2>
+
+    <p>
+      Quick 7:
+      <strong id="quick7Status">Not completed</strong>
+    </p>
+
+    <p>
+      Full House:
+      <strong id="fullHouseStatus">Not completed</strong>
+    </p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>🔢 Number Board</h2>
+
+    <div class="board" id="board"></div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>📢 Called Numbers</h2>
+
+    <div class="history" id="history">
+      No numbers drawn yet
+    </div>
+
+  </div>
+
+</section>
 
 </div>
 
+
 <script>
 
-let availableNumbers = [];
-let calledNumbers = [];
+let availableNumbers=[];
+let calledNumbers=[];
+let ticketNumbers=[];
+let autoTimer=null;
+let autoRunning=false;
+let quick7Done=false;
+let fullHouseDone=false;
+let drawInterval=5;
 
-function createBoard() {
 
-  const board = document.getElementById("numberBoard");
+/* PAGE CONTROL */
 
-  board.innerHTML = "";
+function showPage(page){
 
-  for (let i = 1; i <= 90; i++) {
+  document.querySelectorAll(".page")
+  .forEach(p=>p.classList.remove("active"));
 
-    const numberBox = document.createElement("div");
-
-    numberBox.className = "board-number";
-
-    numberBox.id = "number-" + i;
-
-    numberBox.innerText = i;
-
-    board.appendChild(numberBox);
-  }
+  document.getElementById("page"+page)
+  .classList.add("active");
 }
 
-function startGame() {
 
-  availableNumbers = [];
+/* SETUP */
 
-  calledNumbers = [];
+function openSetup(){
 
-  for (let i = 1; i <= 90; i++) {
+  let now=new Date();
 
+  document.getElementById("gameDate").value =
+    now.toISOString().split("T")[0];
+
+  document.getElementById("gameTime").value =
+    now.toTimeString().slice(0,5);
+
+  showPage(2);
+}
+
+
+/* CREATE GAME */
+
+function createGame(){
+
+  let date=document.getElementById("gameDate").value;
+  let time=document.getElementById("gameTime").value;
+
+  drawInterval=
+    Number(document.getElementById("interval").value) || 5;
+
+  if(!date || !time){
+
+    alert("Please select game date and time.");
+    return;
+  }
+
+  document.getElementById("gameInfo").innerText =
+    "Game Date: "+date+" | Time: "+time;
+
+  startNewGame();
+
+  showPage(3);
+}
+
+
+/* NEW GAME */
+
+function startNewGame(){
+
+  availableNumbers=[];
+  calledNumbers=[];
+  quick7Done=false;
+  fullHouseDone=false;
+
+  for(let i=1;i<=90;i++){
     availableNumbers.push(i);
   }
 
-  document.getElementById("currentNumber").innerText = "?";
+  document.getElementById("currentNumber").innerText="?";
 
   document.getElementById("history").innerText =
     "No numbers drawn yet";
 
+  document.getElementById("quick7Status").innerText =
+    "Not completed";
+
+  document.getElementById("fullHouseStatus").innerText =
+    "Not completed";
+
+  document.getElementById("winnerBox").classList.remove("show");
+
+  stopAutoDraw();
+
   createBoard();
+  generateTicket();
+
+  document.getElementById("gameStatus").innerText =
+    "Ready to start";
 }
 
-function drawNumber() {
 
-  if (availableNumbers.length === 0) {
+/* BOARD */
 
-    alert("🎉 All numbers have been drawn!");
+function createBoard(){
+
+  let board=document.getElementById("board");
+
+  board.innerHTML="";
+
+  for(let i=1;i<=90;i++){
+
+    let n=document.createElement("div");
+
+    n.className="num";
+
+    n.id="num"+i;
+
+    n.innerText=i;
+
+    board.appendChild(n);
+  }
+}
+
+
+/* TICKET */
+
+function generateTicket(){
+
+  let ticket=document.getElementById("ticket");
+
+  ticket.innerHTML="";
+
+  ticketNumbers=[];
+
+  while(ticketNumbers.length<15){
+
+    let n=Math.floor(Math.random()*90)+1;
+
+    if(!ticketNumbers.includes(n)){
+      ticketNumbers.push(n);
+    }
+  }
+
+  ticketNumbers.sort((a,b)=>a-b);
+
+  for(let i=0;i<27;i++){
+
+    let cell=document.createElement("div");
+
+    cell.className="ticket-cell";
+
+    if(i<15){
+
+      let number=ticketNumbers[i];
+
+      cell.innerText=number;
+
+      cell.id="ticket"+number;
+
+    }else{
+
+      cell.classList.add("ticket-empty");
+
+    }
+
+    ticket.appendChild(cell);
+  }
+}
+
+
+/* DRAW NUMBER */
+
+function drawNumber(){
+
+  if(availableNumbers.length===0){
+
+    stopAutoDraw();
+
+    alert("🎉 All 90 numbers have been drawn!");
 
     return;
   }
 
-  const randomIndex =
-    Math.floor(Math.random() * availableNumbers.length);
+  let randomIndex=
+    Math.floor(Math.random()*availableNumbers.length);
 
-  const number =
-    availableNumbers.splice(randomIndex, 1)[0];
+  let number=
+    availableNumbers.splice(randomIndex,1)[0];
 
   calledNumbers.push(number);
 
-  document.getElementById("currentNumber").innerText = number;
+  document.getElementById("currentNumber")
+    .innerText=number;
 
-  document.getElementById("history").innerText =
-    calledNumbers.join(", ");
-
-  document
-    .getElementById("number-" + number)
+  document.getElementById("num"+number)
     .classList.add("called");
+
+  let ticketCell=
+    document.getElementById("ticket"+number);
+
+  if(ticketCell){
+
+    ticketCell.classList.add("ticket-hit");
+  }
+
+  document.getElementById("history")
+    .innerText=calledNumbers.join(", ");
+
+  checkWinners();
 }
 
-function resetGame() {
 
-  const confirmReset =
-    confirm("Do you want to reset the game?");
+/* WINNER CHECK */
 
-  if (confirmReset) {
+function checkWinners(){
 
-    startGame();
+  let matched=
+    ticketNumbers.filter(n =>
+      calledNumbers.includes(n)
+    );
+
+  /* QUICK 7 */
+
+  if(matched.length>=7 && !quick7Done){
+
+    quick7Done=true;
+
+    document.getElementById("quick7Status")
+      .innerText="🏆 COMPLETED";
+
+    showWinner("⚡ QUICK 7 WINNER! 🎉");
+  }
+
+
+  /* FULL HOUSE */
+
+  if(matched.length===15 && !fullHouseDone){
+
+    fullHouseDone=true;
+
+    document.getElementById("fullHouseStatus")
+      .innerText="🏆 COMPLETED";
+
+    showWinner("🏆 FULL HOUSE WINNER! 🎉");
+
+    stopAutoDraw();
   }
 }
 
-startGame();
+
+/* WINNER */
+
+function showWinner(message){
+
+  let box=document.getElementById("winnerBox");
+
+  box.innerText=message;
+
+  box.classList.add("show");
+
+  winnerSound();
+}
+
+
+/* SOUND */
+
+function winnerSound(){
+
+  try{
+
+    let AudioContext=
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    let ctx=new AudioContext();
+
+    let notes=[523,659,784,1046];
+
+    notes.forEach((freq,i)=>{
+
+      let osc=ctx.createOscillator();
+
+      let gain=ctx.createGain();
+
+      osc.frequency.value=freq;
+
+      osc.type="sine";
+
+      gain.gain.setValueAtTime(
+        0.25,
+        ctx.currentTime+i*0.18
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.01,
+        ctx.currentTime+i*0.18+0.35
+      );
+
+      osc.connect(gain);
+
+      gain.connect(ctx.destination);
+
+      osc.start(ctx.currentTime+i*0.18);
+
+      osc.stop(ctx.currentTime+i*0.18+0.35);
+
+    });
+
+  }catch(e){
+
+    console.log("Sound not supported");
+  }
+}
+
+
+/* AUTO DRAW */
+
+function toggleAutoDraw(){
+
+  if(autoRunning){
+
+    stopAutoDraw();
+
+  }else{
+
+    startAutoDraw();
+  }
+}
+
+
+function startAutoDraw(){
+
+  if(availableNumbers.length===0)return;
+
+  autoRunning=true;
+
+  document.getElementById("autoButton")
+    .innerText="⏸️ PAUSE AUTO DRAW";
+
+  document.getElementById("gameStatus")
+    .innerText="🟢 Auto Draw Running";
+
+  drawNumber();
+
+  autoTimer=setInterval(
+    drawNumber,
+    drawInterval*1000
+  );
+}
+
+
+function stopAutoDraw(){
+
+  autoRunning=false;
+
+  if(autoTimer){
+
+    clearInterval(autoTimer);
+
+    autoTimer=null;
+  }
+
+  let button=document.getElementById("autoButton");
+
+  if(button){
+    button.innerText="▶️ START AUTO DRAW";
+  }
+
+  let status=document.getElementById("gameStatus");
+
+  if(status){
+    status.innerText="⏸️ Auto Draw Paused";
+  }
+}
+
+
+/* RESET */
+
+function resetGame(){
+
+  if(confirm("Start a completely new game?")){
+
+    startNewGame();
+  }
+}
+
+
+/* INITIAL */
+
+createBoard();
 
 </script>
 
