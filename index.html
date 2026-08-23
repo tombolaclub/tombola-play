@@ -2,1001 +2,796 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TombolaPlay</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GRS Tambola</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
+*{box-sizing:border-box}
 body{
-  font-family:Arial,sans-serif;
-  background:#0b1020;
-  color:white;
+margin:0;
+font-family:Arial,sans-serif;
+background:#101522;
+color:#fff;
 }
-
 header{
-  background:#121a30;
-  padding:15px;
-  text-align:center;
-  font-size:26px;
-  font-weight:bold;
+background:#171f35;
+padding:16px;
+text-align:center;
+font-size:25px;
+font-weight:bold;
 }
-
-header span{
-  color:#fbbf24;
-}
-
-.page{
-  display:none;
-  padding:20px;
-}
-
-.page.active{
-  display:block;
-}
-
+.page{display:none;padding:18px;min-height:calc(100vh - 60px)}
+.active{display:block}
 .card{
-  max-width:800px;
-  margin:15px auto;
-  padding:20px;
-  background:#18233f;
-  border-radius:18px;
+max-width:650px;
+margin:15px auto;
+background:#1c263d;
+padding:20px;
+border-radius:18px;
+box-shadow:0 5px 20px #0008;
 }
-
-.center{
-  text-align:center;
-}
-
-h1,h2,h3{
-  margin-bottom:15px;
-}
-
+h1,h2,h3{text-align:center}
 button{
-  border:0;
-  padding:13px 18px;
-  border-radius:10px;
-  margin:5px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
+width:100%;
+padding:15px;
+margin:7px 0;
+border:0;
+border-radius:12px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+background:#ffca28;
+color:#111;
 }
-
-.green{
-  background:#22c55e;
-  color:white;
-}
-
-.orange{
-  background:#f59e0b;
-  color:#111;
-}
-
-.red{
-  background:#ef4444;
-  color:white;
-}
-
-.blue{
-  background:#3b82f6;
-  color:white;
-}
-
+.green{background:#43a047;color:white}
+.red{background:#e53935;color:white}
+.blue{background:#2196f3;color:white}
 input{
-  width:100%;
-  padding:13px;
-  margin:8px 0 15px;
-  border-radius:8px;
-  border:1px solid #475569;
-  background:#0b1020;
-  color:white;
-  font-size:16px;
+width:100%;
+padding:13px;
+margin:6px 0;
+border:0;
+border-radius:10px;
+font-size:16px;
 }
-
-.current-number{
-  width:150px;
-  height:150px;
-  margin:20px auto;
-  border-radius:50%;
-  background:#fbbf24;
-  color:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:70px;
-  font-weight:bold;
-  box-shadow:0 0 30px #fbbf24;
-}
-
-.number-board{
-  display:grid;
-  grid-template-columns:repeat(10,1fr);
-  gap:5px;
-  margin-top:20px;
-}
-
-.number{
-  background:#24314f;
-  padding:10px 2px;
-  text-align:center;
-  border-radius:6px;
-}
-
-.called{
-  background:#22c55e;
-  color:white;
-}
-
-.ticket{
-  display:grid;
-  grid-template-columns:repeat(9,1fr);
-  gap:3px;
-  background:#64748b;
-  padding:5px;
-  border-radius:8px;
-  margin:20px auto;
-}
-
-.cell{
-  min-height:40px;
-  background:white;
-  color:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  border-radius:3px;
-}
-
-.empty{
-  background:#cbd5e1;
-}
-
-.marked{
-  background:#22c55e !important;
-  color:white;
-}
-
 .status{
-  padding:10px;
-  border-radius:8px;
-  margin:10px 0;
-  text-align:center;
-  background:#24314f;
+background:#263653;
+padding:12px;
+border-radius:10px;
+text-align:center;
+margin-bottom:10px;
 }
-
-.hidden{
-  display:none;
+.big{
+font-size:100px;
+font-weight:bold;
+text-align:center;
+color:#ffca28;
+margin:10px;
 }
-
-@media(max-width:600px){
-
-.number-board{
-  grid-template-columns:repeat(10,1fr);
+.board{
+display:grid;
+grid-template-columns:repeat(10,1fr);
+gap:5px;
 }
-
-.number{
-  font-size:12px;
-  padding:8px 1px;
+.num{
+padding:9px 2px;
+text-align:center;
+background:#34415d;
+border-radius:6px;
 }
-
-.current-number{
-  width:120px;
-  height:120px;
-  font-size:55px;
+.num.called{
+background:#ffca28;
+color:#111;
+font-weight:bold;
 }
-
+.previous{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+}
+.previous span{
+background:#40516f;
+padding:8px 12px;
+border-radius:20px;
+}
+.ticket{
+display:grid;
+grid-template-columns:repeat(9,1fr);
+gap:3px;
+background:white;
+padding:5px;
+border-radius:10px;
+margin:10px auto;
+max-width:500px;
+}
+.cell{
+height:48px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#eee;
+color:#111;
+font-weight:bold;
+font-size:18px;
+border-radius:4px;
+}
+.empty{background:#ccc}
+.marked{
+background:#43a047!important;
+color:white!important;
+}
+.winner{
+background:#43a047;
+padding:13px;
+margin:6px 0;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+}
+.player{
+background:#263653;
+padding:10px;
+border-radius:8px;
+margin:5px 0;
+}
+.small{
+font-size:13px;
+opacity:.8;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-🎰 Tombola<span>Play</span>
-</header>
-
+<header>🎱 GRS TAMBOLA</header>
 
 <!-- HOME -->
-
 <section id="home" class="page active">
+<div class="card">
+<h1>🎱 GRS TAMBOLA</h1>
+<p style="text-align:center">
+Live Online Tambola Game
+</p>
 
-<div class="card center">
-
-<h1>Play Tombola. Win Big! 🎉</h1>
-
-<p>Book your ticket and join the live game.</p>
-
-<button class="green"
-onclick="showPage('booking')">
-
-🎟️ BOOK TICKET
-
+<button onclick="showPage('ticketPage')">
+START GAME
 </button>
 
-<button class="orange"
-onclick="showPage('live')">
-
-🔴 JOIN LIVE GAME
-
+<button class="blue" onclick="showPage('adminPage')">
+👑 ADMIN / HOST
 </button>
-
-<button class="blue"
-onclick="showPage('admin')">
-
-👨‍💼 HOST PANEL
-
-</button>
-
 </div>
-
 </section>
 
 
-<!-- BOOKING -->
-
-<section id="booking" class="page">
-
+<!-- TICKET -->
+<section id="ticketPage" class="page">
 <div class="card">
 
+<h2>🎟️ Generate Ticket</h2>
+
+<input id="playerName" placeholder="Enter your name">
+
+<input id="playerPhone" placeholder="Phone number">
+
+<button onclick="generatePlayer()">
+GENERATE MY TICKET
+</button>
+
+<div id="ticketPreview"></div>
+
+<button class="green" onclick="joinGame()">
+JOIN LIVE GAME
+</button>
+
 <button onclick="showPage('home')">
-⬅ Back
-</button>
-
-<h2 class="center">🎟️ Book Your Ticket</h2>
-
-<div id="ticketArea"></div>
-
-<div class="center">
-
-<button class="orange"
-onclick="generateTicket()">
-
-🎲 Generate Ticket
-
+BACK
 </button>
 
 </div>
-
-<label>Name</label>
-
-<input
-id="playerName"
-placeholder="Enter your name">
-
-<label>WhatsApp Number</label>
-
-<input
-id="playerPhone"
-placeholder="Enter WhatsApp number">
-
-<button
-class="green"
-style="width:100%"
-onclick="bookOnWhatsApp()">
-
-💬 BOOK ON WHATSAPP
-
-</button>
-
-</div>
-
 </section>
 
 
-<!-- LIVE GAME -->
-
-<section id="live" class="page">
-
-<div class="card center">
-
-<button onclick="showPage('home')">
-⬅ Back
-</button>
-
-<h2>🔴 LIVE TOMBOLA GAME</h2>
+<!-- GAME -->
+<section id="gamePage" class="page">
+<div class="card">
 
 <div class="status" id="gameStatus">
-Waiting for host...
+Checking game...
 </div>
 
-<div class="current-number" id="currentNumber">
---
-</div>
+<div class="big" id="currentNumber">-</div>
 
-<h3>Latest Number</h3>
+<div class="board" id="numberBoard"></div>
 
-</div>
+<h3>Previous Numbers</h3>
 
+<div class="previous" id="previousNumbers"></div>
 
-<div class="card">
+<h3>🏆 Winners</h3>
 
-<h3 class="center">🔢 Called Numbers</h3>
+<div id="winnerArea"></div>
 
-<div class="number-board" id="numberBoard"></div>
+<h3>🎟️ My Ticket</h3>
 
-</div>
+<div id="gameTicket"></div>
 
-
-<div class="card">
-
-<h3 class="center">🏆 Winners</h3>
-
-<div id="winnerList">
-
-Quick 7: Waiting...<br><br>
-
-Full House: Waiting...
+<button onclick="showPage('home')">
+HOME
+</button>
 
 </div>
-
-</div>
-
 </section>
 
 
 <!-- ADMIN -->
-
-<section id="admin" class="page">
-
+<section id="adminPage" class="page">
 <div class="card">
 
-<button onclick="showPage('home')">
-⬅ Back
+<h2>👑 Admin Panel</h2>
+
+<input id="adminPassword"
+type="password"
+placeholder="Admin password">
+
+<button onclick="adminLogin()">
+LOGIN
 </button>
 
-<h2 class="center">👨‍💼 HOST CONTROL PANEL</h2>
+<div id="adminControls" style="display:none">
 
-<label>Game Date</label>
+<input id="gameTitle"
+placeholder="Game title">
 
-<input type="date" id="gameDate">
+<input id="gameDate" type="date">
 
-<label>Game Time</label>
+<input id="gameTime" type="time">
 
-<input type="time" id="gameTime">
+<input id="quickPrize" placeholder="Quick 5 Prize">
 
-<label>Number Interval (Seconds)</label>
+<input id="topPrize" placeholder="Top Line Prize">
 
-<input
-type="number"
-id="drawInterval"
-value="5"
-min="3">
+<input id="middlePrize" placeholder="Middle Line Prize">
 
-<div class="center">
+<input id="bottomPrize" placeholder="Bottom Line Prize">
 
-<button
-class="blue"
-onclick="createGame()">
+<input id="fullPrize" placeholder="Full House Prize">
 
-📅 CREATE GAME
-
+<button class="blue" onclick="createNewGame()">
+CREATE NEW GAME
 </button>
 
-</div>
-
-</div>
-
-
-<div class="card center">
-
-<h3>Game Controls</h3>
-
-<button
-class="green"
-onclick="startGame()">
-
+<button class="green" onclick="startGame()">
 ▶ START GAME
-
 </button>
 
-<button
-class="orange"
-onclick="pauseGame()">
-
-⏸ PAUSE
-
+<button class="red" onclick="stopGame()">
+⏹ STOP GAME
 </button>
 
-<button
-class="blue"
-onclick="resumeGame()">
-
-▶ RESUME
-
+<button onclick="drawNumber()">
+🎱 DRAW NUMBER
 </button>
 
-<button
-class="red"
-onclick="finishGame()">
-
-⏹ FINISH
-
+<button class="blue" onclick="autoDraw()">
+▶ AUTO DRAW
 </button>
+
+<button class="red" onclick="stopAutoDraw()">
+⏹ STOP AUTO DRAW
+</button>
+
+<h3>👥 Players</h3>
+<div id="playersList"></div>
 
 </div>
 
-
-<div class="card center">
-
-<h3>Current Number</h3>
-
-<div class="current-number" id="adminNumber">
---
-</div>
+<button onclick="showPage('home')">
+BACK
+</button>
 
 </div>
-
 </section>
 
 
 <script>
 
 /* =====================================
-   SUPABASE SETTINGS
-   PASTE YOUR DETAILS BELOW
+SUPABASE
 ===================================== */
 
 const SUPABASE_URL =
-https://ddvkmudxeddfisyqevsz.supabase.co/rest/v1/
+"https://ddvkmudxeddfisyqevsz.supabase.co";
 
 const SUPABASE_KEY =
-sb_publishable_Z8Wgn7MsuuCl2g1OOdix7g_-QzXOzrf
+"sb_publishable_Z8Wgn7MsuuCl2g1OOdix7g_-QzXOzrf";
 
-
-const supabaseClient =
-supabase.createClient(
+const db =
+window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
 
 /* =====================================
-   SETTINGS
+VARIABLES
 ===================================== */
 
-const whatsappNumber =
-"919101151835";
-
-let ticketNumbers = [];
-
-let currentGameId = null;
-
-let calledNumbers = [];
-
-let gameTimer = null;
+let currentGame=null;
+let myPlayer=null;
+let myTicket=[];
+let autoTimer=null;
+let lastNumber=null;
 
 
 /* =====================================
-   PAGE
+PAGE
 ===================================== */
 
-function showPage(page){
+function showPage(id){
 
 document.querySelectorAll(".page")
-.forEach(function(item){
+.forEach(p=>p.classList.remove("active"));
 
-item.classList.remove("active");
-
-});
-
-document.getElementById(page)
+document.getElementById(id)
 .classList.add("active");
 
-if(page==="live"){
-loadLiveGame();
+if(id==="gamePage"){
+loadGame();
 }
 
 }
 
 
 /* =====================================
-   GENERATE TICKET
+NUMBER BOARD
+===================================== */
+
+const board=
+document.getElementById("numberBoard");
+
+for(let i=1;i<=90;i++){
+
+const d=document.createElement("div");
+
+d.className="num";
+
+d.id="num-"+i;
+
+d.innerText=i;
+
+board.appendChild(d);
+
+}
+
+
+/* =====================================
+TICKET GENERATOR
 ===================================== */
 
 function generateTicket(){
 
-ticketNumbers=[];
+let ticket=[];
 
-while(ticketNumbers.length<15){
+for(let r=0;r<3;r++){
 
-let n =
-Math.floor(Math.random()*90)+1;
+let row=new Array(9).fill(null);
 
-if(!ticketNumbers.includes(n)){
+let positions=[];
 
-ticketNumbers.push(n);
+while(positions.length<5){
 
+let p=Math.floor(Math.random()*9);
+
+if(!positions.includes(p)){
+positions.push(p);
 }
 
 }
 
-ticketNumbers.sort(function(a,b){
-return a-b;
-});
+positions.sort((a,b)=>a-b);
 
-let area =
-document.getElementById("ticketArea");
+for(const col of positions){
+
+let min;
+
+let max;
+
+if(col===0){
+min=1;
+max=9;
+}else if(col===8){
+min=80;
+max=90;
+}else{
+min=col*10;
+max=col*10+9;
+}
+
+let n;
+
+do{
+n=Math.floor(Math.random()*(max-min+1))+min;
+}
+while(row.includes(n));
+
+row[col]=n;
+
+}
+
+ticket.push(row);
+
+}
+
+return ticket;
+
+}
+
+
+/* =====================================
+RENDER TICKET
+===================================== */
+
+function renderTicket(ticket,id){
+
+const area=document.getElementById(id);
 
 area.innerHTML="";
 
-let ticket =
-document.createElement("div");
+const box=document.createElement("div");
 
-ticket.className="ticket";
+box.className="ticket";
 
-for(let i=0;i<27;i++){
+ticket.forEach(row=>{
 
-let cell =
-document.createElement("div");
+row.forEach(n=>{
 
-if(i<15){
+const cell=document.createElement("div");
 
 cell.className="cell";
 
-cell.innerText=ticketNumbers[i];
+if(n===null){
+
+cell.classList.add("empty");
 
 }else{
 
-cell.className="cell empty";
+cell.innerText=n;
+
+cell.dataset.number=n;
 
 }
 
-ticket.appendChild(cell);
+box.appendChild(cell);
 
-}
+});
 
-area.appendChild(ticket);
+});
+
+area.appendChild(box);
 
 }
 
 
 /* =====================================
-   WHATSAPP BOOKING
+GENERATE PLAYER
 ===================================== */
 
-function bookOnWhatsApp(){
+async function generatePlayer(){
 
-let name =
+const name=
 document.getElementById("playerName")
 .value.trim();
 
-let phone =
+const phone=
 document.getElementById("playerPhone")
 .value.trim();
 
+if(!name){
 
-if(!name || !phone){
-
-alert("Please enter name and WhatsApp number.");
-
-return;
-
-}
-
-
-if(ticketNumbers.length===0){
-
-alert("Please generate a ticket.");
+alert("Name enter karo");
 
 return;
-
 }
 
+myTicket=generateTicket();
 
-let text =
-"🎰 *TOMBOLAPLAY BOOKING*%0A%0A"+
-"👤 Name: "+encodeURIComponent(name)+"%0A"+
-"📱 WhatsApp: "+encodeURIComponent(phone)+"%0A"+
-"🎟️ Numbers: "+
-encodeURIComponent(ticketNumbers.join(", "))+
-"%0A%0A"+
-"Status: Booking Request";
-
-
-window.open(
-
-"https://wa.me/"+
-whatsappNumber+
-"?text="+
-text,
-
-"_blank"
-
+renderTicket(
+myTicket,
+"ticketPreview"
 );
+
+alert("Ticket generated!");
 
 }
 
 
 /* =====================================
-   CREATE GAME
+CREATE NEW GAME
 ===================================== */
 
-async function createGame(){
+async function createNewGame(){
 
-let date =
+const title=
+document.getElementById("gameTitle")
+.value || "GRS Tambola";
+
+const gameDate=
 document.getElementById("gameDate").value;
 
-let time =
+const gameTime=
 document.getElementById("gameTime").value;
 
-let interval =
-document.getElementById("drawInterval").value;
+const quick=
+document.getElementById("quickPrize").value;
+
+const top=
+document.getElementById("topPrize").value;
+
+const middle=
+document.getElementById("middlePrize").value;
+
+const bottom=
+document.getElementById("bottomPrize").value;
+
+const full=
+document.getElementById("fullPrize").value;
 
 
-if(!date || !time){
+/* Stop old games */
 
-alert("Please select game date and time.");
+await db
+.from("games")
+.update({status:"stopped"})
+.eq("status","live");
 
-return;
 
-}
+/* Create game */
 
-
-let result =
-await supabaseClient
+const {data,error}=await db
 .from("games")
 .insert({
 
-title:"TombolaPlay Bumper",
+title:title,
 
-game_date:date,
+game_date:gameDate || null,
 
-game_time:time,
+game_time:gameTime || null,
 
-draw_interval:parseInt(interval),
+status:"waiting",
 
-status:"upcoming"
+current_number:null,
+
+called_numbers:[]
 
 })
-.select();
+.select()
+.single();
 
 
-if(result.error){
+if(error){
 
-alert(result.error.message);
+alert("Game create error: "+error.message);
 
 return;
-
 }
 
+currentGame=data;
 
-currentGameId =
-result.data[0].id;
 
-alert("Game created successfully!");
+/*
+Prize information local storage mein
+save kar rahe hain.
+*/
+
+localStorage.setItem(
+"prizes",
+JSON.stringify({
+quick5:quick,
+top:top,
+middle:middle,
+bottom:bottom,
+full:full
+})
+);
+
+alert("New game created!");
 
 }
 
 
 /* =====================================
-   START GAME
+GET CURRENT GAME
+===================================== */
+
+async function loadGame(){
+
+const {data,error}=await db
+.from("games")
+.select("*")
+.order("id",{ascending:false})
+.limit(1)
+.maybeSingle();
+
+if(error){
+
+console.log(error);
+
+return;
+}
+
+if(data){
+
+currentGame=data;
+
+updateGameScreen(data);
+
+}
+
+}
+
+
+/* =====================================
+START GAME
 ===================================== */
 
 async function startGame(){
 
-if(!currentGameId){
+if(!currentGame){
 
-let result =
-await supabaseClient
-.from("games")
-.select("*")
-.order("created_at",
-{ascending:false})
-.limit(1);
+await loadGame();
 
+}
 
-if(result.data &&
-result.data.length>0){
+if(!currentGame){
 
-currentGameId =
-result.data[0].id;
-
-}else{
-
-alert("Please create a game first.");
+alert("Pehle New Game create karo");
 
 return;
-
 }
 
-}
-
-
-calledNumbers=[];
-
-
-await supabaseClient
+const {data,error}=await db
 .from("games")
 .update({
-
-status:"live",
-
-called_numbers:[],
-
-current_number:null
-
+status:"live"
 })
-.eq("id",currentGameId);
+.eq("id",currentGame.id)
+.select()
+.single();
 
+if(error){
 
-document.getElementById(
-"gameStatus"
-).innerText=
-"🔴 LIVE GAME RUNNING";
+alert(error.message);
 
+return;
+}
 
-let interval =
-document.getElementById(
-"drawInterval"
-).value;
-
-
-drawNumber();
-
-
-gameTimer =
-setInterval(
-
-drawNumber,
-
-parseInt(interval)*1000
-
-);
+currentGame=data;
 
 }
 
 
 /* =====================================
-   DRAW NUMBER
+STOP GAME
+===================================== */
+
+async function stopGame(){
+
+if(!currentGame)return;
+
+await db
+.from("games")
+.update({
+status:"stopped"
+})
+.eq("id",currentGame.id);
+
+stopAutoDraw();
+
+}
+
+
+/* =====================================
+DRAW NUMBER
 ===================================== */
 
 async function drawNumber(){
 
-if(calledNumbers.length>=90){
+if(!currentGame){
 
-finishGame();
-
-return;
+await loadGame();
 
 }
 
+if(!currentGame){
+
+alert("Game nahi mila");
+
+return;
+}
+
+if(currentGame.status!=="live"){
+
+alert("Game START nahi hai");
+
+return;
+}
+
+let called=
+currentGame.called_numbers || [];
+
+if(called.length>=90){
+
+alert("All 90 numbers complete!");
+
+return;
+}
 
 let number;
 
-
 do{
 
-number =
+number=
 Math.floor(Math.random()*90)+1;
 
-}
+}while(called.includes(number));
 
-while(calledNumbers.includes(number));
-
-
-calledNumbers.push(number);
+called.push(number);
 
 
-document.getElementById(
-"adminNumber"
-).innerText=number;
-
-
-speakNumber(number);
-
-
-await supabaseClient
+const {data,error}=await db
 .from("games")
 .update({
 
 current_number:number,
 
-called_numbers:calledNumbers,
-
-status:"live"
+called_numbers:called
 
 })
-.eq("id",currentGameId);
+.eq("id",currentGame.id)
+.select()
+.single();
 
 
-updateBoard(calledNumbers);
+if(error){
 
-}
-
-
-/* =====================================
-   SPEAK NUMBER
-===================================== */
-
-function speakNumber(number){
-
-window.speechSynthesis.cancel();
-
-let speech =
-new SpeechSynthesisUtterance(
-"Number " + number
-);
-
-speech.lang="en-IN";
-
-speech.rate=0.8;
-
-window.speechSynthesis.speak(speech);
-
-}
-
-
-/* =====================================
-   PAUSE
-===================================== */
-
-async function pauseGame(){
-
-clearInterval(gameTimer);
-
-
-await supabaseClient
-.from("games")
-.update({
-
-status:"paused"
-
-})
-.eq("id",currentGameId);
-
-
-}
-
-
-/* =====================================
-   RESUME
-===================================== */
-
-async function resumeGame(){
-
-let interval =
-document.getElementById(
-"drawInterval"
-).value;
-
-
-await supabaseClient
-.from("games")
-.update({
-
-status:"live"
-
-})
-.eq("id",currentGameId);
-
-
-gameTimer =
-setInterval(
-
-drawNumber,
-
-parseInt(interval)*1000
-
-);
-
-}
-
-
-/* =====================================
-   FINISH
-===================================== */
-
-async function finishGame(){
-
-clearInterval(gameTimer);
-
-
-await supabaseClient
-.from("games")
-.update({
-
-status:"finished"
-
-})
-.eq("id",currentGameId);
-
-
-alert("Game Finished!");
-
-}
-
-
-/* =====================================
-   LIVE GAME LOAD
-===================================== */
-
-async function loadLiveGame(){
-
-let result =
-await supabaseClient
-.from("games")
-.select("*")
-.order("created_at",
-{ascending:false})
-.limit(1);
-
-
-if(!result.data ||
-result.data.length===0){
+alert("Draw error: "+error.message);
 
 return;
-
 }
 
-
-let game =
-result.data[0];
-
-
-currentGameId =
-game.id;
-
-
-document.getElementById(
-"gameStatus"
-).innerText =
-game.status.toUpperCase();
-
-
-document.getElementById(
-"currentNumber"
-).innerText =
-game.current_number || "--";
-
-
-calledNumbers =
-game.called_numbers || [];
-
-
-updateBoard(calledNumbers);
+currentGame=data;
 
 }
 
 
 /* =====================================
-   NUMBER BOARD
+AUTO DRAW
 ===================================== */
 
-function updateBoard(numbers){
+function autoDraw(){
 
-let board =
-document.getElementById(
-"numberBoard"
+stopAutoDraw();
+
+drawNumber();
+
+autoTimer=setInterval(
+drawNumber,
+10000
 );
 
-board.innerHTML="";
-
-
-for(let i=1;i<=90;i++){
-
-let box =
-document.createElement("div");
-
-box.className="number";
-
-box.innerText=i;
-
-
-if(numbers.includes(i)){
-
-box.classList.add("called");
-
 }
 
 
-board.appendChild(box);
+function stopAutoDraw(){
+
+if(autoTimer){
+
+clearInterval(autoTimer);
+
+autoTimer=null;
 
 }
 
@@ -1004,51 +799,104 @@ board.appendChild(box);
 
 
 /* =====================================
-   REALTIME
+VOICE
 ===================================== */
 
-supabaseClient
-.channel("games-live")
-.on(
+function speakNumber(n){
 
-"postgres_changes",
+if(!n)return;
 
-{
+if(!window.speechSynthesis)return;
 
-event:"UPDATE",
+const speech=
+new SpeechSynthesisUtterance(
+"Number "+n
+);
 
-schema:"public",
+speech.rate=.85;
 
-table:"games"
+speechSynthesis.cancel();
 
-},
+speechSynthesis.speak(speech);
 
-function(payload){
+}
 
-let game =
-payload.new;
+
+/* =====================================
+UPDATE SCREEN
+===================================== */
+
+function updateGameScreen(game){
+
+if(!game)return;
+
+document.getElementById(
+"gameStatus"
+).innerText=
+game.status==="live"
+?"🟢 GAME LIVE"
+:
+game.status==="stopped"
+?"🔴 GAME STOPPED"
+:"🟡 GAME WAITING";
 
 
 document.getElementById(
 "currentNumber"
-).innerText =
-game.current_number || "--";
+).innerText=
+game.current_number || "-";
 
 
-document.getElementById(
-"gameStatus"
-).innerText =
-game.status.toUpperCase();
+document.querySelectorAll(".num")
+.forEach(n=>{
+n.classList.remove("called");
+});
 
 
-calledNumbers =
+const called=
 game.called_numbers || [];
 
 
-updateBoard(calledNumbers);
+called.forEach(n=>{
+
+const el=
+document.getElementById("num-"+n);
+
+if(el){
+el.classList.add("called");
+}
+
+});
 
 
-if(game.current_number){
+const previous=
+document.getElementById(
+"previousNumbers"
+);
+
+previous.innerHTML="";
+
+called
+.slice()
+.reverse()
+.forEach(n=>{
+
+const span=
+document.createElement("span");
+
+span.innerText=n;
+
+previous.appendChild(span);
+
+});
+
+
+if(
+game.current_number &&
+game.current_number!==lastNumber
+){
+
+lastNumber=game.current_number;
 
 speakNumber(
 game.current_number
@@ -1056,17 +904,537 @@ game.current_number
 
 }
 
+
+updateMyTicket(called);
+
 }
 
+
+/* =====================================
+MARK TICKET
+===================================== */
+
+function updateMyTicket(called){
+
+document.querySelectorAll(
+"#gameTicket .cell[data-number]"
 )
+.forEach(cell=>{
+
+const n=
+Number(cell.dataset.number);
+
+if(called.includes(n)){
+
+cell.classList.add("marked");
+
+}else{
+
+cell.classList.remove("marked");
+
+}
+
+});
+
+checkWinners();
+
+}
+
+
+/* =====================================
+JOIN GAME
+===================================== */
+
+async function joinGame(){
+
+const name=
+document.getElementById("playerName")
+.value.trim();
+
+const phone=
+document.getElementById("playerPhone")
+.value.trim();
+
+
+if(!name){
+
+alert("Name enter karo");
+
+return;
+}
+
+if(!myTicket.length){
+
+alert("Pehle ticket generate karo");
+
+return;
+}
+
+if(!currentGame){
+
+await loadGame();
+
+}
+
+if(!currentGame){
+
+alert("Game available nahi hai");
+
+return;
+}
+
+
+const {data,error}=await db
+.from("players")
+.insert({
+
+name:name,
+
+phone:phone,
+
+game_id:currentGame.id,
+
+ticket:myTicket
+
+})
+.select()
+.single();
+
+
+if(error){
+
+alert("Player error: "+error.message);
+
+return;
+}
+
+myPlayer=data;
+
+localStorage.setItem(
+"player_id",
+data.id
+);
+
+localStorage.setItem(
+"player_name",
+name
+);
+
+renderTicket(
+myTicket,
+"gameTicket"
+);
+
+showPage("gamePage");
+
+}
+
+
+/* =====================================
+CHECK WINNERS
+===================================== */
+
+async function checkWinners(){
+
+if(!myPlayer || !myTicket.length || !currentGame)
+return;
+
+const called=
+currentGame.called_numbers || [];
+
+let all=[];
+
+myTicket.forEach(row=>{
+
+row.forEach(n=>{
+
+if(n!==null)
+all.push(n);
+
+});
+
+});
+
+const marked=
+all.filter(n=>called.includes(n));
+
+
+/* QUICK 5 */
+
+if(marked.length>=5){
+
+await claimWinner(
+"Quick 5"
+);
+
+}
+
+
+/* TOP */
+
+if(checkRow(
+myTicket[0],
+called
+)){
+
+await claimWinner(
+"Top Line"
+);
+
+}
+
+
+/* MIDDLE */
+
+if(checkRow(
+myTicket[1],
+called
+)){
+
+await claimWinner(
+"Middle Line"
+);
+
+}
+
+
+/* BOTTOM */
+
+if(checkRow(
+myTicket[2],
+called
+)){
+
+await claimWinner(
+"Bottom Line"
+);
+
+}
+
+
+/* FULL HOUSE */
+
+if(marked.length>=15){
+
+await claimWinner(
+"Full House"
+);
+
+}
+
+}
+
+
+function checkRow(row,called){
+
+return row
+.filter(n=>n!==null)
+.every(n=>called.includes(n));
+
+}
+
+
+/* =====================================
+CLAIM WINNER
+===================================== */
+
+async function claimWinner(type){
+
+if(!myPlayer || !currentGame)
+return;
+
+
+/*
+Check already claimed
+*/
+
+const {data}=await db
+.from("winners")
+.select("id")
+.eq("game_id",currentGame.id)
+.eq("ticket_id",myPlayer.id)
+.eq("prize_type",type)
+.limit(1);
+
+
+if(data && data.length)
+return;
+
+
+const prizes=
+JSON.parse(
+localStorage.getItem("prizes") || "{}"
+);
+
+
+let prize="";
+
+if(type==="Quick 5")
+prize=prizes.quick5 || "";
+
+if(type==="Top Line")
+prize=prizes.top || "";
+
+if(type==="Middle Line")
+prize=prizes.middle || "";
+
+if(type==="Bottom Line")
+prize=prizes.bottom || "";
+
+if(type==="Full House")
+prize=prizes.full || "";
+
+
+await db
+.from("winners")
+.insert({
+
+game_id:currentGame.id,
+
+ticket_id:myPlayer.id,
+
+prize_type:type,
+
+player_name:myPlayer.name,
+
+prize:prize
+
+});
+
+}
+
+
+/* =====================================
+LOAD WINNERS
+===================================== */
+
+async function loadWinners(gameId){
+
+const {data}=await db
+.from("winners")
+.select("*")
+.eq("game_id",gameId)
+.order("created_at");
+
+const area=
+document.getElementById(
+"winnerArea"
+);
+
+area.innerHTML="";
+
+(data || []).forEach(w=>{
+
+const div=
+document.createElement("div");
+
+div.className="winner";
+
+div.innerHTML=
+"🏆 "+w.prize_type+
+"<br>👤 "+w.player_name+
+(w.prize
+?"<br>🎁 "+w.prize
+:"");
+
+area.appendChild(div);
+
+});
+
+}
+
+
+/* =====================================
+PLAYERS LIST
+===================================== */
+
+async function loadPlayers(){
+
+if(!currentGame)return;
+
+const {data}=await db
+.from("players")
+.select("*")
+.eq("game_id",currentGame.id)
+.order("created_at");
+
+const area=
+document.getElementById(
+"playersList"
+);
+
+area.innerHTML="";
+
+(data || []).forEach(p=>{
+
+const div=
+document.createElement("div");
+
+div.className="player";
+
+div.innerHTML=
+"👤 <b>"+escapeHTML(p.name)+
+"</b><br>"+
+"<span class='small'>"+
+escapeHTML(p.phone || "")+
+"</span>";
+
+area.appendChild(div);
+
+});
+
+}
+
+
+/* =====================================
+ADMIN
+===================================== */
+
+function adminLogin(){
+
+const pass=
+document.getElementById(
+"adminPassword"
+).value;
+
+if(pass==="1234"){
+
+document.getElementById(
+"adminControls"
+).style.display="block";
+
+loadGame().then(
+loadPlayers
+);
+
+}else{
+
+alert("Wrong password");
+
+}
+
+}
+
+
+/* =====================================
+REALTIME
+===================================== */
+
+function setupRealtime(){
+
+db.channel("tambola-live")
+
+.on(
+"postgres_changes",
+{
+event:"UPDATE",
+schema:"public",
+table:"games"
+},
+payload=>{
+
+currentGame=
+payload.new;
+
+updateGameScreen(
+payload.new
+);
+
+})
+
+.on(
+"postgres_changes",
+{
+event:"INSERT",
+schema:"public",
+table:"winners"
+},
+payload=>{
+
+if(
+currentGame &&
+payload.new.game_id===
+currentGame.id
+){
+
+loadWinners(
+currentGame.id
+);
+
+}
+
+})
+
+.on(
+"postgres_changes",
+{
+event:"INSERT",
+schema:"public",
+table:"players"
+},
+payload=>{
+
+if(
+currentGame &&
+payload.new.game_id===
+currentGame.id
+){
+
+loadPlayers();
+
+}
+
+})
+
 .subscribe();
 
+}
 
-/* INITIAL */
+setupRealtime();
 
-updateBoard([]);
+
+/* =====================================
+ESCAPE HTML
+===================================== */
+
+function escapeHTML(text){
+
+return String(text)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+/* =====================================
+PERIODIC DATA
+===================================== */
+
+setInterval(async()=>{
+
+await loadGame();
+
+if(currentGame){
+
+await loadWinners(
+currentGame.id
+);
+
+}
+
+},5000);
+
+
+/* =====================================
+STARTUP
+===================================== */
+
+loadGame();
 
 </script>
 
 </body>
-</html>
+  </html>
