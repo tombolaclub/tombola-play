@@ -429,11 +429,17 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_Z8Wgn7MsuuCl2g1OOdix7g_-QzXOzrf";
 
-const db =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+let db = null;
+
+try {
+  db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+} catch(error) {
+  console.log("Supabase error:", error);
+  alert("Supabase connection error");
+}
 
 
 /* =====================================
