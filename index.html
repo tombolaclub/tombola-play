@@ -3,51 +3,267 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>GRS Tambola</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* { box-sizing: border-box; }
-body { margin: 0; font-family: Arial, sans-serif; background: #101522; color: #fff; }
-header { background: #171f35; padding: 16px; text-align: center; font-size: 25px; font-weight: bold; }
-.page { display: none; padding: 18px; min-height: calc(100vh - 60px); }
-.active { display: block; }
-.card { max-width: 650px; margin: 15px auto; background: #1c263d; padding: 20px; border-radius: 18px; box-shadow: 0 5px 20px #0008; }
-h1, h2, h3 { text-align: center; }
+.ticketCard {
+  background: #1c263d;
+  border: 2px solid #34415d;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 15px;
+  transition: 0.2s;
+}
 
-button { width: 100%; padding: 15px; margin: 7px 0; border: 0; border-radius: 12px; font-size: 17px; font-weight: bold; cursor: pointer; background: #ffca28; color: #111; }
-.green { background: #43a047; color: white; }
-.red { background: #e53935; color: white; }
-.blue { background: #2196f3; color: white; }
-button:disabled { opacity: 0.6; cursor: not-allowed; }
+.ticketCard.selected {
+  border-color: #ffca28;
+  box-shadow: 0 0 12px rgba(255, 202, 40, 0.4);
+}
 
-input, select { width: 100%; padding: 13px; margin: 6px 0; border: 0; border-radius: 10px; font-size: 16px; background: #fff; color: #111; }
-label { display: block; margin-top: 8px; font-weight: bold; color: #ffca28; }
+.ticketCard.booked {
+  opacity: 0.5;
+  border-color: #e53935;
+  pointer-events: none;
+}
 
-.status { background: #263653; padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 10px; }
-.big { font-size: 80px; font-weight: bold; text-align: center; color: #ffca28; margin: 10px; }
+.ticketHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+  
+*{
+box-sizing:border-box;
+}
 
-.board { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; }
-.num { padding: 9px 2px; text-align: center; background: #34415d; border-radius: 6px; font-size: 13px; }
-.num.called { background: #ffca28; color: #111; font-weight: bold; }
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#101522;
+color:#fff;
+}
 
-.previous { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 15px; }
-.previous span { background: #40516f; padding: 6px 10px; border-radius: 15px; font-size: 14px; }
+header{
+background:#171f35;
+padding:16px;
+text-align:center;
+font-size:25px;
+font-weight:bold;
+}
 
-.ticketCard { background: #1c263d; border: 2px solid #34415d; border-radius: 12px; padding: 12px; margin-bottom: 15px; transition: 0.2s; }
-.ticketCard.selected { border-color: #ffca28; box-shadow: 0 0 12px rgba(255, 202, 40, 0.4); }
-.ticketCard.booked { opacity: 0.5; border-color: #e53935; pointer-events: none; }
-.ticketHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; }
+.page{
+display:none;
+padding:18px;
+min-height:calc(100vh - 60px);
+}
 
-.ticket { display: grid; grid-template-columns: repeat(9, 1fr); gap: 3px; background: white; padding: 5px; border-radius: 8px; margin: 8px 0; }
-.cell { height: 40px; display: flex; align-items: center; justify-content: center; background: #eee; color: #111; font-weight: bold; font-size: 16px; border-radius: 4px; }
-.cell.empty { background: #ccc; }
-.cell.marked { background: #43a047 !important; color: white !important; }
+.active{
+display:block;
+}
 
-.winner { background: #43a047; padding: 10px; margin: 6px 0; border-radius: 8px; text-align: center; font-weight: bold; }
-.info { background: #263653; padding: 12px; border-radius: 10px; margin: 10px 0; text-align: center; }
-.ticketContainer { max-height: 400px; overflow-y: auto; padding-right: 5px; }
-.flex-row { display: flex; gap: 10px; }
+.card{
+max-width:650px;
+margin:15px auto;
+background:#1c263d;
+padding:20px;
+border-radius:18px;
+box-shadow:0 5px 20px #0008;
+}
+
+h1,h2,h3{
+text-align:center;
+}
+
+button{
+width:100%;
+padding:15px;
+margin:7px 0;
+border:0;
+border-radius:12px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+background:#ffca28;
+color:#111;
+}
+
+.green{
+background:#43a047;
+color:white;
+}
+
+.red{
+background:#e53935;
+color:white;
+}
+
+.blue{
+background:#2196f3;
+color:white;
+}
+
+input{
+width:100%;
+padding:13px;
+margin:6px 0;
+border:0;
+border-radius:10px;
+font-size:16px;
+}
+
+.status{
+background:#263653;
+padding:12px;
+border-radius:10px;
+text-align:center;
+margin-bottom:10px;
+}
+
+.big{
+font-size:100px;
+font-weight:bold;
+text-align:center;
+color:#ffca28;
+margin:10px;
+}
+
+.board{
+display:grid;
+grid-template-columns:repeat(10,1fr);
+gap:5px;
+}
+
+.num{
+padding:9px 2px;
+text-align:center;
+background:#34415d;
+border-radius:6px;
+}
+
+.num.called{
+background:#ffca28;
+color:#111;
+font-weight:bold;
+}
+
+.previous{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+}
+
+.previous span{
+background:#40516f;
+padding:8px 12px;
+border-radius:20px;
+}
+
+.ticketNumber{
+background:#ffca28;
+color:#111;
+font-size:22px;
+font-weight:bold;
+padding:12px;
+border-radius:12px;
+text-align:center;
+margin:10px 0;
+}
+
+.ticket{
+display:grid;
+grid-template-columns:repeat(9,1fr);
+gap:3px;
+background:white;
+padding:5px;
+border-radius:10px;
+margin:10px auto;
+max-width:500px;
+}
+
+.cell{
+height:48px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#eee;
+color:#111;
+font-weight:bold;
+font-size:18px;
+border-radius:4px;
+}
+
+.empty{
+background:#ccc;
+}
+
+.marked{
+background:#43a047!important;
+color:white!important;
+}
+
+.winner{
+background:#43a047;
+padding:13px;
+margin:6px 0;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+}
+
+.player{
+background:#263653;
+padding:10px;
+border-radius:8px;
+margin:5px 0;
+}
+
+.small{
+font-size:13px;
+opacity:.8;
+}
+
+.info{
+background:#263653;
+padding:12px;
+border-radius:10px;
+margin:10px 0;
+text-align:center;
+}
+
+.ticketNumbers{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:8px;
+margin:15px 0;
+}
+
+.ticketBtn{
+padding:14px 5px;
+margin:0;
+border-radius:8px;
+background:#43a047;
+color:white;
+font-size:17px;
+}
+
+.ticketBtn.booked{
+background:#e53935;
+color:white;
+opacity:.85;
+cursor:not-allowed;
+}
+
+.ticketBtn.selected{
+background:#ffca28;
+color:#111;
+border:3px solid white;
+}
+
 </style>
 </head>
 
@@ -55,155 +271,629 @@ label { display: block; margin-top: 8px; font-weight: bold; color: #ffca28; }
 
 <header>🎱 GRS TAMBOLA</header>
 
+
 <!-- HOME -->
+
 <section id="home" class="page active">
-  <div class="card">
-    <h1>🎱 GRS TAMBOLA</h1>
-    <p style="text-align:center">Live Online Tambola Game</p>
-    <button onclick="showPage('ticketPage')">START GAME</button>
-    <button class="blue" onclick="showPage('adminPage')">👑 ADMIN / HOST</button>
-  </div>
+
+<div class="card">
+
+<h1>🎱 GRS TAMBOLA</h1>
+
+<p style="text-align:center">
+Live Online Tambola Game
+</p>
+
+<button onclick="showPage('ticketPage')">
+START GAME
+</button>
+
+<button class="blue" onclick="showPage('adminPage')">
+👑 ADMIN / HOST
+</button>
+
+</div>
+
 </section>
 
-<!-- TICKET SELECTION -->
+
+
+<!-- TICKET PAGE -->
+
 <section id="ticketPage" class="page">
-  <div class="card">
-    <h2>🎟️ Select Tickets</h2>
-    <input id="playerName" placeholder="Enter your name">
-    <input id="playerPhone" placeholder="Phone number">
 
-    <div class="info">
-      🎟️ Total: <b id="totalTicketsCount">0</b> | 🔴 Booked: <b id="bookedTickets">0</b> | 🟢 Available: <b id="availableTickets">0</b>
-    </div>
+<div class="card">
 
-    <div class="info">Select 1 or Multiple Tickets Below:</div>
-    <div id="ticketNumbers" class="ticketContainer"></div>
+<h2>🎟️ Select Your Ticket</h2>
 
-    <div class="info">Selected Tickets: <b id="selectedTicketText">None</b></div>
+<input
+id="playerName"
+placeholder="Enter your name"
+>
 
-    <button class="green" onclick="joinGame()">JOIN LIVE GAME</button>
-    <button onclick="showPage('home')">BACK</button>
-  </div>
+<input
+id="playerPhone"
+placeholder="Phone number"
+>
+
+<div class="info">
+
+🎟️ Total Tickets: <b>50</b><br>
+
+🔴 Booked: <b id="bookedTickets">0</b><br>
+
+🟢 Available: <b id="availableTickets">50</b>
+
+</div>
+
+<div class="info">
+
+🎟️ Select Your Ticket Number
+
+</div>
+
+<div
+id="ticketNumbers"
+class="ticketNumbers"
+>
+</div>
+
+<div class="info">
+
+Selected Ticket:
+<b id="selectedTicketText">
+None
+</b>
+
+</div>
+
+<button onclick="generatePlayer()">
+
+🎟️ GENERATE MY TICKET
+
+</button>
+
+<div id="ticketPreview"></div>
+
+<button
+class="green"
+onclick="joinGame()"
+>
+
+JOIN LIVE GAME
+
+</button>
+
+<button onclick="showPage('home')">
+
+BACK
+
+</button>
+
+</div>
+
 </section>
+
+
 
 <!-- GAME PAGE -->
+
 <section id="gamePage" class="page">
-  <div class="card">
-    <div class="status" id="gameStatus">Checking game...</div>
-    
-    <div style="text-align: center; margin: 5px;">
-      <label style="display:inline; color:#fff; font-weight:normal;"><input type="checkbox" id="voiceToggle" checked> 🔊 Voice Caller</label>
-    </div>
 
-    <div class="big" id="currentNumber">-</div>
+<div class="card">
 
-    <div class="board" id="numberBoard"></div>
+<div
+class="status"
+id="gameStatus"
+>
 
-    <h3>Previous Numbers</h3>
-    <div class="previous" id="previousNumbers"></div>
+Checking game...
 
-    <h3>🏆 Winners</h3>
-    <div id="winnerArea"></div>
+</div>
 
-    <h3>🎟️ My Tickets</h3>
-    <div id="myTicketsContainer"></div>
+<div
+class="big"
+id="currentNumber"
+>
 
-    <button onclick="showPage('home')">HOME</button>
-  </div>
+-
+
+</div>
+
+<div
+class="board"
+id="numberBoard"
+>
+</div>
+
+<h3>Previous Numbers</h3>
+
+<div
+class="previous"
+id="previousNumbers"
+>
+</div>
+
+<h3>🏆 Winners</h3>
+
+<div id="winnerArea"></div>
+
+<h3>🎟️ My Ticket</h3>
+
+<div id="gameTicket"></div>
+
+<button onclick="showPage('home')">
+
+HOME
+
+</button>
+
+</div>
+
 </section>
+
+
 
 <!-- ADMIN PAGE -->
+
 <section id="adminPage" class="page">
-  <div class="card">
-    <h2>👑 Admin Panel</h2>
-    <input id="adminPassword" type="password" placeholder="Admin password">
-    <button onclick="adminLogin()">LOGIN</button>
 
-    <div id="adminControls" style="display:none">
-      <input id="gameTitle" placeholder="Game title">
-      <div class="flex-row">
-        <input id="gameDate" type="date">
-        <input id="gameTime" type="time">
-      </div>
+<div class="card">
 
-      <!-- ADMIN TICKET LIMIT SELECTION -->
-      <label for="maxTicketsSelect">🎟️ Total Tickets For Players:</label>
-      <select id="maxTicketsSelect">
-        <option value="10">10 Tickets</option>
-        <option value="20">20 Tickets</option>
-        <option value="30">30 Tickets</option>
-        <option value="40">40 Tickets</option>
-        <option value="50" selected>50 Tickets (Default)</option>
-        <option value="60">60 Tickets</option>
-        <option value="70">70 Tickets</option>
-        <option value="80">80 Tickets</option>
-        <option value="90">90 Tickets</option>
-        <option value="100">100 Tickets</option>
-      </select>
+<h2>👑 Admin Panel</h2>
 
-      <input id="quickPrize" placeholder="Quick 5 Prize">
-      <input id="topPrize" placeholder="Top Line Prize">
-      <input id="middlePrize" placeholder="Middle Line Prize">
-      <input id="bottomPrize" placeholder="Bottom Line Prize">
-      <input id="fullPrize" placeholder="Full House Prize">
+<input
+id="adminPassword"
+type="password"
+placeholder="Admin password"
+>
 
-      <button class="blue" onclick="createNewGame()">CREATE NEW GAME</button>
-      <button class="green" onclick="startGame()">▶ START GAME</button>
-      <button class="red" onclick="stopGame()">⏹ STOP GAME</button>
-      <button onclick="drawNumber()">🎱 DRAW NUMBER</button>
-      <button class="blue" onclick="autoDraw()">▶ AUTO DRAW (10s)</button>
-      <button class="red" onclick="stopAutoDraw()">⏹ STOP AUTO DRAW</button>
-    </div>
+<button onclick="adminLogin()">
 
-    <button onclick="showPage('home')">BACK</button>
-  </div>
+LOGIN
+
+</button>
+
+
+<div
+id="adminControls"
+style="display:none"
+>
+
+<input
+id="gameTitle"
+placeholder="Game title"
+>
+
+<input
+id="gameDate"
+type="date"
+>
+
+<input
+id="gameTime"
+type="time"
+>
+
+<input
+id="quickPrize"
+placeholder="Quick 5 Prize"
+>
+
+<input
+id="topPrize"
+placeholder="Top Line Prize"
+>
+
+<input
+id="middlePrize"
+placeholder="Middle Line Prize"
+>
+
+<input
+id="bottomPrize"
+placeholder="Bottom Line Prize"
+>
+
+<input
+id="fullPrize"
+placeholder="Full House Prize"
+>
+
+<button
+class="blue"
+onclick="createNewGame()"
+>
+
+CREATE NEW GAME
+
+</button>
+
+<button
+class="green"
+onclick="startGame()"
+>
+
+▶ START GAME
+
+</button>
+
+<button
+class="red"
+onclick="stopGame()"
+>
+
+⏹ STOP GAME
+
+</button>
+
+<button onclick="drawNumber()">
+
+🎱 DRAW NUMBER
+
+</button>
+
+<button
+class="blue"
+onclick="autoDraw()"
+>
+
+▶ AUTO DRAW
+
+</button>
+
+<button
+class="red"
+onclick="stopAutoDraw()"
+>
+
+⏹ STOP AUTO DRAW
+
+</button>
+
+<h3>👥 Players</h3>
+
+<div id="playersList"></div>
+
+</div>
+
+
+<button onclick="showPage('home')">
+
+BACK
+
+</button>
+
+</div>
+
 </section>
 
+
+
 <script>
-/* SUPABASE CONFIG */
-const SUPABASE_URL = "https://ddvkmudxeddfisyqevsz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Z8Wgn7MsuuCl2g1OOdix7g_-QzXOzrf";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* VARIABLES */
+/* =====================================
+SUPABASE
+===================================== */
+
+const SUPABASE_URL =
+"https://ddvkmudxeddfisyqevsz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_Z8Wgn7MsuuCl2g1OOdix7g_-QzXOzrf";
+
+const db =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+/* =====================================
+VARIABLES
+===================================== */
+
 let currentGame = null;
-let selectedTickets = []; 
-let myJoinedTickets = [];
+
+let myPlayer = null;
+
+let myTicket = [];
+
+let myTicketNumber = null;
+
+let selectedTicketNumber = null;
+
 let autoTimer = null;
+
 let lastNumber = null;
-let realtimeSubscription = null;
 
-/* INIT BOARD */
-const board = document.getElementById("numberBoard");
-for (let i = 1; i <= 90; i++) {
-  const d = document.createElement("div");
-  d.className = "num";
-  d.id = "num-" + i;
-  d.innerText = i;
-  board.appendChild(d);
+
+/* =====================================
+PAGE
+===================================== */
+
+function showPage(id){
+
+document
+.querySelectorAll(".page")
+.forEach(p => {
+
+p.classList.remove("active");
+
+});
+
+document
+.getElementById(id)
+.classList.add("active");
+
+
+if(id === "gamePage"){
+
+loadGame();
+
 }
 
-/* NAVIGATION */
-function showPage(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
 
-  if (id === "gamePage") {
-    loadGame();
-    setupRealtime();
-  } else if (id === "ticketPage") {
-    selectedTickets = [];
-    document.getElementById("selectedTicketText").innerText = "None";
-    showTicketNumbers();
-  }
+if(id === "ticketPage"){
+
+selectedTicketNumber = null;
+
+document
+.getElementById(
+"selectedTicketText"
+)
+.innerText = "None";
+
+showTicketNumbers();
+
 }
 
-/* FIXED SEED TICKET GENERATOR */
+}
+
+
+/* =====================================
+NUMBER BOARD
+===================================== */
+
+const board =
+document.getElementById(
+"numberBoard"
+);
+
+for(let i=1;i<=90;i++){
+
+const d =
+document.createElement("div");
+
+d.className = "num";
+
+d.id = "num-" + i;
+
+d.innerText = i;
+
+board.appendChild(d);
+
+}
+
+
+/* =====================================
+TICKET GENERATOR
+===================================== */
+
+function generateTicket(){
+
+let ticket = [];
+
+for(let r=0;r<3;r++){
+
+let row =
+new Array(9).fill(null);
+
+let positions = [];
+
+while(positions.length < 5){
+
+let p =
+Math.floor(
+Math.random()*9
+);
+
+if(
+!positions.includes(p)
+){
+
+positions.push(p);
+
+}
+
+}
+
+positions.sort(
+(a,b)=>a-b
+);
+
+for(
+const col of positions
+){
+
+let min;
+let max;
+
+if(col === 0){
+
+min = 1;
+max = 9;
+
+}
+else if(col === 8){
+
+min = 80;
+max = 90;
+
+}
+else{
+
+min = col * 10;
+max = col * 10 + 9;
+
+}
+
+let n;
+
+do{
+
+n =
+Math.floor(
+Math.random() *
+(max-min+1)
+) + min;
+
+}
+while(
+row.includes(n)
+);
+
+row[col] = n;
+
+}
+
+ticket.push(row);
+
+}
+
+return ticket;
+
+}
+
+
+/* =====================================
+LOAD GAME
+===================================== */
+
+async function loadGame(){
+
+const {data,error} =
+await db
+.from("games")
+.select("*")
+.order(
+"id",
+{
+ascending:false
+}
+)
+.limit(1)
+.maybeSingle();
+
+if(error){
+
+console.log(error);
+
+return;
+
+}
+
+if(data){
+
+currentGame = data;
+
+updateGameScreen(
+data
+);
+
+}
+
+}
+
+
+/* =====================================
+GET USED TICKET NUMBERS
+===================================== */
+
+async function getUsedTicketNumbers(){
+
+if(!currentGame){
+
+await loadGame();
+
+}
+
+if(!currentGame){
+
+return [];
+
+}
+
+const {data,error} =
+await db
+.from("players")
+.select("ticket")
+.eq(
+"game_id",
+currentGame.id
+);
+
+if(error){
+
+console.log(error);
+
+return [];
+
+}
+
+let used = [];
+
+(data || []).forEach(player => {
+
+try{
+
+let t =
+player.ticket;
+
+if(
+typeof t === "string"
+){
+
+t = JSON.parse(t);
+
+}
+
+if(
+t &&
+t.ticket_number
+){
+
+used.push(
+Number(
+t.ticket_number
+)
+);
+
+}
+
+}
+catch(e){
+
+console.log(e);
+
+}
+
+});
+
+return used;
+
+}
+
+/* =====================================
+DETERMINISTIC TICKET GENERATOR
+===================================== */
+
 function generateFixedTicket(seed) {
   function pseudoRandom(s) {
     let x = Math.sin(s++) * 10000;
     return x - Math.floor(x);
   }
+
   let ticket = [];
   let currentSeed = seed * 100;
 
@@ -231,65 +921,36 @@ function generateFixedTicket(seed) {
   return ticket;
 }
 
-/* LOAD GAME */
-async function loadGame() {
-  const { data, error } = await db.from("games").select("*").order("id", { ascending: false }).limit(1).maybeSingle();
-  if (!error && data) {
-    currentGame = data;
-    updateGameScreen(data);
-  }
-}
+/* =====================================
+SHOW 1 TO 50 FULL TICKETS
+===================================== */
 
-/* FETCH BOOKED TICKETS */
-async function getUsedTicketNumbers() {
-  if (!currentGame) await loadGame();
-  if (!currentGame) return [];
-
-  const { data, error } = await db.from("players").select("ticket").eq("game_id", currentGame.id);
-  if (error) return [];
-
-  let used = [];
-  (data || []).forEach(player => {
-    try {
-      let t = typeof player.ticket === "string" ? JSON.parse(player.ticket) : player.ticket;
-      if (t && t.ticket_number) {
-        if (Array.isArray(t.ticket_number)) {
-          used.push(...t.ticket_number.map(Number));
-        } else {
-          used.push(Number(t.ticket_number));
-        }
-      }
-    } catch (e) {}
-  });
-  return used;
-}
-
-/* SHOW AVAILABLE TICKETS DYNAMICALLY BASED ON ADMIN SELECTION */
 async function showTicketNumbers() {
   await loadGame();
   const area = document.getElementById("ticketNumbers");
+
   if (!currentGame) {
-    area.innerHTML = "<div class='info'>No active game. Ask Admin to create one.</div>";
+    area.innerHTML = "<div class='info'>Game not available yet</div>";
     return;
   }
 
-  // Get total max tickets set by admin (default 50)
-  const maxTickets = currentGame.max_tickets || 50;
-
   const used = await getUsedTicketNumbers();
-  document.getElementById("totalTicketsCount").innerText = maxTickets;
-  document.getElementById("bookedTickets").innerText = used.length;
-  document.getElementById("availableTickets").innerText = maxTickets - used.length;
+
+  const bookedEl = document.getElementById("bookedTickets");
+  const availableEl = document.getElementById("availableTickets");
+  if (bookedEl) bookedEl.innerText = used.length;
+  if (availableEl) availableEl.innerText = 50 - used.length;
 
   area.innerHTML = "";
+  area.style.display = "block";
 
-  for (let i = 1; i <= maxTickets; i++) {
+  for (let i = 1; i <= 50; i++) {
     const isBooked = used.includes(i);
     const ticketGrid = generateFixedTicket(i);
 
     const card = document.createElement("div");
     card.className = "ticketCard" + (isBooked ? " booked" : "");
-    if (selectedTickets.includes(i)) card.classList.add("selected");
+    card.id = "ticket-card-" + i;
 
     const header = document.createElement("div");
     header.className = "ticketHeader";
@@ -298,6 +959,7 @@ async function showTicketNumbers() {
 
     const gridBox = document.createElement("div");
     gridBox.className = "ticket";
+
     ticketGrid.forEach(row => {
       row.forEach(n => {
         const cell = document.createElement("div");
@@ -306,163 +968,1225 @@ async function showTicketNumbers() {
         gridBox.appendChild(cell);
       });
     });
+
     card.appendChild(gridBox);
 
     if (!isBooked) {
       card.style.cursor = "pointer";
       card.onclick = function () {
-        if (selectedTickets.includes(i)) {
-          selectedTickets = selectedTickets.filter(num => num !== i);
-          card.classList.remove("selected");
-        } else {
-          selectedTickets.push(i);
-          card.classList.add("selected");
-        }
-        document.getElementById("selectedTicketText").innerText = selectedTickets.length ? selectedTickets.join(", ") : "None";
+        selectedTicketNumber = i;
+        myTicket = ticketGrid;
+        myTicketNumber = i;
+
+        document.querySelectorAll(".ticketCard").forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+
+        document.getElementById("selectedTicketText").innerText = "Ticket #" + i;
       };
     }
+
     area.appendChild(card);
   }
 }
 
-/* JOIN GAME WITH MULTIPLE TICKETS */
-async function joinGame() {
-  const name = document.getElementById("playerName").value.trim();
-  const phone = document.getElementById("playerPhone").value.trim();
 
-  if (!name) return alert("Please enter your name");
-  if (selectedTickets.length === 0) return alert("Please select at least 1 ticket");
+/* =====================================
+RENDER TICKET
+===================================== */
 
-  await loadGame();
-  if (!currentGame) return alert("Game not available");
+function renderTicket(
+ticket,
+id,
+ticketNumber=null
+){
 
-  const used = await getUsedTicketNumbers();
-  const conflict = selectedTickets.some(num => used.includes(num));
-  if (conflict) {
-    alert("One of your selected tickets is already booked. Refreshing list...");
-    return showTicketNumbers();
+const area =
+document.getElementById(id);
+
+area.innerHTML = "";
+
+
+if(ticketNumber){
+
+const numberBox =
+document.createElement("div");
+
+numberBox.className =
+"ticketNumber";
+
+numberBox.innerText =
+"🎟️ TICKET NO. " +
+ticketNumber;
+
+area.appendChild(
+numberBox
+);
+
+}
+
+
+const box =
+document.createElement("div");
+
+box.className =
+"ticket";
+
+
+ticket.forEach(row => {
+
+row.forEach(n => {
+
+const cell =
+document.createElement("div");
+
+cell.className =
+"cell";
+
+
+if(n === null){
+
+cell.classList.add(
+"empty"
+);
+
+}
+else{
+
+cell.innerText = n;
+
+cell.dataset.number = n;
+
+}
+
+
+box.appendChild(cell);
+
+});
+
+});
+
+
+area.appendChild(box);
+
+}
+
+
+/* =====================================
+GENERATE PLAYER TICKET
+===================================== */
+
+async function generatePlayer(){
+
+const name =
+document
+.getElementById(
+"playerName"
+)
+.value
+.trim();
+
+
+if(!name){
+
+alert(
+"Name enter karo"
+);
+
+return;
+
+}
+
+
+await loadGame();
+
+
+if(!currentGame){
+
+alert(
+"Admin ne abhi game create nahi kiya."
+);
+
+return;
+
+}
+
+
+if(
+!selectedTicketNumber
+){
+
+alert(
+"Pehle 1 se 50 ke andar koi Ticket Number select karo"
+);
+
+return;
+
+}
+
+
+const used =
+await getUsedTicketNumbers();
+
+
+if(
+used.includes(
+selectedTicketNumber
+)
+){
+
+alert(
+"Ye ticket already booked hai. Dusra ticket select karo."
+);
+
+showTicketNumbers();
+
+return;
+
+}
+
+
+myTicket =
+generateTicket();
+
+myTicketNumber =
+selectedTicketNumber;
+
+
+renderTicket(
+myTicket,
+"ticketPreview",
+myTicketNumber
+);
+
+
+alert(
+"Ticket No. " +
+myTicketNumber +
+" generated!"
+);
+
+}
+
+
+/* =====================================
+CREATE NEW GAME
+===================================== */
+
+async function createNewGame(){
+
+const title =
+document
+.getElementById(
+"gameTitle"
+)
+.value ||
+"GRS Tambola";
+
+
+let gameDate =
+document
+.getElementById(
+"gameDate"
+)
+.value;
+
+
+let gameTime =
+document
+.getElementById(
+"gameTime"
+)
+.value;
+
+
+/* Default date */
+
+if(!gameDate){
+
+const now =
+new Date();
+
+gameDate =
+now.getFullYear() +
+"-" +
+String(
+now.getMonth()+1
+).padStart(2,"0") +
+"-" +
+String(
+now.getDate()
+).padStart(2,"0");
+
+}
+
+
+/* Default time */
+
+if(!gameTime){
+
+const now =
+new Date();
+
+gameTime =
+String(
+now.getHours()
+).padStart(2,"0") +
+":" +
+String(
+now.getMinutes()
+).padStart(2,"0");
+
+}
+
+
+const quick =
+document
+.getElementById(
+"quickPrize"
+)
+.value;
+
+
+const top =
+document
+.getElementById(
+"topPrize"
+)
+.value;
+
+
+const middle =
+document
+.getElementById(
+"middlePrize"
+)
+.value;
+
+
+const bottom =
+document
+.getElementById(
+"bottomPrize"
+)
+.value;
+
+
+const full =
+document
+.getElementById(
+"fullPrize"
+)
+.value;
+
+
+/* Stop old games */
+
+await db
+.from("games")
+.update({
+status:"stopped"
+})
+.eq(
+"status",
+"live"
+);
+
+
+/* Create new game */
+
+const {data,error} =
+await db
+.from("games")
+.insert({
+
+title:title,
+
+game_date:gameDate,
+
+game_time:gameTime,
+
+status:"waiting",
+
+current_number:null,
+
+called_numbers:[]
+
+})
+.select()
+.single();
+
+
+if(error){
+
+alert(
+"Game create error: " +
+error.message
+);
+
+return;
+
+}
+
+
+currentGame = data;
+
+
+/* Save prizes */
+
+localStorage.setItem(
+"prizes",
+JSON.stringify({
+
+quick5:quick,
+
+top:top,
+
+middle:middle,
+
+bottom:bottom,
+
+full:full
+
+})
+);
+
+
+alert(
+"New game created! Players can now select tickets 1 to 50."
+);
+
+}
+
+
+/* =====================================
+START GAME
+===================================== */
+
+async function startGame(){
+
+if(!currentGame){
+
+await loadGame();
+
+}
+
+
+if(!currentGame){
+
+alert(
+"Pehle New Game create karo"
+);
+
+return;
+
+}
+
+
+const {data,error} =
+await db
+.from("games")
+.update({
+
+status:"live"
+
+})
+.eq(
+"id",
+currentGame.id
+)
+.select()
+.single();
+
+
+if(error){
+
+alert(
+error.message
+);
+
+return;
+
+}
+
+
+currentGame = data;
+
+updateGameScreen(data);
+
+}
+
+
+/* =====================================
+STOP GAME
+===================================== */
+
+async function stopGame(){
+
+if(!currentGame){
+
+return;
+
+}
+
+
+const {data,error} =
+await db
+.from("games")
+.update({
+
+status:"stopped"
+
+})
+.eq(
+"id",
+currentGame.id
+)
+.select()
+.single();
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+currentGame = data;
+
+updateGameScreen(data);
+
+stopAutoDraw();
+
+}
+
+
+/* =====================================
+DRAW NUMBER
+===================================== */
+
+async function drawNumber(){
+
+if(!currentGame){
+
+await loadGame();
+
+}
+
+
+if(!currentGame){
+
+alert(
+"Game nahi mila"
+);
+
+return;
+
+}
+
+
+if(
+currentGame.status !== "live"
+){
+
+alert(
+"Game START nahi hai"
+);
+
+return;
+
+}
+
+
+let called =
+currentGame.called_numbers || [];
+
+
+if(called.length >= 90){
+
+alert(
+"All 90 numbers complete!"
+);
+
+return;
+
+}
+
+
+let number;
+
+do{
+
+number =
+Math.floor(
+Math.random()*90
+)+1;
+
+}
+while(
+called.includes(number)
+);
+
+
+called.push(number);
+
+
+const {data,error} =
+await db
+.from("games")
+.update({
+
+current_number:number,
+
+called_numbers:called
+
+})
+.eq(
+"id",
+currentGame.id
+)
+.select()
+.single();
+
+
+if(error){
+
+alert(
+"Draw error: " +
+error.message
+);
+
+return;
+
+}
+
+
+currentGame = data;
+
+updateGameScreen(data);
+
+}
+
+
+/* =====================================
+AUTO DRAW
+===================================== */
+
+function autoDraw(){
+
+stopAutoDraw();
+
+drawNumber();
+
+autoTimer =
+setInterval(
+drawNumber,
+10000
+);
+
+}
+
+
+function stopAutoDraw(){
+
+if(autoTimer){
+
+clearInterval(
+autoTimer
+);
+
+autoTimer = null;
+
+}
+
+}
+
+
+/* =====================================
+VOICE
+===================================== */
+
+function speakNumber(n){
+
+if(!n){
+
+return;
+
+}
+
+
+if(!window.speechSynthesis){
+
+return;
+
+}
+
+
+const speech =
+new SpeechSynthesisUtterance(
+"Number " + n
+);
+
+speech.rate = .85;
+
+speechSynthesis.cancel();
+
+speechSynthesis.speak(
+speech
+);
+
+}
+
+
+/* =====================================
+UPDATE GAME SCREEN
+===================================== */
+
+function updateGameScreen(game){
+
+if(!game){
+
+return;
+
+}
+
+
+document
+.getElementById(
+"gameStatus"
+)
+.innerText =
+
+game.status === "live"
+?
+"🟢 GAME LIVE"
+:
+game.status === "stopped"
+?
+"🔴 GAME STOPPED"
+:
+"🟡 GAME WAITING";
+
+
+document
+.getElementById(
+"currentNumber"
+)
+.innerText =
+game.current_number || "-";
+
+
+document
+.querySelectorAll(".num")
+.forEach(n => {
+
+n.classList.remove(
+"called"
+);
+
+});
+
+
+const called =
+game.called_numbers || [];
+
+
+called.forEach(n => {
+
+const el =
+document.getElementById(
+"num-" + n
+);
+
+if(el){
+
+el.classList.add(
+"called"
+);
+
+}
+
+});
+
+
+const previous =
+document.getElementById(
+"previousNumbers"
+);
+
+previous.innerHTML = "";
+
+
+called
+.slice()
+.reverse()
+.forEach(n => {
+
+const span =
+document.createElement(
+"span"
+);
+
+span.innerText = n;
+
+previous.appendChild(
+span
+);
+
+});
+
+
+if(
+game.current_number &&
+game.current_number !== lastNumber
+){
+
+lastNumber =
+game.current_number;
+
+speakNumber(
+game.current_number
+);
+
+}
+
+
+updateMyTicket(
+called
+);
+
+loadWinners(
+game.id
+);
+
+}
+
+
+/* =====================================
+MARK MY TICKET
+===================================== */
+
+function updateMyTicket(called){
+
+document
+.querySelectorAll(
+"#gameTicket .cell[data-number]"
+)
+.forEach(cell => {
+
+const n =
+Number(
+cell.dataset.number
+);
+
+
+if(
+called.includes(n)
+){
+
+cell.classList.add(
+"marked"
+);
+
+}
+else{
+
+cell.classList.remove(
+"marked"
+);
+
+}
+
+});
+
+
+checkWinners();
+
+}
+
+
+/* =====================================
+JOIN GAME
+===================================== */
+
+async function joinGame(){
+
+const name =
+document
+.getElementById(
+"playerName"
+)
+.value
+.trim();
+
+
+const phone =
+document
+.getElementById(
+"playerPhone"
+)
+.value
+.trim();
+
+
+if(!name){
+
+alert(
+"Name enter karo"
+);
+
+return;
+
+}
+
+
+if(
+!myTicket.length
+){
+
+alert(
+"Pehle ticket generate karo"
+);
+
+return;
+
+}
+
+
+if(
+!myTicketNumber
+){
+
+alert(
+"Pehle ticket generate karo"
+);
+
+return;
+
+}
+
+
+await loadGame();
+
+
+if(!currentGame){
+
+alert(
+"Game available nahi hai"
+);
+
+return;
+
+}
+
+
+/* Double check */
+
+const used =
+await getUsedTicketNumbers();
+
+
+if(
+used.includes(
+myTicketNumber
+)
+){
+
+alert(
+"Ye ticket number already booked hai. Dusra ticket select karo."
+);
+
+myTicket = [];
+
+myTicketNumber = null;
+
+selectedTicketNumber = null;
+
+document
+.getElementById(
+"ticketPreview"
+)
+.innerHTML = "";
+
+showTicketNumbers();
+
+return;
+
+}
+
+
+const ticketData = {
+
+ticket_number:
+myTicketNumber,
+
+grid:
+myTicket
+
+};
+
+
+const {data,error} =
+await db
+.from("players")
+.insert({
+
+name:name,
+
+phone:phone,
+
+game_id:
+currentGame.id,
+
+ticket:
+ticketData
+
+})
+.select()
+.single();
+
+
+if(error){
+
+alert(
+"Player error: " +
+error.message
+);
+
+return;
+
+}
+
+
+myPlayer = data;
+
+
+/* Save local */
+
+localStorage.setItem(
+"player_id",
+data.id
+);
+
+localStorage.setItem(
+"player_name",
+name
+);
+
+localStorage.setItem(
+"ticket_number",
+myTicketNumber
+);
+
+
+/* Show game ticket */
+
+renderTicket(
+myTicket,
+"gameTicket",
+myTicketNumber
+);
+
+
+showPage(
+"gamePage"
+);
+
+}
+
+
+/* =====================================
+CHECK WINNERS
+===================================== */
+
+async function checkWinners(){
+
+if(
+!myPlayer ||
+!myTicket.length ||
+!currentGame
+){
+
+return;
+
+}
+
+
+const called =
+currentGame.called_numbers || [];
+
+
+let all = [];
+
+
+myTicket.forEach(row => {
+
+row.forEach(n => {
+
+if(n !== null){
+
+all.push(n);
+
+}
+
+});
+
+});
+
+
+const marked =
+all.filter(
+n => called.includes(n)
+);
+
+
+/* QUICK 5 */
+
+if(marked.length >= 5){
+
+await claimWinner(
+"Quick 5"
+);
+
+}
+
+
+/* TOP */
+
+if(
+checkRow(
+myTicket[0],
+called
+)
+){
+
+await claimWinner(
+"Top Line"
+);
+
+}
+
+
+/* MIDDLE */
+
+if(
+checkRow(
+myTicket[1],
+called
+)
+){
+
+await claimWinner(
+"Middle Line"
+);
+
+}
+
+
+/* BOTTOM */
+
+if(
+checkRow(
+myTicket[2],
+called
+)
+){
+
+await claimWinner(
+"Bottom Line"
+);
+
+}
+
+
+/* FULL HOUSE */
+
+if(marked.length >= 15){
+
+await claimWinner(
+"Full House"
+);
+
+}
+
+}
+
+
+function checkRow(
+row,
+called
+){
+
+return row
+.filter(
+n => n !== null
+)
+.every(
+n => called.includes(n)
+);
+
+}
+
+
+/* =====================================
+CLAIM WINNER
+===================================== */
+
+async function claimWinner(type){
+  if(!myPlayer || !currentGame){
+    return;
   }
 
-  const myTicketsData = selectedTickets.map(num => ({
-    ticket_number: num,
-    grid: generateFixedTicket(num)
-  }));
+  const { data } = await db
+    .from("winners")
+    .select("id")
+    .eq("game_id", currentGame.id)
+    .eq("prize_type", type)
+    .limit(1);
 
-  const { data, error } = await db.from("players").insert({
-    name: name,
-    phone: phone,
+  if(data && data.length > 0){
+    return;
+  }
+
+  await db.from("winners").insert({
     game_id: currentGame.id,
-    ticket: { ticket_number: selectedTickets, tickets_list: myTicketsData }
-  }).select().single();
+    ticket_id: myPlayer.id,
+    player_name: myPlayer.name,
+    prize_type: type
+  });
 
-  if (error) return alert("Error joining: " + error.message);
-
-  myJoinedTickets = myTicketsData;
-  renderMyGameTickets();
-  showPage("gamePage");
+  loadWinners(currentGame.id);
 }
 
-/* RENDER PLAYER'S TICKETS IN GAME PAGE */
-function renderMyGameTickets() {
-  const container = document.getElementById("myTicketsContainer");
-  container.innerHTML = "";
+async function loadWinners(gameId){
+  if(!gameId) return;
 
-  myJoinedTickets.forEach(tObj => {
-    const wrapper = document.createElement("div");
-    wrapper.className = "ticketCard";
-    wrapper.innerHTML = `<div class="ticketHeader">🎟️ Ticket #${tObj.ticket_number}</div>`;
+  const { data, error } = await db
+    .from("winners")
+    .select("*")
+    .eq("game_id", gameId);
 
-    const box = document.createElement("div");
-    box.className = "ticket";
+  if(error) return;
 
-    tObj.grid.forEach(row => {
-      row.forEach(n => {
-        const cell = document.createElement("div");
-        cell.className = "cell" + (n === null ? " empty" : "");
-        if (n !== null) {
-          cell.innerText = n;
-          cell.dataset.number = n;
-        }
-        box.appendChild(cell);
-      });
-    });
+  const area = document.getElementById("winnerArea");
+  if(!area) return;
 
-    wrapper.appendChild(box);
-    container.appendChild(wrapper);
+  area.innerHTML = "";
+
+  (data || []).forEach(w => {
+    const div = document.createElement("div");
+    div.className = "winner";
+    div.innerText = `🎉 ${w.prize_type}: ${w.player_name || 'Player'}`;
+    area.appendChild(div);
   });
 }
 
-/* REALTIME UPDATES */
-function setupRealtime() {
-  if (realtimeSubscription) return;
+function adminLogin(){
+  const pass = document.getElementById("adminPassword").value;
 
-  realtimeSubscription = db
-    .channel('public:games')
-    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'games' }, payload => {
-      if (currentGame && payload.new.id === currentGame.id) {
-        currentGame = payload.new;
-        updateGameScreen(payload.new);
-      }
-    })
-    .subscribe();
-}
-
-/* UPDATE GAME SCREEN & VOICE */
-function updateGameScreen(game) {
-  if (!game) return;
-
-  document.getElementById("gameStatus").innerText =
-    game.status === "live" ? "🟢 GAME LIVE" : game.status === "stopped" ? "🔴 GAME STOPPED" : "🟡 GAME WAITING";
-
-  document.getElementById("currentNumber").innerText = game.current_number || "-";
-
-  document.querySelectorAll(".num").forEach(n => n.classList.remove("called"));
-
-  const called = game.called_numbers || [];
-  called.forEach(n => {
-    const el = document.getElementById("num-" + n);
-    if (el) el.classList.add("called");
-  });
-
-  const previous = document.getElementById("previousNumbers");
-  previous.innerHTML = "";
-  called.slice().reverse().forEach(n => {
-    const span = document.createElement("span");
-    span.innerText = n;
-    previous.appendChild(span);
-  });
-
-  if (game.current_number && game.current_number !== lastNumber) {
-    lastNumber = game.current_number;
-    if (document.getElementById("voiceToggle").checked) speakNumber(game.current_number);
-  }
-
-  updateMyTicketsMarking(called);
-  loadWinners(game.id);
-}
-
-/* AUTO-MARK PLAYER TICKETS */
-function updateMyTicketsMarking(called) {
-  document.querySelectorAll("#myTicketsContainer .cell[data-number]").forEach(cell => {
-    const n = Number(cell.dataset.number);
-    if (called.includes(n)) cell.classList.add("marked");
-    else cell.classList.remove("marked");
-  });
-  checkWinners(called);
-}
-
-/* SPEECH SYNTHESIS */
-function speakNumber(n) {
-  if (!window.speechSynthesis) return;
-  const speech = new SpeechSynthesisUtterance("Number " + n);
-  speech.rate = 0.85;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(speech);
-}
-
-/* ADMIN ACTIONS */
-function adminLogin() {
-  if (document.getElementById("adminPassword").value === "1234") {
+  if(pass === "1234"){
     document.getElementById("adminPassword").style.display = "none";
     document.querySelector("#adminPage button").style.display = "none";
     document.getElementById("adminControls").style.display = "block";
@@ -471,115 +2195,6 @@ function adminLogin() {
   }
 }
 
-async function createNewGame() {
-  const title = document.getElementById("gameTitle").value || "GRS Tambola";
-  let gameDate = document.getElementById("gameDate").value;
-  let gameTime = document.getElementById("gameTime").value;
-  let maxTickets = parseInt(document.getElementById("maxTicketsSelect").value) || 50;
-
-  await db.from("games").update({ status: "stopped" }).eq("status", "live");
-
-  const { data, error } = await db.from("games").insert({
-    title: title,
-    game_date: gameDate || new Date().toISOString().split('T')[0],
-    game_time: gameTime || "20:00",
-    max_tickets: maxTickets, // SAVE ADMIN SELECTED MAX TICKETS
-    status: "waiting",
-    current_number: null,
-    called_numbers: []
-  }).select().single();
-
-  if (error) return alert("Game create error: " + error.message);
-  currentGame = data;
-  alert(`New game created with ${maxTickets} Tickets!`);
-}
-
-async function startGame() {
-  if (!currentGame) await loadGame();
-  if (!currentGame) return alert("Create game first!");
-
-  const { data, error } = await db.from("games").update({ status: "live" }).eq("id", currentGame.id).select().single();
-  if (!error) { currentGame = data; updateGameScreen(data); }
-}
-
-async function stopGame() {
-  if (!currentGame) return;
-  const { data } = await db.from("games").update({ status: "stopped" }).eq("id", currentGame.id).select().single();
-  if (data) { currentGame = data; updateGameScreen(data); stopAutoDraw(); }
-}
-
-async function drawNumber() {
-  if (!currentGame) await loadGame();
-  if (!currentGame || currentGame.status !== "live") return alert("Game is not LIVE!");
-
-  let called = currentGame.called_numbers || [];
-  if (called.length >= 90) return alert("All 90 numbers called!");
-
-  let number;
-  do { number = Math.floor(Math.random() * 90) + 1; } while (called.includes(number));
-
-  called.push(number);
-  const { data, error } = await db.from("games").update({
-    current_number: number,
-    called_numbers: called
-  }).eq("id", currentGame.id).select().single();
-
-  if (!error) { currentGame = data; updateGameScreen(data); }
-}
-
-function autoDraw() {
-  stopAutoDraw();
-  drawNumber();
-  autoTimer = setInterval(drawNumber, 10000);
-}
-
-function stopAutoDraw() {
-  if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
-}
-
-/* WINNER CLAIMS & DISPLAY */
-async function checkWinners(called) {
-  if (!myJoinedTickets.length || !currentGame) return;
-
-  for (let tObj of myJoinedTickets) {
-    let all = tObj.grid.flat().filter(n => n !== null);
-    let marked = all.filter(n => called.includes(n));
-
-    if (marked.length >= 5) await claimWinner("Quick 5", tObj.ticket_number);
-    if (tObj.grid[0].filter(n => n !== null).every(n => called.includes(n))) await claimWinner("Top Line", tObj.ticket_number);
-    if (tObj.grid[1].filter(n => n !== null).every(n => called.includes(n))) await claimWinner("Middle Line", tObj.ticket_number);
-    if (tObj.grid[2].filter(n => n !== null).every(n => called.includes(n))) await claimWinner("Bottom Line", tObj.ticket_number);
-    if (marked.length >= 15) await claimWinner("Full House", tObj.ticket_number);
-  }
-}
-
-async function claimWinner(type, ticketNum) {
-  const { data } = await db.from("winners").select("id").eq("game_id", currentGame.id).eq("prize_type", type).limit(1);
-  if (data && data.length > 0) return;
-
-  const pName = document.getElementById("playerName").value.trim() || "Player";
-  await db.from("winners").insert({
-    game_id: currentGame.id,
-    player_name: `${pName} (T#${ticketNum})`,
-    prize_type: type
-  });
-  loadWinners(currentGame.id);
-}
-
-async function loadWinners(gameId) {
-  if (!gameId) return;
-  const { data } = await db.from("winners").select("*").eq("game_id", gameId);
-  const area = document.getElementById("winnerArea");
-  if (!area) return;
-
-  area.innerHTML = "";
-  (data || []).forEach(w => {
-    const div = document.createElement("div");
-    div.className = "winner";
-    div.innerText = `🎉 ${w.prize_type}: ${w.player_name}`;
-    area.appendChild(div);
-  });
-}
 </script>
 </body>
 </html>
