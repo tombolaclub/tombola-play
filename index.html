@@ -264,6 +264,34 @@ color:#111;
 border:3px solid white;
 }
 
+#adminTicketArea{
+  max-height:600px;
+  overflow:auto;
+  margin-top:10px;
+}
+
+.adminTicketCard{
+  background:#263653;
+  border:1px solid #40516f;
+  border-radius:10px;
+  padding:8px;
+  margin:8px 0;
+}
+
+.adminTicketCard .ticketHeader{
+  margin-bottom:5px;
+}
+
+.adminTicketCard .ticket{
+  max-width:100%;
+  margin:5px auto;
+}
+
+.adminTicketCard .cell{
+  height:32px;
+  font-size:13px;
+}
+
 </style>
 </head>
 
@@ -560,6 +588,14 @@ onclick="stopAutoDraw()"
 
 </button>
 
+<h3>🎟️ Generated Tickets</h3>
+
+<div class="info">
+  Total Tickets: <b id="adminTotalTickets">0</b>
+</div>
+
+<div id="adminTicketArea"></div>
+
 <h3>👥 Players</h3>
 
 <div id="playersList"></div>
@@ -811,6 +847,11 @@ currentGame = data;
 totalTickets = Number(data.ticket_count) || 50;
 
 updateTicketCountUI();
+
+if(document.getElementById("adminControls") &&
+   document.getElementById("adminControls").style.display !== "none"){
+  renderAdminTickets();
+}
 
 updateGameScreen(
 data
@@ -1195,6 +1236,45 @@ myTicketNumber +
 }
 
 
+function renderAdminTickets(){
+  const area = document.getElementById("adminTicketArea");
+  const totalEl = document.getElementById("adminTotalTickets");
+
+  if(!area) return;
+
+  if(totalEl) totalEl.innerText = totalTickets;
+
+  area.innerHTML = "";
+
+  for(let i = 1; i <= totalTickets; i++){
+    const ticketGrid = generateFixedTicket(i);
+
+    const card = document.createElement("div");
+    card.className = "adminTicketCard";
+
+    const header = document.createElement("div");
+    header.className = "ticketHeader";
+    header.innerHTML =
+      `<span>🎟️ Ticket #${i}</span><span style="color:#43a047">GENERATED</span>`;
+    card.appendChild(header);
+
+    const gridBox = document.createElement("div");
+    gridBox.className = "ticket";
+
+    ticketGrid.forEach(row => {
+      row.forEach(n => {
+        const cell = document.createElement("div");
+        cell.className = "cell" + (n === null ? " empty" : "");
+        if(n !== null) cell.innerText = n;
+        gridBox.appendChild(cell);
+      });
+    });
+
+    card.appendChild(gridBox);
+    area.appendChild(card);
+  }
+}
+
 /* =====================================
 CREATE NEW GAME
 ===================================== */
@@ -1391,12 +1471,10 @@ full:full
 
 
 alert(
-"New game created! " + totalTickets + " tickets are ready."
+"New game created! " + totalTickets + " tickets generated."
 );
 
-// Show the generated ticket list immediately after Create New Game.
-showPage("ticketPage");
-showTicketNumbers();
+renderAdminTickets();
 
 }
 
