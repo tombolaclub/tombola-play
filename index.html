@@ -21,7 +21,9 @@ button { width: 100%; padding: 15px; margin: 7px 0; border: 0; border-radius: 12
 .blue { background: #2196f3; color: white; }
 button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-input { width: 100%; padding: 13px; margin: 6px 0; border: 0; border-radius: 10px; font-size: 16px; }
+input, select { width: 100%; padding: 13px; margin: 6px 0; border: 0; border-radius: 10px; font-size: 16px; background: #fff; color: #111; }
+label { display: block; margin-top: 8px; font-weight: bold; color: #ffca28; }
+
 .status { background: #263653; padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 10px; }
 .big { font-size: 80px; font-weight: bold; text-align: center; color: #ffca28; margin: 10px; }
 
@@ -71,7 +73,7 @@ input { width: 100%; padding: 13px; margin: 6px 0; border: 0; border-radius: 10p
     <input id="playerPhone" placeholder="Phone number">
 
     <div class="info">
-      🎟️ Total: <b>50</b> | 🔴 Booked: <b id="bookedTickets">0</b> | 🟢 Available: <b id="availableTickets">50</b>
+      🎟️ Total: <b id="totalTicketsCount">0</b> | 🔴 Booked: <b id="bookedTickets">0</b> | 🟢 Available: <b id="availableTickets">0</b>
     </div>
 
     <div class="info">Select 1 or Multiple Tickets Below:</div>
@@ -90,7 +92,7 @@ input { width: 100%; padding: 13px; margin: 6px 0; border: 0; border-radius: 10p
     <div class="status" id="gameStatus">Checking game...</div>
     
     <div style="text-align: center; margin: 5px;">
-      <label><input type="checkbox" id="voiceToggle" checked> 🔊 Voice Caller</label>
+      <label style="display:inline; color:#fff; font-weight:normal;"><input type="checkbox" id="voiceToggle" checked> 🔊 Voice Caller</label>
     </div>
 
     <div class="big" id="currentNumber">-</div>
@@ -123,6 +125,22 @@ input { width: 100%; padding: 13px; margin: 6px 0; border: 0; border-radius: 10p
         <input id="gameDate" type="date">
         <input id="gameTime" type="time">
       </div>
+
+      <!-- ADMIN TICKET LIMIT SELECTION -->
+      <label for="maxTicketsSelect">🎟️ Total Tickets For Players:</label>
+      <select id="maxTicketsSelect">
+        <option value="10">10 Tickets</option>
+        <option value="20">20 Tickets</option>
+        <option value="30">30 Tickets</option>
+        <option value="40">40 Tickets</option>
+        <option value="50" selected>50 Tickets (Default)</option>
+        <option value="60">60 Tickets</option>
+        <option value="70">70 Tickets</option>
+        <option value="80">80 Tickets</option>
+        <option value="90">90 Tickets</option>
+        <option value="100">100 Tickets</option>
+      </select>
+
       <input id="quickPrize" placeholder="Quick 5 Prize">
       <input id="topPrize" placeholder="Top Line Prize">
       <input id="middlePrize" placeholder="Middle Line Prize">
@@ -149,7 +167,7 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /* VARIABLES */
 let currentGame = null;
-let selectedTickets = []; // Multi-ticket selection
+let selectedTickets = []; 
 let myJoinedTickets = [];
 let autoTimer = null;
 let lastNumber = null;
@@ -246,7 +264,7 @@ async function getUsedTicketNumbers() {
   return used;
 }
 
-/* SHOW AVAILABLE TICKETS (MULTI SELECT) */
+/* SHOW AVAILABLE TICKETS DYNAMICALLY BASED ON ADMIN SELECTION */
 async function showTicketNumbers() {
   await loadGame();
   const area = document.getElementById("ticketNumbers");
@@ -255,13 +273,17 @@ async function showTicketNumbers() {
     return;
   }
 
+  // Get total max tickets set by admin (default 50)
+  const maxTickets = currentGame.max_tickets || 50;
+
   const used = await getUsedTicketNumbers();
+  document.getElementById("totalTicketsCount").innerText = maxTickets;
   document.getElementById("bookedTickets").innerText = used.length;
-  document.getElementById("availableTickets").innerText = 50 - used.length;
+  document.getElementById("availableTickets").innerText = maxTickets - used.length;
 
   area.innerHTML = "";
 
-  for (let i = 1; i <= 50; i++) {
+  for (let i = 1; i <= maxTickets; i++) {
     const isBooked = used.includes(i);
     const ticketGrid = generateFixedTicket(i);
 
@@ -453,6 +475,7 @@ async function createNewGame() {
   const title = document.getElementById("gameTitle").value || "GRS Tambola";
   let gameDate = document.getElementById("gameDate").value;
   let gameTime = document.getElementById("gameTime").value;
+  let maxTickets = parseInt(document.getElementById("maxTicketsSelect").value) || 50;
 
   await db.from("games").update({ status: "stopped" }).eq("status", "live");
 
@@ -460,6 +483,7 @@ async function createNewGame() {
     title: title,
     game_date: gameDate || new Date().toISOString().split('T')[0],
     game_time: gameTime || "20:00",
+    max_tickets: maxTickets, // SAVE ADMIN SELECTED MAX TICKETS
     status: "waiting",
     current_number: null,
     called_numbers: []
@@ -467,7 +491,7 @@ async function createNewGame() {
 
   if (error) return alert("Game create error: " + error.message);
   currentGame = data;
-  alert("New game created!");
+  alert(`New game created with ${maxTickets} Tickets!`);
 }
 
 async function startGame() {
