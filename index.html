@@ -318,7 +318,7 @@ placeholder="Phone number"
 
 <div class="info">
 
-🎟️ Total Tickets: <b>50</b><br>
+🎟️ Total Tickets: <b id="totalTickets">50</b><br>
 
 🔴 Booked: <b id="bookedTickets">0</b><br>
 
@@ -476,6 +476,15 @@ type="time"
 >
 
 <input
+id="ticketCount"
+type="number"
+min="1"
+max="500"
+value="50"
+placeholder="Total Tickets (e.g. 100)"
+>
+
+<input
 id="quickPrize"
 placeholder="Quick 5 Prize"
 >
@@ -514,7 +523,7 @@ class="green"
 onclick="startGame()"
 >
 
-▶ START GAME
+✅ I ACCEPT
 
 </button>
 
@@ -606,6 +615,8 @@ let selectedTicketNumber = null;
 let autoTimer = null;
 
 let lastNumber = null;
+
+let totalTickets = 50;
 
 
 /* =====================================
@@ -797,6 +808,10 @@ if(data){
 
 currentGame = data;
 
+totalTickets = Number(data.ticket_count) || 50;
+
+updateTicketCountUI();
+
 updateGameScreen(
 data
 );
@@ -805,6 +820,18 @@ data
 
 }
 
+
+function updateTicketCountUI(){
+  const totalEl = document.getElementById("totalTickets");
+  const availableEl = document.getElementById("availableTickets");
+  const bookedEl = document.getElementById("bookedTickets");
+
+  if(totalEl) totalEl.innerText = totalTickets;
+  if(bookedEl && availableEl){
+    const booked = Number(bookedEl.innerText) || 0;
+    availableEl.innerText = Math.max(0, totalTickets - booked);
+  }
+}
 
 /* =====================================
 GET USED TICKET NUMBERS
@@ -939,12 +966,12 @@ async function showTicketNumbers() {
   const bookedEl = document.getElementById("bookedTickets");
   const availableEl = document.getElementById("availableTickets");
   if (bookedEl) bookedEl.innerText = used.length;
-  if (availableEl) availableEl.innerText = 50 - used.length;
+  if (availableEl) availableEl.innerText = Math.max(0, totalTickets - used.length);
 
   area.innerHTML = "";
   area.style.display = "block";
 
-  for (let i = 1; i <= 50; i++) {
+  for (let i = 1; i <= totalTickets; i++) {
     const isBooked = used.includes(i);
     const ticketGrid = generateFixedTicket(i);
 
@@ -1116,7 +1143,7 @@ if(
 ){
 
 alert(
-"Pehle 1 se 50 ke andar koi Ticket Number select karo"
+"Pehle available Ticket Number select karo"
 );
 
 return;
@@ -1239,6 +1266,12 @@ now.getMinutes()
 }
 
 
+let ticketCount =
+  parseInt(document.getElementById("ticketCount").value, 10);
+
+if(!ticketCount || ticketCount < 1) ticketCount = 50;
+if(ticketCount > 500) ticketCount = 500;
+
 const quick =
 document
 .getElementById(
@@ -1305,6 +1338,8 @@ game_date:gameDate,
 
 game_time:gameTime,
 
+ticket_count:ticketCount,
+
 status:"waiting",
 
 current_number:null,
@@ -1330,6 +1365,10 @@ return;
 
 currentGame = data;
 
+totalTickets = ticketCount;
+
+updateTicketCountUI();
+
 
 /* Save prizes */
 
@@ -1352,7 +1391,7 @@ full:full
 
 
 alert(
-"New game created! Players can now select tickets 1 to 50."
+"New game created! Players can now select tickets 1 to " + totalTickets + "."
 );
 
 }
