@@ -9,7 +9,34 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+.ticketCard {
+  background: #1c263d;
+  border: 2px solid #34415d;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 15px;
+  transition: 0.2s;
+}
 
+.ticketCard.selected {
+  border-color: #ffca28;
+  box-shadow: 0 0 12px rgba(255, 202, 40, 0.4);
+}
+
+.ticketCard.booked {
+  opacity: 0.5;
+  border-color: #e53935;
+  pointer-events: none;
+}
+
+.ticketHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+  
 *{
 box-sizing:border-box;
 }
@@ -857,125 +884,109 @@ return used;
 
 }
 
-
 /* =====================================
-SHOW 1 TO 50 TICKETS
+DETERMINISTIC TICKET GENERATOR
 ===================================== */
 
-async function showTicketNumbers(){
+function generateFixedTicket(seed) {
+  function pseudoRandom(s) {
+    let x = Math.sin(s++) * 10000;
+    return x - Math.floor(x);
+  }
 
-await loadGame();
+  let ticket = [];
+  let currentSeed = seed * 100;
 
-const area =
-document.getElementById(
-"ticketNumbers"
-);
+  for (let r = 0; r < 3; r++) {
+    let row = new Array(9).fill(null);
+    let positions = [];
 
-if(!currentGame){
+    while (positions.length < 5) {
+      let p = Math.floor(pseudoRandom(currentSeed++) * 9);
+      if (!positions.includes(p)) positions.push(p);
+    }
+    positions.sort((a, b) => a - b);
 
-area.innerHTML =
-"Game not available yet";
-
-return;
-
+    for (const col of positions) {
+      let min = col === 0 ? 1 : col * 10;
+      let max = col === 8 ? 90 : col * 10 + 9;
+      let n;
+      do {
+        n = Math.floor(pseudoRandom(currentSeed++) * (max - min + 1)) + min;
+      } while (row.includes(n));
+      row[col] = n;
+    }
+    ticket.push(row);
+  }
+  return ticket;
 }
 
-const used =
-await getUsedTicketNumbers();
+/* =====================================
+SHOW 1 TO 50 FULL TICKETS
+===================================== */
 
+async function showTicketNumbers() {
+  await loadGame();
+  const area = document.getElementById("ticketNumbers");
 
-const bookedEl =
-document.getElementById(
-"bookedTickets"
-);
+  if (!currentGame) {
+    area.innerHTML = "<div class='info'>Game not available yet</div>";
+    return;
+  }
 
-const availableEl =
-document.getElementById(
-"availableTickets"
-);
+  const used = await getUsedTicketNumbers();
 
+  const bookedEl = document.getElementById("bookedTickets");
+  const availableEl = document.getElementById("availableTickets");
+  if (bookedEl) bookedEl.innerText = used.length;
+  if (availableEl) availableEl.innerText = 50 - used.length;
 
-if(bookedEl){
+  area.innerHTML = "";
+  area.style.display = "block";
 
-bookedEl.innerText =
-used.length;
+  for (let i = 1; i <= 50; i++) {
+    const isBooked = used.includes(i);
+    const ticketGrid = generateFixedTicket(i);
 
-}
+    const card = document.createElement("div");
+    card.className = "ticketCard" + (isBooked ? " booked" : "");
+    card.id = "ticket-card-" + i;
 
+    const header = document.createElement("div");
+    header.className = "ticketHeader";
+    header.innerHTML = `<span>🎟️ Ticket #${i}</span> <span style="color:${isBooked ? '#e53935' : '#43a047'}">${isBooked ? 'BOOKED' : 'AVAILABLE'}</span>`;
+    card.appendChild(header);
 
-if(availableEl){
+    const gridBox = document.createElement("div");
+    gridBox.className = "ticket";
 
-availableEl.innerText =
-50 - used.length;
+    ticketGrid.forEach(row => {
+      row.forEach(n => {
+        const cell = document.createElement("div");
+        cell.className = "cell" + (n === null ? " empty" : "");
+        if (n !== null) cell.innerText = n;
+        gridBox.appendChild(cell);
+      });
+    });
 
-}
+    card.appendChild(gridBox);
 
+    if (!isBooked) {
+      card.style.cursor = "pointer";
+      card.onclick = function () {
+        selectedTicketNumber = i;
+        myTicket = ticketGrid;
+        myTicketNumber = i;
 
-area.innerHTML = "";
+        document.querySelectorAll(".ticketCard").forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
 
+        document.getElementById("selectedTicketText").innerText = "Ticket #" + i;
+      };
+    }
 
-for(let i=1;i<=50;i++){
-
-const btn =
-document.createElement("button");
-
-btn.innerText = i;
-
-btn.className =
-"ticketBtn";
-
-
-if(
-used.includes(i)
-){
-
-btn.classList.add(
-"booked"
-);
-
-btn.disabled = true;
-
-}
-else{
-
-btn.onclick = function(){
-
-selectedTicketNumber = i;
-
-
-document
-.querySelectorAll(
-".ticketBtn"
-)
-.forEach(b => {
-
-b.classList.remove(
-"selected"
-);
-
-});
-
-
-btn.classList.add(
-"selected"
-);
-
-
-document
-.getElementById(
-"selectedTicketText"
-)
-.innerText = i;
-
-};
-
-}
-
-
-area.appendChild(btn);
-
-}
-
+    area.appendChild(card);
+  }
 }
 
 
