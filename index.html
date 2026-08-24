@@ -2124,34 +2124,66 @@ CLAIM WINNER
 ===================================== */
 
 async function claimWinner(type){
+  if(!myPlayer || !currentGame){
+    return;
+  }
 
-if(
-!myPlayer ||
-!currentGame
-){
+  const { data } = await db
+    .from("winners")
+    .select("id")
+    .eq("game_id", currentGame.id)
+    .eq("prize_type", type)
+    .limit(1);
 
-return;
+  if(data && data.length > 0){
+    return;
+  }
 
+  await db.from("winners").insert({
+    game_id: currentGame.id,
+    ticket_id: myPlayer.id,
+    player_name: myPlayer.name,
+    prize_type: type
+  });
+
+  loadWinners(currentGame.id);
 }
 
+async function loadWinners(gameId){
+  if(!gameId) return;
 
-const {data} =
-await db
-.from("winners")
-.select("id")
-.eq(
-"game_id",
-currentGame.id
-)
-.eq(
-"ticket_id",
-myPlayer.id
-)
-.eq(
-"prize_type",
-type
-)
-.limit(1);
+  const { data, error } = await db
+    .from("winners")
+    .select("*")
+    .eq("game_id", gameId);
 
+  if(error) return;
 
-  
+  const area = document.getElementById("winnerArea");
+  if(!area) return;
+
+  area.innerHTML = "";
+
+  (data || []).forEach(w => {
+    const div = document.createElement("div");
+    div.className = "winner";
+    div.innerText = `🎉 ${w.prize_type}: ${w.player_name || 'Player'}`;
+    area.appendChild(div);
+  });
+}
+
+function adminLogin(){
+  const pass = document.getElementById("adminPassword").value;
+
+  if(pass === "1234"){
+    document.getElementById("adminPassword").style.display = "none";
+    document.querySelector("#adminPage button").style.display = "none";
+    document.getElementById("adminControls").style.display = "block";
+  } else {
+    alert("Wrong Password");
+  }
+}
+
+</script>
+</body>
+</html>
