@@ -264,34 +264,6 @@ color:#111;
 border:3px solid white;
 }
 
-#adminTicketArea{
-  max-height:600px;
-  overflow:auto;
-  margin-top:10px;
-}
-
-.adminTicketCard{
-  background:#263653;
-  border:1px solid #40516f;
-  border-radius:10px;
-  padding:8px;
-  margin:8px 0;
-}
-
-.adminTicketCard .ticketHeader{
-  margin-bottom:5px;
-}
-
-.adminTicketCard .ticket{
-  max-width:100%;
-  margin:5px auto;
-}
-
-.adminTicketCard .cell{
-  height:32px;
-  font-size:13px;
-}
-
 </style>
 </head>
 
@@ -346,7 +318,7 @@ placeholder="Phone number"
 
 <div class="info">
 
-🎟️ Total Tickets: <b id="totalTickets">50</b><br>
+🎟️ Total Tickets: <b>50</b><br>
 
 🔴 Booked: <b id="bookedTickets">0</b><br>
 
@@ -504,15 +476,6 @@ type="time"
 >
 
 <input
-id="ticketCount"
-type="number"
-min="1"
-max="500"
-value="50"
-placeholder="Total Tickets (e.g. 100)"
->
-
-<input
 id="quickPrize"
 placeholder="Quick 5 Prize"
 >
@@ -551,7 +514,7 @@ class="green"
 onclick="startGame()"
 >
 
-✅ I ACCEPT
+▶ START GAME
 
 </button>
 
@@ -587,14 +550,6 @@ onclick="stopAutoDraw()"
 ⏹ STOP AUTO DRAW
 
 </button>
-
-<h3>🎟️ Generated Tickets</h3>
-
-<div class="info">
-  Total Tickets: <b id="adminTotalTickets">0</b>
-</div>
-
-<div id="adminTicketArea"></div>
 
 <h3>👥 Players</h3>
 
@@ -651,8 +606,6 @@ let selectedTicketNumber = null;
 let autoTimer = null;
 
 let lastNumber = null;
-
-let totalTickets = 50;
 
 
 /* =====================================
@@ -844,15 +797,6 @@ if(data){
 
 currentGame = data;
 
-totalTickets = Number(data.ticket_count) || 50;
-
-updateTicketCountUI();
-
-if(document.getElementById("adminControls") &&
-   document.getElementById("adminControls").style.display !== "none"){
-  renderAdminTickets();
-}
-
 updateGameScreen(
 data
 );
@@ -861,18 +805,6 @@ data
 
 }
 
-
-function updateTicketCountUI(){
-  const totalEl = document.getElementById("totalTickets");
-  const availableEl = document.getElementById("availableTickets");
-  const bookedEl = document.getElementById("bookedTickets");
-
-  if(totalEl) totalEl.innerText = totalTickets;
-  if(bookedEl && availableEl){
-    const booked = Number(bookedEl.innerText) || 0;
-    availableEl.innerText = Math.max(0, totalTickets - booked);
-  }
-}
 
 /* =====================================
 GET USED TICKET NUMBERS
@@ -1007,12 +939,12 @@ async function showTicketNumbers() {
   const bookedEl = document.getElementById("bookedTickets");
   const availableEl = document.getElementById("availableTickets");
   if (bookedEl) bookedEl.innerText = used.length;
-  if (availableEl) availableEl.innerText = Math.max(0, totalTickets - used.length);
+  if (availableEl) availableEl.innerText = 50 - used.length;
 
   area.innerHTML = "";
   area.style.display = "block";
 
-  for (let i = 1; i <= totalTickets; i++) {
+  for (let i = 1; i <= 50; i++) {
     const isBooked = used.includes(i);
     const ticketGrid = generateFixedTicket(i);
 
@@ -1184,7 +1116,7 @@ if(
 ){
 
 alert(
-"Pehle available Ticket Number select karo"
+"Pehle 1 se 50 ke andar koi Ticket Number select karo"
 );
 
 return;
@@ -1235,45 +1167,6 @@ myTicketNumber +
 
 }
 
-
-function renderAdminTickets(){
-  const area = document.getElementById("adminTicketArea");
-  const totalEl = document.getElementById("adminTotalTickets");
-
-  if(!area) return;
-
-  if(totalEl) totalEl.innerText = totalTickets;
-
-  area.innerHTML = "";
-
-  for(let i = 1; i <= totalTickets; i++){
-    const ticketGrid = generateFixedTicket(i);
-
-    const card = document.createElement("div");
-    card.className = "adminTicketCard";
-
-    const header = document.createElement("div");
-    header.className = "ticketHeader";
-    header.innerHTML =
-      `<span>🎟️ Ticket #${i}</span><span style="color:#43a047">GENERATED</span>`;
-    card.appendChild(header);
-
-    const gridBox = document.createElement("div");
-    gridBox.className = "ticket";
-
-    ticketGrid.forEach(row => {
-      row.forEach(n => {
-        const cell = document.createElement("div");
-        cell.className = "cell" + (n === null ? " empty" : "");
-        if(n !== null) cell.innerText = n;
-        gridBox.appendChild(cell);
-      });
-    });
-
-    card.appendChild(gridBox);
-    area.appendChild(card);
-  }
-}
 
 /* =====================================
 CREATE NEW GAME
@@ -1346,12 +1239,6 @@ now.getMinutes()
 }
 
 
-let ticketCount =
-  parseInt(document.getElementById("ticketCount").value, 10);
-
-if(!ticketCount || ticketCount < 1) ticketCount = 50;
-if(ticketCount > 500) ticketCount = 500;
-
 const quick =
 document
 .getElementById(
@@ -1418,8 +1305,6 @@ game_date:gameDate,
 
 game_time:gameTime,
 
-ticket_count:ticketCount,
-
 status:"waiting",
 
 current_number:null,
@@ -1445,10 +1330,6 @@ return;
 
 currentGame = data;
 
-totalTickets = ticketCount;
-
-updateTicketCountUI();
-
 
 /* Save prizes */
 
@@ -1471,10 +1352,8 @@ full:full
 
 
 alert(
-"New game created! " + totalTickets + " tickets generated."
+"New game created! Players can now select tickets 1 to 50."
 );
-
-renderAdminTickets();
 
 }
 
