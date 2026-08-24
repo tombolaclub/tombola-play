@@ -1391,8 +1391,12 @@ full:full
 
 
 alert(
-"New game created! Players can now select tickets 1 to " + totalTickets + "."
+"New game created! " + totalTickets + " tickets are ready."
 );
+
+// Show the generated ticket list immediately after Create New Game.
+showPage("ticketPage");
+showTicketNumbers();
 
 }
 
