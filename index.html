@@ -3,12 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>GRS Tambola</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+box-sizing:border-box;
+}
 
 body{
 margin:0;
@@ -28,10 +32,12 @@ font-weight:bold;
 .page{
 display:none;
 padding:18px;
-min-height:calc(100vh - 60px)
+min-height:calc(100vh - 60px);
 }
 
-.active{display:block}
+.active{
+display:block;
+}
 
 .card{
 max-width:650px;
@@ -42,7 +48,9 @@ border-radius:18px;
 box-shadow:0 5px 20px #0008;
 }
 
-h1,h2,h3{text-align:center}
+h1,h2,h3{
+text-align:center;
+}
 
 button{
 width:100%;
@@ -57,9 +65,20 @@ background:#ffca28;
 color:#111;
 }
 
-.green{background:#43a047;color:white}
-.red{background:#e53935;color:white}
-.blue{background:#2196f3;color:white}
+.green{
+background:#43a047;
+color:white;
+}
+
+.red{
+background:#e53935;
+color:white;
+}
+
+.blue{
+background:#2196f3;
+color:white;
+}
 
 input{
 width:100%;
@@ -120,7 +139,7 @@ border-radius:20px;
 .ticketNumber{
 background:#ffca28;
 color:#111;
-font-size:25px;
+font-size:22px;
 font-weight:bold;
 padding:12px;
 border-radius:12px;
@@ -151,7 +170,9 @@ font-size:18px;
 border-radius:4px;
 }
 
-.empty{background:#ccc}
+.empty{
+background:#ccc;
+}
 
 .marked{
 background:#43a047!important;
@@ -186,12 +207,43 @@ border-radius:10px;
 margin:10px 0;
 text-align:center;
 }
+
+.ticketNumbers{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:8px;
+margin:15px 0;
+}
+
+.ticketBtn{
+padding:14px 5px;
+margin:0;
+border-radius:8px;
+background:#43a047;
+color:white;
+font-size:17px;
+}
+
+.ticketBtn.booked{
+background:#e53935;
+color:white;
+opacity:.85;
+cursor:not-allowed;
+}
+
+.ticketBtn.selected{
+background:#ffca28;
+color:#111;
+border:3px solid white;
+}
+
 </style>
 </head>
 
 <body>
 
 <header>🎱 GRS TAMBOLA</header>
+
 
 <!-- HOME -->
 
@@ -218,13 +270,14 @@ START GAME
 </section>
 
 
-<!-- TICKET -->
+
+<!-- TICKET PAGE -->
 
 <section id="ticketPage" class="page">
 
 <div class="card">
 
-<h2>🎟️ Generate Ticket</h2>
+<h2>🎟️ Select Your Ticket</h2>
 
 <input
 id="playerName"
@@ -237,11 +290,40 @@ placeholder="Phone number"
 >
 
 <div class="info">
-🎟️ Available Ticket Numbers: <b>1 - 50</b>
+
+🎟️ Total Tickets: <b>50</b><br>
+
+🔴 Booked: <b id="bookedTickets">0</b><br>
+
+🟢 Available: <b id="availableTickets">50</b>
+
+</div>
+
+<div class="info">
+
+🎟️ Select Your Ticket Number
+
+</div>
+
+<div
+id="ticketNumbers"
+class="ticketNumbers"
+>
+</div>
+
+<div class="info">
+
+Selected Ticket:
+<b id="selectedTicketText">
+None
+</b>
+
 </div>
 
 <button onclick="generatePlayer()">
-🎟️ GENERATE RANDOM TICKET
+
+🎟️ GENERATE MY TICKET
+
 </button>
 
 <div id="ticketPreview"></div>
@@ -250,11 +332,15 @@ placeholder="Phone number"
 class="green"
 onclick="joinGame()"
 >
+
 JOIN LIVE GAME
+
 </button>
 
 <button onclick="showPage('home')">
+
 BACK
+
 </button>
 
 </div>
@@ -262,27 +348,43 @@ BACK
 </section>
 
 
-<!-- GAME -->
+
+<!-- GAME PAGE -->
 
 <section id="gamePage" class="page">
 
 <div class="card">
 
-<div class="status" id="gameStatus">
+<div
+class="status"
+id="gameStatus"
+>
+
 Checking game...
+
 </div>
 
-<div class="big" id="currentNumber">
+<div
+class="big"
+id="currentNumber"
+>
+
 -
+
 </div>
 
-<div class="board" id="numberBoard"></div>
+<div
+class="board"
+id="numberBoard"
+>
+</div>
 
 <h3>Previous Numbers</h3>
 
 <div
 class="previous"
-id="previousNumbers">
+id="previousNumbers"
+>
 </div>
 
 <h3>🏆 Winners</h3>
@@ -294,7 +396,9 @@ id="previousNumbers">
 <div id="gameTicket"></div>
 
 <button onclick="showPage('home')">
+
 HOME
+
 </button>
 
 </div>
@@ -302,7 +406,8 @@ HOME
 </section>
 
 
-<!-- ADMIN -->
+
+<!-- ADMIN PAGE -->
 
 <section id="adminPage" class="page">
 
@@ -317,11 +422,16 @@ placeholder="Admin password"
 >
 
 <button onclick="adminLogin()">
+
 LOGIN
+
 </button>
 
 
-<div id="adminControls" style="display:none">
+<div
+id="adminControls"
+style="display:none"
+>
 
 <input
 id="gameTitle"
@@ -367,39 +477,51 @@ placeholder="Full House Prize"
 class="blue"
 onclick="createNewGame()"
 >
+
 CREATE NEW GAME
+
 </button>
 
 <button
 class="green"
 onclick="startGame()"
 >
+
 ▶ START GAME
+
 </button>
 
 <button
 class="red"
 onclick="stopGame()"
 >
+
 ⏹ STOP GAME
+
 </button>
 
 <button onclick="drawNumber()">
+
 🎱 DRAW NUMBER
+
 </button>
 
 <button
 class="blue"
 onclick="autoDraw()"
 >
+
 ▶ AUTO DRAW
+
 </button>
 
 <button
 class="red"
 onclick="stopAutoDraw()"
 >
+
 ⏹ STOP AUTO DRAW
+
 </button>
 
 <h3>👥 Players</h3>
@@ -408,13 +530,17 @@ onclick="stopAutoDraw()"
 
 </div>
 
+
 <button onclick="showPage('home')">
+
 BACK
+
 </button>
 
 </div>
 
 </section>
+
 
 
 <script>
@@ -429,17 +555,11 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_Z8Wgn7MsuuCl2g1OOdix7g_-QzXOzrf";
 
-let db = null;
-
-try {
-  db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-} catch(error) {
-  console.log("Supabase error:", error);
-  alert("Supabase connection error");
-}
+const db =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
 
 /* =====================================
@@ -454,6 +574,8 @@ let myTicket = [];
 
 let myTicketNumber = null;
 
+let selectedTicketNumber = null;
+
 let autoTimer = null;
 
 let lastNumber = null;
@@ -467,17 +589,35 @@ function showPage(id){
 
 document
 .querySelectorAll(".page")
-.forEach(p =>
-p.classList.remove("active")
-);
+.forEach(p => {
+
+p.classList.remove("active");
+
+});
 
 document
 .getElementById(id)
 .classList.add("active");
 
+
 if(id === "gamePage"){
 
 loadGame();
+
+}
+
+
+if(id === "ticketPage"){
+
+selectedTicketNumber = null;
+
+document
+.getElementById(
+"selectedTicketText"
+)
+.innerText = "None";
+
+showTicketNumbers();
 
 }
 
@@ -489,7 +629,9 @@ NUMBER BOARD
 ===================================== */
 
 const board =
-document.getElementById("numberBoard");
+document.getElementById(
+"numberBoard"
+);
 
 for(let i=1;i<=90;i++){
 
@@ -525,9 +667,13 @@ let positions = [];
 while(positions.length < 5){
 
 let p =
-Math.floor(Math.random()*9);
+Math.floor(
+Math.random()*9
+);
 
-if(!positions.includes(p)){
+if(
+!positions.includes(p)
+){
 
 positions.push(p);
 
@@ -539,7 +685,9 @@ positions.sort(
 (a,b)=>a-b
 );
 
-for(const col of positions){
+for(
+const col of positions
+){
 
 let min;
 let max;
@@ -574,7 +722,9 @@ Math.random() *
 ) + min;
 
 }
-while(row.includes(n));
+while(
+row.includes(n)
+);
 
 row[col] = n;
 
@@ -585,6 +735,46 @@ ticket.push(row);
 }
 
 return ticket;
+
+}
+
+
+/* =====================================
+LOAD GAME
+===================================== */
+
+async function loadGame(){
+
+const {data,error} =
+await db
+.from("games")
+.select("*")
+.order(
+"id",
+{
+ascending:false
+}
+)
+.limit(1)
+.maybeSingle();
+
+if(error){
+
+console.log(error);
+
+return;
+
+}
+
+if(data){
+
+currentGame = data;
+
+updateGameScreen(
+data
+);
+
+}
 
 }
 
@@ -630,9 +820,12 @@ let used = [];
 
 try{
 
-let t = player.ticket;
+let t =
+player.ticket;
 
-if(typeof t === "string"){
+if(
+typeof t === "string"
+){
 
 t = JSON.parse(t);
 
@@ -644,7 +837,9 @@ t.ticket_number
 ){
 
 used.push(
-Number(t.ticket_number)
+Number(
+t.ticket_number
+)
 );
 
 }
@@ -664,38 +859,122 @@ return used;
 
 
 /* =====================================
-GENERATE RANDOM TICKET NUMBER 1-50
+SHOW 1 TO 50 TICKETS
 ===================================== */
 
-async function getRandomTicketNumber(){
+async function showTicketNumbers(){
+
+await loadGame();
+
+const area =
+document.getElementById(
+"ticketNumbers"
+);
+
+if(!currentGame){
+
+area.innerHTML =
+"Game not available yet";
+
+return;
+
+}
 
 const used =
 await getUsedTicketNumbers();
 
-let available = [];
+
+const bookedEl =
+document.getElementById(
+"bookedTickets"
+);
+
+const availableEl =
+document.getElementById(
+"availableTickets"
+);
+
+
+if(bookedEl){
+
+bookedEl.innerText =
+used.length;
+
+}
+
+
+if(availableEl){
+
+availableEl.innerText =
+50 - used.length;
+
+}
+
+
+area.innerHTML = "";
+
 
 for(let i=1;i<=50;i++){
 
-if(!used.includes(i)){
+const btn =
+document.createElement("button");
 
-available.push(i);
+btn.innerText = i;
 
-}
+btn.className =
+"ticketBtn";
 
-}
 
-if(available.length === 0){
+if(
+used.includes(i)
+){
 
-return null;
-
-}
-
-const randomIndex =
-Math.floor(
-Math.random()*available.length
+btn.classList.add(
+"booked"
 );
 
-return available[randomIndex];
+btn.disabled = true;
+
+}
+else{
+
+btn.onclick = function(){
+
+selectedTicketNumber = i;
+
+
+document
+.querySelectorAll(
+".ticketBtn"
+)
+.forEach(b => {
+
+b.classList.remove(
+"selected"
+);
+
+});
+
+
+btn.classList.add(
+"selected"
+);
+
+
+document
+.getElementById(
+"selectedTicketText"
+)
+.innerText = i;
+
+};
+
+}
+
+
+area.appendChild(btn);
+
+}
 
 }
 
@@ -715,6 +994,7 @@ document.getElementById(id);
 
 area.innerHTML = "";
 
+
 if(ticketNumber){
 
 const numberBox =
@@ -727,14 +1007,19 @@ numberBox.innerText =
 "🎟️ TICKET NO. " +
 ticketNumber;
 
-area.appendChild(numberBox);
+area.appendChild(
+numberBox
+);
 
 }
+
 
 const box =
 document.createElement("div");
 
-box.className = "ticket";
+box.className =
+"ticket";
+
 
 ticket.forEach(row => {
 
@@ -743,11 +1028,15 @@ row.forEach(n => {
 const cell =
 document.createElement("div");
 
-cell.className = "cell";
+cell.className =
+"cell";
+
 
 if(n === null){
 
-cell.classList.add("empty");
+cell.classList.add(
+"empty"
+);
 
 }
 else{
@@ -758,11 +1047,13 @@ cell.dataset.number = n;
 
 }
 
+
 box.appendChild(cell);
 
 });
 
 });
+
 
 area.appendChild(box);
 
@@ -770,40 +1061,38 @@ area.appendChild(box);
 
 
 /* =====================================
-GENERATE PLAYER
+GENERATE PLAYER TICKET
 ===================================== */
 
 async function generatePlayer(){
 
 const name =
 document
-.getElementById("playerName")
+.getElementById(
+"playerName"
+)
 .value
 .trim();
 
-const phone =
-document
-.getElementById("playerPhone")
-.value
-.trim();
 
 if(!name){
 
-alert("Name enter karo");
+alert(
+"Name enter karo"
+);
 
 return;
 
 }
 
 
-/* Load current game */
-
 await loadGame();
+
 
 if(!currentGame){
 
 alert(
-"Pehle Admin se New Game create karo."
+"Admin ne abhi game create nahi kiya."
 );
 
 return;
@@ -811,15 +1100,12 @@ return;
 }
 
 
-/* Get available ticket */
-
-const ticketNumber =
-await getRandomTicketNumber();
-
-if(ticketNumber === null){
+if(
+!selectedTicketNumber
+){
 
 alert(
-"Sorry! Is game ke 1 se 50 sabhi tickets already booked hain."
+"Pehle 1 se 50 ke andar koi Ticket Number select karo"
 );
 
 return;
@@ -827,22 +1113,40 @@ return;
 }
 
 
-/* Generate ticket */
+const used =
+await getUsedTicketNumbers();
+
+
+if(
+used.includes(
+selectedTicketNumber
+)
+){
+
+alert(
+"Ye ticket already booked hai. Dusra ticket select karo."
+);
+
+showTicketNumbers();
+
+return;
+
+}
+
 
 myTicket =
 generateTicket();
 
 myTicketNumber =
-ticketNumber;
+selectedTicketNumber;
 
-
-/* Show ticket */
 
 renderTicket(
 myTicket,
 "ticketPreview",
 myTicketNumber
 );
+
 
 alert(
 "Ticket No. " +
@@ -861,43 +1165,106 @@ async function createNewGame(){
 
 const title =
 document
-.getElementById("gameTitle")
+.getElementById(
+"gameTitle"
+)
 .value ||
 "GRS Tambola";
 
-const gameDate =
+
+let gameDate =
 document
-.getElementById("gameDate")
+.getElementById(
+"gameDate"
+)
 .value;
 
-const gameTime =
+
+let gameTime =
 document
-.getElementById("gameTime")
+.getElementById(
+"gameTime"
+)
 .value;
+
+
+/* Default date */
+
+if(!gameDate){
+
+const now =
+new Date();
+
+gameDate =
+now.getFullYear() +
+"-" +
+String(
+now.getMonth()+1
+).padStart(2,"0") +
+"-" +
+String(
+now.getDate()
+).padStart(2,"0");
+
+}
+
+
+/* Default time */
+
+if(!gameTime){
+
+const now =
+new Date();
+
+gameTime =
+String(
+now.getHours()
+).padStart(2,"0") +
+":" +
+String(
+now.getMinutes()
+).padStart(2,"0");
+
+}
+
 
 const quick =
 document
-.getElementById("quickPrize")
+.getElementById(
+"quickPrize"
+)
 .value;
+
 
 const top =
 document
-.getElementById("topPrize")
+.getElementById(
+"topPrize"
+)
 .value;
+
 
 const middle =
 document
-.getElementById("middlePrize")
+.getElementById(
+"middlePrize"
+)
 .value;
+
 
 const bottom =
 document
-.getElementById("bottomPrize")
+.getElementById(
+"bottomPrize"
+)
 .value;
+
 
 const full =
 document
-.getElementById("fullPrize")
+.getElementById(
+"fullPrize"
+)
 .value;
 
 
@@ -914,7 +1281,7 @@ status:"stopped"
 );
 
 
-/* Create game */
+/* Create new game */
 
 const {data,error} =
 await db
@@ -923,11 +1290,9 @@ await db
 
 title:title,
 
-game_date:
-gameDate || null,
+game_date:gameDate,
 
-game_time:
-gameTime || null,
+game_time:gameTime,
 
 status:"waiting",
 
@@ -951,6 +1316,7 @@ return;
 
 }
 
+
 currentGame = data;
 
 
@@ -973,45 +1339,10 @@ full:full
 })
 );
 
-alert("New game created!");
 
-}
-
-
-/* =====================================
-GET CURRENT GAME
-===================================== */
-
-async function loadGame(){
-
-const {data,error} =
-await db
-.from("games")
-.select("*")
-.order(
-"id",
-{
-ascending:false
-}
-)
-.limit(1)
-.maybeSingle();
-
-if(error){
-
-console.log(error);
-
-return;
-
-}
-
-if(data){
-
-currentGame = data;
-
-updateGameScreen(data);
-
-}
+alert(
+"New game created! Players can now select tickets 1 to 50."
+);
 
 }
 
@@ -1028,6 +1359,7 @@ await loadGame();
 
 }
 
+
 if(!currentGame){
 
 alert(
@@ -1037,6 +1369,7 @@ alert(
 return;
 
 }
+
 
 const {data,error} =
 await db
@@ -1053,15 +1386,21 @@ currentGame.id
 .select()
 .single();
 
+
 if(error){
 
-alert(error.message);
+alert(
+error.message
+);
 
 return;
 
 }
 
+
 currentGame = data;
+
+updateGameScreen(data);
 
 }
 
@@ -1072,9 +1411,14 @@ STOP GAME
 
 async function stopGame(){
 
-if(!currentGame)
+if(!currentGame){
+
 return;
 
+}
+
+
+const {data,error} =
 await db
 .from("games")
 .update({
@@ -1085,7 +1429,23 @@ status:"stopped"
 .eq(
 "id",
 currentGame.id
-);
+)
+.select()
+.single();
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+currentGame = data;
+
+updateGameScreen(data);
 
 stopAutoDraw();
 
@@ -1104,6 +1464,7 @@ await loadGame();
 
 }
 
+
 if(!currentGame){
 
 alert(
@@ -1113,6 +1474,7 @@ alert(
 return;
 
 }
+
 
 if(
 currentGame.status !== "live"
@@ -1126,8 +1488,10 @@ return;
 
 }
 
+
 let called =
 currentGame.called_numbers || [];
+
 
 if(called.length >= 90){
 
@@ -1138,6 +1502,7 @@ alert(
 return;
 
 }
+
 
 let number;
 
@@ -1153,7 +1518,9 @@ while(
 called.includes(number)
 );
 
+
 called.push(number);
+
 
 const {data,error} =
 await db
@@ -1172,6 +1539,7 @@ currentGame.id
 .select()
 .single();
 
+
 if(error){
 
 alert(
@@ -1183,7 +1551,10 @@ return;
 
 }
 
+
 currentGame = data;
+
+updateGameScreen(data);
 
 }
 
@@ -1228,11 +1599,19 @@ VOICE
 
 function speakNumber(n){
 
-if(!n)
+if(!n){
+
 return;
 
-if(!window.speechSynthesis)
+}
+
+
+if(!window.speechSynthesis){
+
 return;
+
+}
+
 
 const speech =
 new SpeechSynthesisUtterance(
@@ -1251,17 +1630,23 @@ speech
 
 
 /* =====================================
-UPDATE SCREEN
+UPDATE GAME SCREEN
 ===================================== */
 
 function updateGameScreen(game){
 
-if(!game)
+if(!game){
+
 return;
 
-document.getElementById(
+}
+
+
+document
+.getElementById(
 "gameStatus"
-).innerText =
+)
+.innerText =
 
 game.status === "live"
 ?
@@ -1274,9 +1659,11 @@ game.status === "stopped"
 "🟡 GAME WAITING";
 
 
-document.getElementById(
+document
+.getElementById(
 "currentNumber"
-).innerText =
+)
+.innerText =
 game.current_number || "-";
 
 
@@ -1359,11 +1746,15 @@ updateMyTicket(
 called
 );
 
+loadWinners(
+game.id
+);
+
 }
 
 
 /* =====================================
-MARK TICKET
+MARK MY TICKET
 ===================================== */
 
 function updateMyTicket(called){
@@ -1378,6 +1769,7 @@ const n =
 Number(
 cell.dataset.number
 );
+
 
 if(
 called.includes(n)
@@ -1398,6 +1790,7 @@ cell.classList.remove(
 
 });
 
+
 checkWinners();
 
 }
@@ -1411,13 +1804,18 @@ async function joinGame(){
 
 const name =
 document
-.getElementById("playerName")
+.getElementById(
+"playerName"
+)
 .value
 .trim();
 
+
 const phone =
 document
-.getElementById("playerPhone")
+.getElementById(
+"playerPhone"
+)
 .value
 .trim();
 
@@ -1432,7 +1830,10 @@ return;
 
 }
 
-if(!myTicket.length){
+
+if(
+!myTicket.length
+){
 
 alert(
 "Pehle ticket generate karo"
@@ -1442,7 +1843,10 @@ return;
 
 }
 
-if(!myTicketNumber){
+
+if(
+!myTicketNumber
+){
 
 alert(
 "Pehle ticket generate karo"
@@ -1452,11 +1856,9 @@ return;
 
 }
 
-if(!currentGame){
 
 await loadGame();
 
-}
 
 if(!currentGame){
 
@@ -1469,10 +1871,11 @@ return;
 }
 
 
-/* Double check ticket number */
+/* Double check */
 
 const used =
 await getUsedTicketNumbers();
+
 
 if(
 used.includes(
@@ -1481,23 +1884,27 @@ myTicketNumber
 ){
 
 alert(
-"Ye ticket number already booked hai. Naya ticket generate karo."
+"Ye ticket number already booked hai. Dusra ticket select karo."
 );
 
 myTicket = [];
 
 myTicketNumber = null;
 
-document.getElementById(
+selectedTicketNumber = null;
+
+document
+.getElementById(
 "ticketPreview"
-).innerHTML = "";
+)
+.innerHTML = "";
+
+showTicketNumbers();
 
 return;
 
 }
 
-
-/* Save ticket number + grid */
 
 const ticketData = {
 
@@ -1541,10 +1948,11 @@ return;
 
 }
 
+
 myPlayer = data;
 
 
-/* Save locally */
+/* Save local */
 
 localStorage.setItem(
 "player_id",
@@ -1570,6 +1978,7 @@ myTicket,
 myTicketNumber
 );
 
+
 showPage(
 "gamePage"
 );
@@ -1587,11 +1996,16 @@ if(
 !myPlayer ||
 !myTicket.length ||
 !currentGame
-)
+){
+
 return;
+
+}
+
 
 const called =
 currentGame.called_numbers || [];
+
 
 let all = [];
 
@@ -1714,11 +2128,12 @@ async function claimWinner(type){
 if(
 !myPlayer ||
 !currentGame
-)
+){
+
 return;
 
+}
 
-/* Check already claimed */
 
 const {data} =
 await db
@@ -1739,364 +2154,4 @@ type
 .limit(1);
 
 
-if(
-data &&
-data.length
-)
-return;
-
-
-const prizes =
-JSON.parse(
-localStorage.getItem(
-"prizes"
-) || "{}"
-);
-
-
-let prize = "";
-
-
-if(type === "Quick 5")
-prize =
-prizes.quick5 || "";
-
-
-if(type === "Top Line")
-prize =
-prizes.top || "";
-
-
-if(type === "Middle Line")
-prize =
-prizes.middle || "";
-
-
-if(type === "Bottom Line")
-prize =
-prizes.bottom || "";
-
-
-if(type === "Full House")
-prize =
-prizes.full || "";
-
-
-await db
-.from("winners")
-.insert({
-
-game_id:
-currentGame.id,
-
-ticket_id:
-myPlayer.id,
-
-prize_type:type,
-
-player_name:
-myPlayer.name,
-
-prize:prize
-
-});
-
-}
-
-
-/* =====================================
-LOAD WINNERS
-===================================== */
-
-async function loadWinners(
-gameId
-){
-
-const {data} =
-await db
-.from("winners")
-.select("*")
-.eq(
-"game_id",
-gameId
-)
-.order(
-"created_at"
-);
-
-
-const area =
-document.getElementById(
-"winnerArea"
-);
-
-area.innerHTML = "";
-
-
-(data || []).forEach(w => {
-
-const div =
-document.createElement(
-"div"
-);
-
-div.className =
-"winner";
-
-div.innerHTML =
-"🏆 " +
-escapeHTML(
-w.prize_type
-) +
-"<br>👤 " +
-escapeHTML(
-w.player_name
-) +
-(
-w.prize
-?
-"<br>🎁 " +
-escapeHTML(w.prize)
-:
-""
-);
-
-area.appendChild(
-div
-);
-
-});
-
-}
-
-
-/* =====================================
-PLAYERS LIST
-===================================== */
-
-async function loadPlayers(){
-
-if(!currentGame)
-return;
-
-const {data} =
-await db
-.from("players")
-.select("*")
-.eq(
-"game_id",
-currentGame.id
-)
-.order(
-"created_at"
-);
-
-
-const area =
-document.getElementById(
-"playersList"
-);
-
-area.innerHTML = "";
-
-
-(data || []).forEach(p => {
-
-let ticketNo = "";
-
-try{
-
-let t = p.ticket;
-
-if(typeof t === "string"){
-
-t = JSON.parse(t);
-
-}
-
-if(
-t &&
-t.ticket_number
-){
-
-ticketNo =
-t.ticket_number;
-
-}
-
-}
-catch(e){}
-
-
-const div =
-document.createElement(
-"div"
-);
-
-div.className =
-"player";
-
-div.innerHTML =
-"👤 <b>" +
-escapeHTML(p.name) +
-"</b>" +
-"<br>🎟️ Ticket No: <b>" +
-escapeHTML(ticketNo) +
-"</b>" +
-"<br><span class='small'>" +
-escapeHTML(p.phone || "") +
-"</span>";
-
-area.appendChild(
-div
-);
-
-});
-
-}
-
-
-/* =====================================
-ADMIN
-===================================== */
-
-function adminLogin(){
-
-const pass =
-document
-.getElementById(
-"adminPassword"
-)
-.value;
-
-if(pass === "1234"){
-
-document.getElementById(
-"adminControls"
-).style.display =
-"block";
-  loadGame().then(
-loadPlayers
-);
-
-}else{
-
-alert("Wrong password");
-
-}
-
-}
-
-
-/* =====================================
-REALTIME
-===================================== */
-
-function setupRealtime(){
-
-db.channel("tambola-live")
-
-.on(
-"postgres_changes",
-{
-event:"UPDATE",
-schema:"public",
-table:"games"
-},
-payload => {
-
-currentGame = payload.new;
-updateGameScreen(payload.new);
-
-})
-
-.on(
-"postgres_changes",
-{
-event:"INSERT",
-schema:"public",
-table:"winners"
-},
-payload => {
-
-if(
-currentGame &&
-payload.new.game_id === currentGame.id
-){
-
-loadWinners(currentGame.id);
-
-}
-
-})
-
-.on(
-"postgres_changes",
-{
-event:"INSERT",
-schema:"public",
-table:"players"
-},
-payload => {
-
-if(
-currentGame &&
-payload.new.game_id === currentGame.id
-){
-
-loadPlayers();
-
-}
-
-})
-
-.subscribe();
-
-}
-
-setupRealtime();
-
-
-/* =====================================
-ESCAPE HTML
-===================================== */
-
-function escapeHTML(text){
-
-return String(text)
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
-
-}
-
-
-/* =====================================
-PERIODIC DATA
-===================================== */
-
-setInterval(async()=>{
-
-await loadGame();
-
-if(currentGame){
-
-await loadWinners(currentGame.id);
-
-}
-
-},5000);
-
-
-/* =====================================
-STARTUP
-===================================== */
-
-loadGame();
-
-</script>
-
-</body>
-</html>
+  
