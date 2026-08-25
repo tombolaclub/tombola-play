@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel</title>
+
+<style>
+
+body{
+margin:0;
+padding:15px;
+font-family:Arial,sans-serif;
+background-image:url("background.jpg");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+}
+
+.panel{
+background:rgba(255,255,255,0.92);
+padding:15px;
+border-radius:15px;
+}
+
+h2{
+text-align:center;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:8px;
+margin-bottom:12px;
+border:1px solid #ccc;
+border-radius:8px;
+box-sizing:border-box;
+}
+
+.btn{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.gamebtn{
+background:#1976d2;
+color:white;
+}
+
+.ticketbtn{
+background:#009688;
+color:white;
+}
+
+.generatebtn{
+background:#4caf50;
+color:white;
+}
+
+.regeneratebtn{
+background:#ff9800;
+color:white;
+}
+
+.cancelbtn{
+background:#f44336;
+color:white;
+}
+
+.backbtn{
+background:#555;
+color:white;
+}
+
+.games{
+display:none;
+margin-top:15px;
+}
+
+.game-item{
+padding:10px;
+margin:5px 0;
+background:#eee;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.selected{
+background:yellow;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+
+<h2>🎮 Tombola Admin Panel</h2>
+
+<label>Game Title</label>
+<input id="gameTitle" placeholder="Enter Game Title">
+
+<label>Date & Time</label>
+<input type="datetime-local" id="gameTime">
+
+<button class="btn gamebtn" onclick="toggleGames()">
+Select Game Names
+</button>
+
+<div class="games" id="games">
+
+<div class="game-item" onclick="selectGame(this)">🏆 Early Five</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Top Line</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Middle Line</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Bottom Line</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Two Corners</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Four Corners</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Star Pattern</div>
+<div class="game-item" onclick="selectGame(this)">🏆 X Pattern</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Pyramid Pattern</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Full House 1</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Full House 2</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Full House 3</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Lucky Number</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Lucky Seven</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Center Box</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Queen's Corner</div>
+<div class="game-item" onclick="selectGame(this)">🏆 King's Corner</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Jackpot Full House</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Last Number Prize</div>
+<div class="game-item" onclick="selectGame(this)">🏆 Consolation Prize</div>
+
+<button class="btn backbtn" onclick="toggleGames()">
+Back
+</button>
+
+</div>
+
+<button class="btn ticketbtn" onclick="generateTickets()">
+Generate Tickets
+</button>
+
+<button class="btn generatebtn" onclick="generateGame()">
+Generate Game
+</button>
+
+<button class="btn regeneratebtn" onclick="reGenerateGame()">
+Re-Generate Time
+</button>
+
+<button class="btn cancelbtn" onclick="cancelGame()">
+Cancel Game
+</button>
+
+</div>
+
+<script>
+
+function toggleGames(){
+let box=document.getElementById("games");
+
+if(box.style.display==="block"){
+box.style.display="none";
+}else{
+box.style.display="block";
+}
+}
+
+function selectGame(el){
+el.classList.toggle("selected");
+}
+
+function generateTickets(){
+
+let count=prompt("How many tickets generate?");
+
+if(count){
+localStorage.setItem("ticketCount",count);
+alert(count+" tickets ready.");
+}
+
+}
+
+function generateGame(){
+
+let title=document.getElementById("gameTitle").value;
+let time=document.getElementById("gameTime").value;
+
+localStorage.setItem("gameTitle",title);
+localStorage.setItem("gameTime",time);
+
+alert("Game Generated Successfully");
+
+}
+
+function reGenerateGame(){
+
+let time=prompt("Enter New Date & Time");
+
+if(time){
+localStorage.setItem("gameTime",time);
+alert("New Time Saved");
+}
+
+}
+
+function cancelGame(){
+
+if(confirm("Cancel this game?")){
+
+localStorage.removeItem("gameTitle");
+localStorage.removeItem("gameTime");
+
+alert("Game Cancelled");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
