@@ -2,255 +2,142 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tombola Admin</title>
 
 <style>
-
 body{
-margin:0;
-padding:15px;
-font-family:Arial,sans-serif;
-background-image:url("background.jpg");
+font-family:Arial;
+background:url("background.jpg");
 background-size:cover;
-background-position:center;
-background-repeat:no-repeat;
-background-attachment:fixed;
-}
-
-.panel{
-background:rgba(255,255,255,0.92);
 padding:15px;
-border-radius:15px;
 }
 
-h2{
-text-align:center;
+.box{
+background:white;
+padding:20px;
+border-radius:15px;
 }
 
 input{
 width:100%;
-padding:12px;
-margin-top:8px;
-margin-bottom:12px;
-border:1px solid #ccc;
-border-radius:8px;
-box-sizing:border-box;
+padding:10px;
+margin:8px 0;
 }
 
-.btn{
+button{
 width:100%;
-padding:14px;
+padding:15px;
 margin-top:10px;
 border:none;
 border-radius:10px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.gamebtn{
-background:#1976d2;
+font-size:18px;
 color:white;
 }
 
-.ticketbtn{
-background:#009688;
-color:white;
-}
+.blue{background:#1976d2;}
+.green{background:#4caf50;}
+.orange{background:#ff9800;}
+.red{background:#f44336;}
 
-.generatebtn{
-background:#4caf50;
-color:white;
-}
-
-.regeneratebtn{
-background:#ff9800;
-color:white;
-}
-
-.cancelbtn{
-background:#f44336;
-color:white;
-}
-
-.backbtn{
-background:#555;
-color:white;
-}
-
-.games{
-display:none;
-margin-top:15px;
-}
-
-.game-item{
+#result{
+margin-top:20px;
+background:#f5f5f5;
 padding:10px;
-margin:5px 0;
-background:#eee;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
+border-radius:10px;
 }
-
-.selected{
-background:yellow;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="panel">
+<div class="box">
 
-<h2>🎮 Tombola Admin Panel</h2>
+<h2 align="center">🎮 Tombola Admin Panel</h2>
 
-<label>Game Title</label>
-<input id="gameTitle" placeholder="Enter Game Title">
+<input type="text" id="title" placeholder="Game Title">
 
-<label>Date & Time</label>
-<input type="datetime-local" id="gameTime">
+<input type="datetime-local" id="time">
 
-<button class="btn gamebtn" onclick="toggleGames()">
-Select Game Names
-</button>
-
-<div class="games" id="games">
-
-<div class="game-item" onclick="selectGame(this)">🏆 Early Five</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Top Line</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Middle Line</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Bottom Line</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Two Corners</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Four Corners</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Star Pattern</div>
-<div class="game-item" onclick="selectGame(this)">🏆 X Pattern</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Pyramid Pattern</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Full House 1</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Full House 2</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Full House 3</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Lucky Number</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Lucky Seven</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Center Box</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Queen's Corner</div>
-<div class="game-item" onclick="selectGame(this)">🏆 King's Corner</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Jackpot Full House</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Last Number Prize</div>
-<div class="game-item" onclick="selectGame(this)">🏆 Consolation Prize</div>
-
-<button class="btn backbtn" onclick="toggleGames()">
-Back
-</button>
-
-</div>
-
-<button class="btn ticketbtn" onclick="generateTickets()">
+<button class="blue" onclick="generateTickets()">
 Generate Tickets
 </button>
 
-<button class="btn generatebtn" onclick="generateGame()">
+<button class="green" onclick="generateGame()">
 Generate Game
 </button>
 
-<button class="btn regeneratebtn" onclick="reGenerateGame()">
+<button class="orange" onclick="changeTime()">
 Re-Generate Time
 </button>
 
-<button class="btn cancelbtn" onclick="cancelGame()">
+<button class="red" onclick="cancelGame()">
 Cancel Game
 </button>
 
+<div id="result"></div>
+
 </div>
-
-<script>
-
-function toggleGames(){
-let box=document.getElementById("games");
-
-if(box.style.display==="block"){
-box.style.display="none";
-}else{
-box.style.display="block";
-}
-}
-
-function selectGame(el){
-el.classList.toggle("selected");
-}
-
 
 <script>
 
 function generateTickets(){
 
-let count=prompt("How many tickets generate? (1-600)");
+let count=prompt("How many tickets?");
 
-if(!count) return;
+if(count){
 
-count=parseInt(count);
+localStorage.setItem("tickets",count);
 
-let tickets=[];
+document.getElementById("result").innerHTML=
+"✅ "+count+" Tickets Generated";
 
-for(let i=1;i<=count;i++){
-
-tickets.push({
-ticketNo:i,
-owner:"",
-booked:false
-});
+alert(count+" Tickets Generated");
 
 }
 
-localStorage.setItem(
-"tickets",
-JSON.stringify(tickets)
-);
-
-alert(count + " tickets generated successfully");
-
 }
 
-</script>
 function generateGame(){
 
-let title=document.getElementById("gameTitle").value;
-let time=document.getElementById("gameTime").value;
+let title=document.getElementById("title").value;
 
-let selected=[];
-
-document.querySelectorAll(".selected").forEach(x=>{
-selected.push(x.innerText);
-});
+let time=document.getElementById("time").value;
 
 localStorage.setItem("gameTitle",title);
+
 localStorage.setItem("gameTime",time);
-localStorage.setItem("gameNames",JSON.stringify(selected));
+
+document.getElementById("result").innerHTML=
+"🎉 Game Created<br><br>Title: "+title+
+"<br>Time: "+time;
 
 alert("Game Generated Successfully");
 
 }
-function reGenerateGame(){
 
-let time=prompt("Enter New Date & Time");
+function changeTime(){
 
-if(time){
-localStorage.setItem("gameTime",time);
+let newtime=prompt("Enter New Time");
+
+if(newtime){
+
+localStorage.setItem("gameTime",newtime);
+
 alert("New Time Saved");
+
 }
 
 }
 
 function cancelGame(){
 
-if(confirm("Cancel this game?")){
+localStorage.clear();
 
-localStorage.removeItem("gameTitle");
-localStorage.removeItem("gameTime");
+document.getElementById("result").innerHTML=
+"❌ Game Cancelled";
 
 alert("Game Cancelled");
-
-}
 
 }
 
