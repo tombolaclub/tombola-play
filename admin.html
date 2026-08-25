@@ -179,29 +179,57 @@ function selectGame(el){
 el.classList.toggle("selected");
 }
 
+
+<script>
+
 function generateTickets(){
 
-let count=prompt("How many tickets generate?");
+let count=prompt("How many tickets generate? (1-600)");
 
-if(count){
-localStorage.setItem("ticketCount",count);
-alert(count+" tickets ready.");
+if(!count) return;
+
+count=parseInt(count);
+
+let tickets=[];
+
+for(let i=1;i<=count;i++){
+
+tickets.push({
+ticketNo:i,
+owner:"",
+booked:false
+});
+
 }
 
+localStorage.setItem(
+"tickets",
+JSON.stringify(tickets)
+);
+
+alert(count + " tickets generated successfully");
+
 }
 
+</script>
 function generateGame(){
 
 let title=document.getElementById("gameTitle").value;
 let time=document.getElementById("gameTime").value;
 
+let selected=[];
+
+document.querySelectorAll(".selected").forEach(x=>{
+selected.push(x.innerText);
+});
+
 localStorage.setItem("gameTitle",title);
 localStorage.setItem("gameTime",time);
+localStorage.setItem("gameNames",JSON.stringify(selected));
 
 alert("Game Generated Successfully");
 
 }
-
 function reGenerateGame(){
 
 let time=prompt("Enter New Date & Time");
