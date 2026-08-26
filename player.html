@@ -2,14 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Tombola Player</title>
 
 <style>
 
 body{
 margin:0;
-padding:15px;
+padding:10px;
 font-family:Arial,sans-serif;
 background-image:url("background.jpg");
 background-size:cover;
@@ -17,26 +17,39 @@ background-position:center;
 }
 
 .box{
-background:rgba(255,255,255,0.95);
-padding:15px;
+background:rgba(255,255,255,.95);
+padding:12px;
 border-radius:15px;
+margin-bottom:10px;
 }
 
-h2{
+.banner img{
+width:100%;
+border-radius:15px;
+display:block;
+}
+
+.timebox{
+display:flex;
+gap:5px;
+margin-top:10px;
+}
+
+.timeitem{
+flex:1;
+background:#001a66;
+color:white;
+border:3px solid yellow;
 text-align:center;
-}
-
-#countdown{
-font-size:22px;
+padding:10px;
 font-weight:bold;
-text-align:center;
-color:red;
-margin:10px 0;
+border-radius:10px;
 }
 
 .btn{
 width:100%;
 padding:14px;
+margin-top:10px;
 border:none;
 border-radius:10px;
 font-size:18px;
@@ -44,27 +57,70 @@ font-weight:bold;
 background:#1976d2;
 color:white;
 cursor:pointer;
+}
+
+.bookBtn{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#f44336;
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:8px;
+border:1px solid #ccc;
+border-radius:8px;
+box-sizing:border-box;
+}
+
+#ticketChart{
+display:none;
+grid-template-columns:repeat(10,1fr);
+gap:4px;
 margin-top:10px;
 }
 
-.ticket-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:8px;
-margin-top:15px;
-}
-
-.ticket{
+.number{
 background:white;
-border:1px solid #ccc;
-padding:10px;
+padding:8px;
 text-align:center;
-border-radius:8px;
-cursor:pointer;
+border-radius:6px;
+border:1px solid #ccc;
+font-size:12px;
 }
 
 .booked{
 background:yellow;
+font-weight:bold;
+}
+
+.ticketCard{
+background:white;
+padding:10px;
+border-radius:10px;
+margin-top:8px;
+}
+
+.unsold{
+color:red;
+font-weight:bold;
+}
+
+.sold{
+color:green;
+font-weight:bold;
+}
+
+#playerPage{
+display:none;
 }
 
 </style>
@@ -72,47 +128,107 @@ background:yellow;
 
 <body>
 
+<div id="announcementBox" class="box">
+
+<h2 align="center">🎉 ANNOUNCEMENT 🎉</h2>
+
+<p>✅ Tombola is a skill-based entertainment game.</p>
+<p>✅ Please check your ticket details carefully before the game starts.</p>
+<p>✅ In case of technical issues, the game may be restarted.</p>
+<p>✅ Purchased tickets remain valid during re-game.</p>
+<p>✅ Follow all game rules and maintain fair play.</p>
+
+<center>
+<button class="bookBtn" onclick="acceptGame()">
+I ACCEPT
+</button>
+</center>
+
+</div>
+
+<div id="playerPage">
+
 <div class="box">
 
-<h2 id="gameTitle">Tombola Game</h2>
+<div class="banner">
+<img src="banner.png">
+</div>
 
-<div id="countdown">Loading...</div>
+<div class="timebox">
 
-<button class="btn" onclick="showTickets()">
-Available Tickets
+<div class="timeitem" id="dateBox">
+DATE
+</div>
+
+<div class="timeitem" id="countdown">
+00:00:00
+</div>
+
+<div class="timeitem" id="timeBox">
+TIME
+</div>
+
+</div>
+
+<button class="btn" onclick="toggleChart()">
+AVAILABLE TICKETS
 </button>
 
-<div id="tickets" class="ticket-grid"></div>
+<div id="ticketChart"></div>
+
+<div id="ticketList"></div>
+
+<h3>🎫 Book Ticket</h3>
+
+<input
+type="number"
+id="ticketNo"
+placeholder="Enter Ticket Number">
+
+<input
+type="text"
+id="playerName"
+placeholder="Enter Your Name">
+
+<button
+class="bookBtn"
+onclick="bookTicket()">
+BOOK TICKET
+</button>
+
+</div>
 
 </div>
 
 <script>
 
-document.getElementById("gameTitle").innerText =
-localStorage.getItem("gameTitle") || "Tombola Game";
+function acceptGame(){
 
-function updateCountdown(){
+document.getElementById("announcementBox").style.display="none";
 
-let gameTime=localStorage.getItem("gameTime");
+document.getElementById("playerPage").style.display="block";
 
-if(!gameTime){
-document.getElementById("countdown").innerHTML="No Game Scheduled";
-return;
 }
 
-let target=new Date(gameTime).getTime();
+function updateClock(){
 
-let now=new Date().getTime();
+let now=new Date();
 
-let diff=target-now;
+document.getElementById("dateBox").innerHTML=
+now.toLocaleDateString();
 
-if(diff<=0){
+document.getElementById("timeBox").innerHTML=
+now.toLocaleTimeString();
 
-document.getElementById("countdown").innerHTML=
-"🎉 Game Started";
+let gameTime=
+localStorage.getItem("gameTime");
 
-return;
-}
+if(gameTime){
+
+let diff=
+new Date(gameTime)-new Date();
+
+if(diff>0){
 
 let h=Math.floor(diff/1000/60/60);
 
@@ -121,68 +237,152 @@ let m=Math.floor((diff/1000/60)%60);
 let s=Math.floor((diff/1000)%60);
 
 document.getElementById("countdown").innerHTML=
-h+"h "+m+"m "+s+"s";
+h+":"+m+":"+s;
+
+}else{
+
+document.getElementById("countdown").innerHTML=
+"GAME START";
 
 }
 
-setInterval(updateCountdown,1000);
+}
 
-function showTickets(){
+}
 
-let data=JSON.parse(
+setInterval(updateClock,1000);
+
+function renderTickets(){
+
+let tickets=
+JSON.parse(
 localStorage.getItem("tickets") || "[]"
 );
 
 let html="";
 
-data.forEach(function(t){
+tickets.forEach(function(t){
 
 html+=`
-<div class="ticket ${t.booked?'booked':''}"
-onclick="bookTicket(${t.ticketNo})">
+<div class="ticketCard">
 
-${t.ticketNo}
+<b>Ticket ${t.ticketNo}</b><br>
+
+${t.booked
+?'<span class="sold">'+t.owner+'</span>'
+:'<span class="unsold">UNSOLD</span>'}
 
 </div>
 `;
 
 });
 
-document.getElementById("tickets").innerHTML=html;
+document.getElementById("ticketList").innerHTML=
+html;
 
 }
 
-function bookTicket(no){
+function toggleChart(){
 
-let name=prompt("Enter Your Name");
+let box=
+document.getElementById("ticketChart");
 
-if(!name) return;
+if(box.style.display==="grid"){
 
-let data=JSON.parse(
+box.style.display="none";
+return;
+
+}
+
+box.style.display="grid";
+
+let tickets=
+JSON.parse(
 localStorage.getItem("tickets") || "[]"
 );
 
-data.forEach(function(t){
+let html="";
 
-if(t.ticketNo==no && !t.booked){
+tickets.forEach(function(t){
+
+html+=`
+<div class="number ${t.booked?'booked':''}">
+${t.ticketNo}
+</div>
+`;
+
+});
+
+box.innerHTML=html;
+
+}
+
+function bookTicket(){
+
+let no=
+parseInt(
+document.getElementById("ticketNo").value
+);
+
+let name=
+document.getElementById("playerName").value;
+
+if(!no || !name){
+
+alert("Fill all fields");
+return;
+
+}
+
+let tickets=
+JSON.parse(
+localStorage.getItem("tickets") || "[]"
+);
+
+let found=false;
+
+tickets.forEach(function(t){
+
+if(t.ticketNo===no){
+
+if(t.booked){
+
+alert("Already Booked");
+
+}else{
 
 t.booked=true;
 t.owner=name;
+
+localStorage.setItem(
+"tickets",
+JSON.stringify(tickets)
+);
+
+found=true;
+
+}
 
 }
 
 });
 
-localStorage.setItem(
-"tickets",
-JSON.stringify(data)
-);
-
-showTickets();
+if(found){
 
 alert("Ticket Booked");
+renderTickets();
+toggleChart();
+toggleChart();
+
+}else{
+
+alert("Ticket Not Found");
 
 }
+
+}
+
+renderTickets();
 
 </script>
 
