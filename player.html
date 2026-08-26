@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tombola Player</title>
+
+<style>
+
+body{
+margin:0;
+padding:15px;
+font-family:Arial,sans-serif;
+background-image:url("background.jpg");
+background-size:cover;
+background-position:center;
+}
+
+.box{
+background:rgba(255,255,255,0.95);
+padding:15px;
+border-radius:15px;
+}
+
+h2{
+text-align:center;
+}
+
+#countdown{
+font-size:22px;
+font-weight:bold;
+text-align:center;
+color:red;
+margin:10px 0;
+}
+
+.btn{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:18px;
+font-weight:bold;
+background:#1976d2;
+color:white;
+cursor:pointer;
+margin-top:10px;
+}
+
+.ticket-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px;
+margin-top:15px;
+}
+
+.ticket{
+background:white;
+border:1px solid #ccc;
+padding:10px;
+text-align:center;
+border-radius:8px;
+cursor:pointer;
+}
+
+.booked{
+background:yellow;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2 id="gameTitle">Tombola Game</h2>
+
+<div id="countdown">Loading...</div>
+
+<button class="btn" onclick="showTickets()">
+Available Tickets
+</button>
+
+<div id="tickets" class="ticket-grid"></div>
+
+</div>
+
+<script>
+
+document.getElementById("gameTitle").innerText =
+localStorage.getItem("gameTitle") || "Tombola Game";
+
+function updateCountdown(){
+
+let gameTime=localStorage.getItem("gameTime");
+
+if(!gameTime){
+document.getElementById("countdown").innerHTML="No Game Scheduled";
+return;
+}
+
+let target=new Date(gameTime).getTime();
+
+let now=new Date().getTime();
+
+let diff=target-now;
+
+if(diff<=0){
+
+document.getElementById("countdown").innerHTML=
+"🎉 Game Started";
+
+return;
+}
+
+let h=Math.floor(diff/1000/60/60);
+
+let m=Math.floor((diff/1000/60)%60);
+
+let s=Math.floor((diff/1000)%60);
+
+document.getElementById("countdown").innerHTML=
+h+"h "+m+"m "+s+"s";
+
+}
+
+setInterval(updateCountdown,1000);
+
+function showTickets(){
+
+let data=JSON.parse(
+localStorage.getItem("tickets") || "[]"
+);
+
+let html="";
+
+data.forEach(function(t){
+
+html+=`
+<div class="ticket ${t.booked?'booked':''}"
+onclick="bookTicket(${t.ticketNo})">
+
+${t.ticketNo}
+
+</div>
+`;
+
+});
+
+document.getElementById("tickets").innerHTML=html;
+
+}
+
+function bookTicket(no){
+
+let name=prompt("Enter Your Name");
+
+if(!name) return;
+
+let data=JSON.parse(
+localStorage.getItem("tickets") || "[]"
+);
+
+data.forEach(function(t){
+
+if(t.ticketNo==no && !t.booked){
+
+t.booked=true;
+t.owner=name;
+
+}
+
+});
+
+localStorage.setItem(
+"tickets",
+JSON.stringify(data)
+);
+
+showTickets();
+
+alert("Ticket Booked");
+
+}
+
+</script>
+
+</body>
+</html>
