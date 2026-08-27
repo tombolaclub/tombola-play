@@ -5,23 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Tombola Admin</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 
 body{
 margin:0;
 padding:15px;
 font-family:Arial,sans-serif;
-background-image:url("background.jpg");
-background-size:cover;
-background-position:center;
+background:#f5f5f5;
 }
 
 .panel{
-background:rgba(255,255,255,.95);
+background:white;
 padding:15px;
 border-radius:15px;
+max-width:700px;
+margin:auto;
+box-shadow:0 0 10px rgba(0,0,0,.1);
 }
 
 h2{
@@ -49,30 +48,34 @@ cursor:pointer;
 color:white;
 }
 
+.green{
+background:#4caf50;
+}
+
 .blue{
 background:#1976d2;
 }
 
-.green{
-background:#4caf50;
+.orange{
+background:#ff9800;
 }
 
 .red{
 background:#f44336;
 }
 
-#games{
+#prizes{
 display:none;
 margin-top:10px;
 }
 
-.game{
+.prize{
 background:#eee;
 padding:10px;
 margin:5px 0;
 border-radius:8px;
-font-weight:bold;
 cursor:pointer;
+font-weight:bold;
 }
 
 .selected{
@@ -82,7 +85,7 @@ background:yellow;
 #result{
 margin-top:15px;
 padding:10px;
-background:#f5f5f5;
+background:#f3f3f3;
 border-radius:10px;
 }
 
@@ -95,9 +98,7 @@ border-radius:10px;
 
 <h2>🎮 Tombola Admin Panel</h2>
 
-<input
-id="gameTitle"
-placeholder="Game Title">
+<h3>📅 New Game</h3>
 
 <input
 type="datetime-local"
@@ -106,55 +107,57 @@ id="gameTime">
 <input
 type="number"
 id="ticketCount"
-placeholder="Enter Ticket Count (1-600)">
+min="1"
+max="600"
+placeholder="Ticket Count (1-600)">
 
 <button
 class="btn blue"
-onclick="toggleGames()">
-SELECT GAME PRIZES
+onclick="showPrizes()">
+GAME PRIZES
 </button>
 
-<div id="games">
+<div id="prizes">
 
-<div class="game" onclick="pick(this)">🏆 Early Five</div>
-<div class="game" onclick="pick(this)">🏆 Top Line</div>
-<div class="game" onclick="pick(this)">🏆 Middle Line</div>
-<div class="game" onclick="pick(this)">🏆 Bottom Line</div>
-<div class="game" onclick="pick(this)">🏆 Two Corners</div>
-<div class="game" onclick="pick(this)">🏆 Four Corners</div>
-<div class="game" onclick="pick(this)">🏆 Star Pattern</div>
-<div class="game" onclick="pick(this)">🏆 X Pattern</div>
-<div class="game" onclick="pick(this)">🏆 Pyramid Pattern</div>
-<div class="game" onclick="pick(this)">🏆 Full House 1</div>
-<div class="game" onclick="pick(this)">🏆 Full House 2</div>
-<div class="game" onclick="pick(this)">🏆 Full House 3</div>
-<div class="game" onclick="pick(this)">🏆 Lucky Number</div>
-<div class="game" onclick="pick(this)">🏆 Lucky Seven</div>
-<div class="game" onclick="pick(this)">🏆 Center Box</div>
-<div class="game" onclick="pick(this)">🏆 Queen's Corner</div>
-<div class="game" onclick="pick(this)">🏆 King's Corner</div>
-<div class="game" onclick="pick(this)">🏆 Jackpot Full House</div>
-<div class="game" onclick="pick(this)">🏆 Last Number Prize</div>
-<div class="game" onclick="pick(this)">🏆 Consolation Prize</div>
+<div class="prize" onclick="pick(this)">🏆 Early Five</div>
+<div class="prize" onclick="pick(this)">🏆 Top Line</div>
+<div class="prize" onclick="pick(this)">🏆 Middle Line</div>
+<div class="prize" onclick="pick(this)">🏆 Bottom Line</div>
+<div class="prize" onclick="pick(this)">🏆 Two Corners</div>
+<div class="prize" onclick="pick(this)">🏆 Four Corners</div>
+<div class="prize" onclick="pick(this)">🏆 Star Pattern</div>
+<div class="prize" onclick="pick(this)">🏆 X Pattern</div>
+<div class="prize" onclick="pick(this)">🏆 Pyramid Pattern</div>
+<div class="prize" onclick="pick(this)">🏆 Full House 1</div>
+<div class="prize" onclick="pick(this)">🏆 Full House 2</div>
+<div class="prize" onclick="pick(this)">🏆 Full House 3</div>
+<div class="prize" onclick="pick(this)">🏆 Lucky Number</div>
+<div class="prize" onclick="pick(this)">🏆 Lucky Seven</div>
+<div class="prize" onclick="pick(this)">🏆 Center Box</div>
+<div class="prize" onclick="pick(this)">🏆 Queen's Corner</div>
+<div class="prize" onclick="pick(this)">🏆 King's Corner</div>
+<div class="prize" onclick="pick(this)">🏆 Jackpot Full House</div>
+<div class="prize" onclick="pick(this)">🏆 Last Number Prize</div>
+<div class="prize" onclick="pick(this)">🏆 Consolation Prize</div>
 
 </div>
 
 <button
 class="btn green"
-onclick="createGame()">
-CREATE GAME
+onclick="setAll()">
+SET ALL
 </button>
 
 <button
-class="btn green"
-onclick="generateTickets()">
-GENERATE TICKETS
+class="btn orange"
+onclick="resetTime()">
+RESET TIME
 </button>
 
 <button
 class="btn red"
-onclick="deleteTickets()">
-DELETE ALL TICKETS
+onclick="deleteGame()">
+DELETE GAME
 </button>
 
 <div id="result"></div>
@@ -163,25 +166,12 @@ DELETE ALL TICKETS
 
 <script>
 
-const SUPABASE_URL =
-"https://ddvkmudxeddfisyqevsz.supabase.co";
+function showPrizes(){
 
-const SUPABASE_KEY =
-"sb_publishable_Z8Wgn7MsuuCl2g1OOdix7g_-QzXOzrf";
+let p=document.getElementById("prizes");
 
-const supabase =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
-function toggleGames(){
-
-let g =
-document.getElementById("games");
-
-g.style.display =
-g.style.display==="block"
+p.style.display=
+p.style.display==="block"
 ?"none"
 :"block";
 
@@ -193,17 +183,17 @@ x.classList.toggle("selected");
 
 }
 
-async function createGame(){
+function setAll(){
 
-let title =
-document.getElementById("gameTitle").value;
-
-let dt =
+let time=
 document.getElementById("gameTime").value;
 
-if(!title || !dt){
+let count=
+document.getElementById("ticketCount").value;
 
-alert("Enter title and time");
+if(!time || !count){
+
+alert("Set Date/Time and Ticket Count");
 return;
 
 }
@@ -212,143 +202,65 @@ let prizes=[];
 
 document
 .querySelectorAll(".selected")
-.forEach(e=>{
+.forEach(function(e){
 
 prizes.push(e.innerText);
 
 });
 
 localStorage.setItem(
+"gameTime",
+time
+);
+
+localStorage.setItem(
+"ticketCount",
+count
+);
+
+localStorage.setItem(
 "gamePrizes",
 JSON.stringify(prizes)
 );
 
-let d =
-new Date(dt);
+document.getElementById("result").innerHTML=
+"✅ Game Saved<br>"
++"🎫 Tickets: "+count+
+"<br>🏆 Prizes: "+prizes.length;
 
-const {data,error} =
-await supabase
-.from("games")
-.insert([{
-
-title:title,
-game_date:d.toISOString().split("T")[0],
-game_time:d.toTimeString().slice(0,8),
-status:"upcoming"
-
-}])
-.select();
-
-if(error){
-
-alert(error.message);
-return;
+alert("Game Saved");
 
 }
+
+function resetTime(){
+
+let t=
+prompt("Enter New Date & Time");
+
+if(!t)return;
 
 localStorage.setItem(
-"currentGameId",
-data[0].id
+"gameTime",
+t
 );
 
-document.getElementById("result").innerHTML =
-"✅ Game Created Successfully";
-
-alert("Game Created");
+alert("Time Updated");
 
 }
 
-function createTicket(){
+function deleteGame(){
 
-return [
-
-["",12,"",45,"",61,"",89,""],
-[14,"",33,"",58,"",71,80,""],
-[5,"",21,"",49,"",66,75,""]
-
-];
-
-}
-
-async function generateTickets(){
-
-let count =
-parseInt(
-document.getElementById("ticketCount").value
-);
-
-if(!count || count<1 || count>600){
-
-alert("Enter 1 to 600");
+if(!confirm("Delete Game?"))
 return;
 
-}
+localStorage.removeItem("gameTime");
+localStorage.removeItem("ticketCount");
+localStorage.removeItem("gamePrizes");
 
-let gameId =
-localStorage.getItem("currentGameId");
+document.getElementById("result").innerHTML=
+"❌ Game Deleted";
 
-if(!gameId){
-
-alert("Create Game First");
-return;
-
-}
-
-let rows=[];
-
-for(let i=1;i<=count;i++){
-
-rows.push({
-
-game_id:gameId,
-ticket_numbers:createTicket(),
-status:"available"
-
-});
-
-}
-
-const {error} =
-await supabase
-.from("tickets")
-.insert(rows);
-
-if(error){
-
-alert(error.message);
-return;
-
-}
-
-document.getElementById("result").innerHTML =
-"✅ "+count+" Tickets Generated";
-
-alert(count+" Tickets Generated");
-
-}
-
-async function deleteTickets(){
-
-if(!confirm("Delete all tickets?"))
-return;
-
-const {error} =
-await supabase
-.from("tickets")
-.delete()
-.neq("id","00000000-0000-0000-0000-000000000000");
-
-if(error){
-
-alert(error.message);
-return;
-
-}
-
-document.getElementById("result").innerHTML =
-"❌ All Tickets Deleted";
-
-alert("Tickets Deleted");
+alert("Game Deleted");
 
 }
 
