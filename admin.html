@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Tombola Admin</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 body{
 margin:0;
@@ -19,10 +21,6 @@ background-position:center;
 background:rgba(255,255,255,.95);
 padding:15px;
 border-radius:15px;
-}
-
-h2{
-text-align:center;
 }
 
 input{
@@ -46,28 +44,9 @@ cursor:pointer;
 color:white;
 }
 
-.blue{background:#1976d2;}
 .green{background:#4caf50;}
-.orange{background:#ff9800;}
+.blue{background:#1976d2;}
 .red{background:#f44336;}
-
-#games{
-display:none;
-margin-top:10px;
-}
-
-.game{
-background:#eee;
-padding:10px;
-margin:5px 0;
-border-radius:8px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.selected{
-background:yellow;
-}
 
 #result{
 margin-top:15px;
@@ -88,49 +67,16 @@ border-radius:10px;
 
 <input type="datetime-local" id="gameTime">
 
-<button class="btn blue" onclick="toggleGames()">
-Select Game Names
+<button class="btn blue" onclick="createGame()">
+CREATE GAME
 </button>
-
-<div id="games">
-
-<div class="game" onclick="pick(this)">🏆 Early Five</div>
-<div class="game" onclick="pick(this)">🏆 Top Line</div>
-<div class="game" onclick="pick(this)">🏆 Middle Line</div>
-<div class="game" onclick="pick(this)">🏆 Bottom Line</div>
-<div class="game" onclick="pick(this)">🏆 Two Corners</div>
-<div class="game" onclick="pick(this)">🏆 Four Corners</div>
-<div class="game" onclick="pick(this)">🏆 Star Pattern</div>
-<div class="game" onclick="pick(this)">🏆 X Pattern</div>
-<div class="game" onclick="pick(this)">🏆 Pyramid Pattern</div>
-<div class="game" onclick="pick(this)">🏆 Full House 1</div>
-<div class="game" onclick="pick(this)">🏆 Full House 2</div>
-<div class="game" onclick="pick(this)">🏆 Full House 3</div>
-<div class="game" onclick="pick(this)">🏆 Lucky Number</div>
-<div class="game" onclick="pick(this)">🏆 Lucky Seven</div>
-<div class="game" onclick="pick(this)">🏆 Center Box</div>
-<div class="game" onclick="pick(this)">🏆 Queen's Corner</div>
-<div class="game" onclick="pick(this)">🏆 King's Corner</div>
-<div class="game" onclick="pick(this)">🏆 Jackpot Full House</div>
-<div class="game" onclick="pick(this)">🏆 Last Number Prize</div>
-<div class="game" onclick="pick(this)">🏆 Consolation Prize</div>
-
-</div>
 
 <button class="btn green" onclick="generateTickets()">
-Generate Tickets
+GENERATE 600 TICKETS
 </button>
 
-<button class="btn green" onclick="generateGame()">
-Generate Game
-</button>
-
-<button class="btn orange" onclick="changeTime()">
-Re-Generate Time
-</button>
-
-<button class="btn red" onclick="cancelGame()">
-Cancel Game
+<button class="btn red" onclick="deleteTickets()">
+DELETE ALL TICKETS
 </button>
 
 <div id="result"></div>
@@ -139,69 +85,144 @@ Cancel Game
 
 <script>
 
-function toggleGames(){
-let g=document.getElementById("games");
-g.style.display=g.style.display=="block"?"none":"block";
+const SUPABASE_URL =
+"https://ddvkmudxeddfisyqevsz.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_Z8Wgn7MsuuCl2g1OOdix7g_-QzXOzrf";
+
+const supabase =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+let currentGameId="";
+
+async function createGame(){
+
+let title =
+document.getElementById("gameTitle").value;
+
+let dt =
+document.getElementById("gameTime").value;
+
+if(!title || !dt){
+
+alert("Enter title and time");
+return;
+
 }
 
-function pick(x){
-x.classList.toggle("selected");
+let d = new Date(dt);
+
+const {data,error} =
+await supabase
+.from("games")
+.insert([{
+title:title,
+game_date:d.toISOString().split("T")[0],
+game_time:d.toTimeString().slice(0,8),
+status:"upcoming"
+}])
+.select();
+
+if(error){
+
+alert(error.message);
+return;
+
 }
 
-function generateTickets(){
+currentGameId=data[0].id;
 
-let total=prompt("How many tickets? (1-600)");
-
-if(!total)return;
-
-localStorage.setItem("ticketCount",total);
+localStorage.setItem(
+"currentGameId",
+currentGameId
+);
 
 document.getElementById("result").innerHTML=
-"✅ "+total+" Tickets Generated";
+"✅ Game Created";
 
 }
 
-function generateGame(){
+function createTicket(){
 
-let title=document.getElementById("gameTitle").value;
-let time=document.getElementById("gameTime").value;
+return [
 
-let games=[];
+["",12,"",45,"",61,"",89,""],
+[14,"",33,"",58,"",71,80,""],
+[5,"",21,"",49,"",66,75,""]
 
-document.querySelectorAll(".selected").forEach(e=>{
-games.push(e.innerText);
+];
+
+}
+
+async function generateTickets(){
+
+let gameId =
+localStorage.getItem("currentGameId");
+
+if(!gameId){
+
+alert("Create Game First");
+return;
+
+}
+
+let rows=[];
+
+for(let i=1;i<=600;i++){
+
+rows.push({
+
+game_id:gameId,
+ticket_numbers:createTicket(),
+status:"available"
+
 });
 
-localStorage.setItem("gameTitle",title);
-localStorage.setItem("gameTime",time);
-localStorage.setItem("gameNames",JSON.stringify(games));
+}
+
+const {error} =
+await supabase
+.from("tickets")
+.insert(rows);
+
+if(error){
+
+alert(error.message);
+return;
+
+}
 
 document.getElementById("result").innerHTML=
-"🎉 Game Generated Successfully";
+"✅ 600 Tickets Generated";
 
-alert("Game Generated");
-
-}
-
-function changeTime(){
-
-let t=prompt("Enter New Time");
-
-if(t){
-localStorage.setItem("gameTime",t);
-alert("Time Updated");
-}
+alert("600 Tickets Generated");
 
 }
 
-function cancelGame(){
+async function deleteTickets(){
 
-localStorage.clear();
+if(!confirm("Delete all tickets?"))
+return;
+
+const {error} =
+await supabase
+.from("tickets")
+.delete()
+.neq("id","0");
+
+if(error){
+
+alert(error.message);
+return;
+
+}
 
 document.getElementById("result").innerHTML=
-"❌ Game Cancelled";
-
-alert("Game Cancelled");
+"❌ Tickets Deleted";
 
 }
 
