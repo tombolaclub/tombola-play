@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Tombola Player</title>
+<title>Tambola Player</title>
 
 <style>
 
@@ -11,64 +11,74 @@ body{
 margin:0;
 padding:10px;
 font-family:Arial,sans-serif;
-background-image:url("background.jpg");
-background-size:cover;
-background-position:center;
+background:#f2f2f2;
 }
 
 .box{
-background:rgba(255,255,255,.95);
+background:white;
 padding:12px;
-border-radius:15px;
+border-radius:12px;
 margin-bottom:10px;
-}
-
-.banner img{
-width:100%;
-border-radius:15px;
-}
-
-.timebox{
-display:flex;
-gap:5px;
-margin-top:10px;
-}
-
-.timeitem{
-flex:1;
-background:#001a66;
-color:white;
-border:3px solid yellow;
-padding:10px;
-border-radius:10px;
-text-align:center;
-font-weight:bold;
 }
 
 .btn{
 width:100%;
-padding:14px;
-margin-top:10px;
+padding:12px;
 border:none;
-border-radius:10px;
-font-size:18px;
+border-radius:8px;
+font-size:16px;
 font-weight:bold;
 cursor:pointer;
-background:#1976d2;
 color:white;
+background:#1976d2;
+margin-top:10px;
 }
 
 .bookBtn{
-width:100%;
-padding:14px;
-margin-top:10px;
-border:none;
+background:#4caf50;
+}
+
+.ticket{
+border:4px solid gold;
 border-radius:10px;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
-background:#f44336;
+margin-top:15px;
+overflow:hidden;
+background:white;
+}
+
+.ticketHeader{
+display:flex;
+justify-content:space-between;
+background:#3366ff;
 color:white;
+padding:10px;
+font-weight:bold;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(9,1fr);
+gap:2px;
+padding:6px;
+background:#ddd;
+}
+
+.cell{
+background:#fff;
+height:48px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.empty{
+background:#efefef;
+}
+
+.sold{
+background:yellow;
 }
 
 input{
@@ -80,39 +90,6 @@ border-radius:8px;
 box-sizing:border-box;
 }
 
-#ticketChart{
-display:none;
-grid-template-columns:repeat(10,1fr);
-gap:4px;
-margin-top:10px;
-}
-
-.number{
-background:white;
-padding:8px;
-border-radius:6px;
-border:1px solid #ccc;
-text-align:center;
-font-size:12px;
-}
-
-.booked{
-background:yellow;
-font-weight:bold;
-}
-
-.ticketCard{
-background:white;
-padding:10px;
-border-radius:10px;
-margin-top:8px;
-}
-
-.unsold{
-color:red;
-font-weight:bold;
-}
-
 #playerPage{
 display:none;
 }
@@ -122,19 +99,15 @@ display:none;
 
 <body>
 
-<div id="announcementBox" class="box">
+<div id="announcement" class="box">
 
 <h2 align="center">🎉 ANNOUNCEMENT 🎉</h2>
 
-<p>✅ Tombola is a skill-based entertainment game.</p>
-<p>✅ Check your ticket before game starts.</p>
-<p>✅ Re-game may happen during technical issues.</p>
-<p>✅ Purchased tickets stay valid.</p>
-<p>✅ Follow fair play rules.</p>
+<p>✅ Welcome to Tambola Game</p>
+<p>✅ Check ticket carefully</p>
+<p>✅ Fair play only</p>
 
-<button
-class="bookBtn"
-onclick="acceptGame()">
+<button class="btn" onclick="startGame()">
 I ACCEPT
 </button>
 
@@ -144,219 +117,222 @@ I ACCEPT
 
 <div class="box">
 
-<div class="banner">
-<img src="banner.png">
-</div>
-
-<div class="timebox">
-
-<div class="timeitem" id="dateBox">
-DATE
-</div>
-
-<div class="timeitem" id="countdown">
-00:00:00
-</div>
-
-<div class="timeitem" id="timeBox">
-TIME
-</div>
-
-</div>
-
-<button
-class="btn"
-onclick="toggleTickets()">
-AVAILABLE TICKETS
-</button>
-
-<div id="ticketChart"></div>
-
-<div id="ticketList"></div>
-
-<h3>🎫 Book Ticket</h3>
+<h3 id="countInfo"></h3>
 
 <input
 type="number"
 id="ticketNo"
-placeholder="Enter Ticket Number">
+placeholder="Ticket Number">
 
 <input
 type="text"
 id="playerName"
-placeholder="Enter Your Name">
+placeholder="Your Name">
 
 <button
-class="bookBtn"
+class="btn bookBtn"
 onclick="bookTicket()">
 BOOK TICKET
 </button>
 
 </div>
 
+<div id="tickets"></div>
+
 </div>
 
 <script>
 
-function acceptGame(){
+function startGame(){
 
 document.getElementById(
-"announcementBox"
+"announcement"
 ).style.display="none";
 
 document.getElementById(
 "playerPage"
 ).style.display="block";
 
+loadTickets();
+
 }
 
-function updateClock(){
+function randomTicket(){
 
-let now=new Date();
+let ticket=[];
 
-document.getElementById(
-"dateBox"
-).innerHTML=
-now.toLocaleDateString();
+for(let r=0;r<3;r++){
 
-document.getElementById(
-"timeBox"
-).innerHTML=
-now.toLocaleTimeString();
+let row=[];
 
-let gameTime=
+for(let c=0;c<9;c++){
+
+row.push("");
+
+}
+
+ticket.push(row);
+
+}
+
+let nums=[];
+
+while(nums.length<15){
+
+let n=
+Math.floor(Math.random()*90)+1;
+
+if(!nums.includes(n))
+nums.push(n);
+
+}
+
+let k=0;
+
+while(k<15){
+
+let r=
+Math.floor(Math.random()*3);
+
+let c=
+Math.floor(Math.random()*9);
+
+if(ticket[r][c]===""){
+
+ticket[r][c]=nums[k];
+k++;
+
+}
+
+}
+
+return ticket;
+
+}
+
+function loadTickets(){
+
+let total=
+parseInt(
 localStorage.getItem(
-"gameTime"
+"ticketCount"
+)||0
 );
 
-if(gameTime){
+let tickets=
+JSON.parse(
+localStorage.getItem(
+"allTickets"
+)||"[]"
+);
 
-let diff=
-new Date(gameTime)-
-new Date();
+if(tickets.length===0){
 
-if(diff>0){
+for(let i=1;i<=total;i++){
 
-let h=
-Math.floor(diff/1000/60/60);
+tickets.push({
 
-let m=
-Math.floor((diff/1000/60)%60);
+id:i,
+grid:randomTicket(),
+owner:""
 
-let s=
-Math.floor((diff/1000)%60);
+});
+
+}
+
+localStorage.setItem(
+"allTickets",
+JSON.stringify(tickets)
+);
+
+}
 
 document.getElementById(
-"countdown"
+"countInfo"
 ).innerHTML=
-h+":"+m+":"+s;
+"🎫 Total Tickets: "+total;
 
-}else{
-
-document.getElementById(
-"countdown"
-).innerHTML=
-"GAME START";
+renderTickets();
 
 }
-
-}
-
-}
-
-setInterval(updateClock,1000);
 
 function renderTickets(){
 
-let total=
-parseInt(
+let tickets=
+JSON.parse(
 localStorage.getItem(
-"ticketCount"
-)||0
+"allTickets"
+)||"[]"
 );
 
 let html="";
 
-for(let i=1;i<=total;i++){
-
-let owner=
-localStorage.getItem(
-"ticket_"+i
-);
+tickets.forEach(t=>{
 
 html+=`
-<div class="ticketCard">
 
-<b>Ticket ${i}</b><br>
+<div class="ticket">
 
-${
-owner
-?owner
-:'<span class="unsold">UNSOLD</span>'
-}
+<div class="ticketHeader">
 
+<div>
+${t.id} :
+${t.owner?
+t.owner:
+"(UNSOLD)"}
+</div>
+
+<div>
+${t.owner?
+"SOLD":
+"BOOK THIS"}
+</div>
+
+</div>
+
+<div class="grid">
+
+`;
+
+for(let r=0;r<3;r++){
+
+for(let c=0;c<9;c++){
+
+let v=t.grid[r][c];
+
+html+=`
+<div class="cell ${
+v===""?"empty":""
+}">
+${v}
 </div>
 `;
 
 }
 
-document.getElementById(
-"ticketList"
-).innerHTML=
-html;
-
 }
-
-function toggleTickets(){
-
-let box=
-document.getElementById(
-"ticketChart"
-);
-
-if(box.style.display==="grid"){
-
-box.style.display="none";
-return;
-
-}
-
-box.style.display="grid";
-
-let total=
-parseInt(
-localStorage.getItem(
-"ticketCount"
-)||0
-);
-
-let html="";
-
-for(let i=1;i<=total;i++){
-
-let owner=
-localStorage.getItem(
-"ticket_"+i
-);
 
 html+=`
-<div class="number ${owner?'booked':''}">
-${i}
+</div>
 </div>
 `;
 
-}
+});
 
-box.innerHTML=html;
+document.getElementById(
+"tickets"
+).innerHTML=html;
 
 }
 
 function bookTicket(){
 
 let no=
+parseInt(
 document.getElementById(
 "ticketNo"
-).value;
+).value
+);
 
 let name=
 document.getElementById(
@@ -365,39 +341,56 @@ document.getElementById(
 
 if(!no || !name){
 
-alert("Fill all fields");
+alert("Enter ticket and name");
 return;
 
 }
 
-if(
+let tickets=
+JSON.parse(
 localStorage.getItem(
-"ticket_"+no
-)
-){
+"allTickets"
+)||"[]"
+);
+
+let found=false;
+
+tickets.forEach(t=>{
+
+if(t.id===no){
+
+if(t.owner){
 
 alert("Already Booked");
+
+}else{
+
+t.owner=name;
+found=true;
+
+}
+
+}
+
+});
+
+if(!found){
+
+alert("Ticket Not Found");
 return;
 
 }
 
 localStorage.setItem(
-"ticket_"+no,
-name
+"allTickets",
+JSON.stringify(tickets)
 );
 
-alert(
-"Ticket Booked Successfully"
-);
+alert("Ticket Booked");
 
 renderTickets();
-
-toggleTickets();
-toggleTickets();
 
 }
-
-renderTickets();
 
 </script>
 
