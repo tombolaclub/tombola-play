@@ -26,7 +26,6 @@ margin-bottom:10px;
 .banner img{
 width:100%;
 border-radius:15px;
-display:block;
 }
 
 .timebox{
@@ -40,10 +39,10 @@ flex:1;
 background:#001a66;
 color:white;
 border:3px solid yellow;
-text-align:center;
 padding:10px;
-font-weight:bold;
 border-radius:10px;
+text-align:center;
+font-weight:bold;
 }
 
 .btn{
@@ -54,9 +53,9 @@ border:none;
 border-radius:10px;
 font-size:18px;
 font-weight:bold;
+cursor:pointer;
 background:#1976d2;
 color:white;
-cursor:pointer;
 }
 
 .bookBtn{
@@ -65,11 +64,11 @@ padding:14px;
 margin-top:10px;
 border:none;
 border-radius:10px;
-background:#f44336;
-color:white;
 font-size:18px;
 font-weight:bold;
 cursor:pointer;
+background:#f44336;
+color:white;
 }
 
 input{
@@ -91,9 +90,9 @@ margin-top:10px;
 .number{
 background:white;
 padding:8px;
-text-align:center;
 border-radius:6px;
 border:1px solid #ccc;
+text-align:center;
 font-size:12px;
 }
 
@@ -114,11 +113,6 @@ color:red;
 font-weight:bold;
 }
 
-.sold{
-color:green;
-font-weight:bold;
-}
-
 #playerPage{
 display:none;
 }
@@ -133,16 +127,16 @@ display:none;
 <h2 align="center">🎉 ANNOUNCEMENT 🎉</h2>
 
 <p>✅ Tombola is a skill-based entertainment game.</p>
-<p>✅ Please check your ticket details carefully before the game starts.</p>
-<p>✅ In case of technical issues, the game may be restarted.</p>
-<p>✅ Purchased tickets remain valid during re-game.</p>
-<p>✅ Follow all game rules and maintain fair play.</p>
+<p>✅ Check your ticket before game starts.</p>
+<p>✅ Re-game may happen during technical issues.</p>
+<p>✅ Purchased tickets stay valid.</p>
+<p>✅ Follow fair play rules.</p>
 
-<center>
-<button class="bookBtn" onclick="acceptGame()">
+<button
+class="bookBtn"
+onclick="acceptGame()">
 I ACCEPT
 </button>
-</center>
 
 </div>
 
@@ -170,7 +164,9 @@ TIME
 
 </div>
 
-<button class="btn" onclick="toggleChart()">
+<button
+class="btn"
+onclick="toggleTickets()">
 AVAILABLE TICKETS
 </button>
 
@@ -204,9 +200,13 @@ BOOK TICKET
 
 function acceptGame(){
 
-document.getElementById("announcementBox").style.display="none";
+document.getElementById(
+"announcementBox"
+).style.display="none";
 
-document.getElementById("playerPage").style.display="block";
+document.getElementById(
+"playerPage"
+).style.display="block";
 
 }
 
@@ -214,34 +214,48 @@ function updateClock(){
 
 let now=new Date();
 
-document.getElementById("dateBox").innerHTML=
+document.getElementById(
+"dateBox"
+).innerHTML=
 now.toLocaleDateString();
 
-document.getElementById("timeBox").innerHTML=
+document.getElementById(
+"timeBox"
+).innerHTML=
 now.toLocaleTimeString();
 
 let gameTime=
-localStorage.getItem("gameTime");
+localStorage.getItem(
+"gameTime"
+);
 
 if(gameTime){
 
 let diff=
-new Date(gameTime)-new Date();
+new Date(gameTime)-
+new Date();
 
 if(diff>0){
 
-let h=Math.floor(diff/1000/60/60);
+let h=
+Math.floor(diff/1000/60/60);
 
-let m=Math.floor((diff/1000/60)%60);
+let m=
+Math.floor((diff/1000/60)%60);
 
-let s=Math.floor((diff/1000)%60);
+let s=
+Math.floor((diff/1000)%60);
 
-document.getElementById("countdown").innerHTML=
+document.getElementById(
+"countdown"
+).innerHTML=
 h+":"+m+":"+s;
 
 }else{
 
-document.getElementById("countdown").innerHTML=
+document.getElementById(
+"countdown"
+).innerHTML=
 "GAME START";
 
 }
@@ -254,38 +268,51 @@ setInterval(updateClock,1000);
 
 function renderTickets(){
 
-let tickets=
-JSON.parse(
-localStorage.getItem("tickets") || "[]"
+let total=
+parseInt(
+localStorage.getItem(
+"ticketCount"
+)||0
 );
 
 let html="";
 
-tickets.forEach(function(t){
+for(let i=1;i<=total;i++){
+
+let owner=
+localStorage.getItem(
+"ticket_"+i
+);
 
 html+=`
 <div class="ticketCard">
 
-<b>Ticket ${t.ticketNo}</b><br>
+<b>Ticket ${i}</b><br>
 
-${t.booked
-?'<span class="sold">'+t.owner+'</span>'
-:'<span class="unsold">UNSOLD</span>'}
+${
+owner
+?owner
+:'<span class="unsold">UNSOLD</span>'
+}
 
 </div>
 `;
 
-});
+}
 
-document.getElementById("ticketList").innerHTML=
+document.getElementById(
+"ticketList"
+).innerHTML=
 html;
 
 }
 
-function toggleChart(){
+function toggleTickets(){
 
 let box=
-document.getElementById("ticketChart");
+document.getElementById(
+"ticketChart"
+);
 
 if(box.style.display==="grid"){
 
@@ -296,22 +323,29 @@ return;
 
 box.style.display="grid";
 
-let tickets=
-JSON.parse(
-localStorage.getItem("tickets") || "[]"
+let total=
+parseInt(
+localStorage.getItem(
+"ticketCount"
+)||0
 );
 
 let html="";
 
-tickets.forEach(function(t){
+for(let i=1;i<=total;i++){
+
+let owner=
+localStorage.getItem(
+"ticket_"+i
+);
 
 html+=`
-<div class="number ${t.booked?'booked':''}">
-${t.ticketNo}
+<div class="number ${owner?'booked':''}">
+${i}
 </div>
 `;
 
-});
+}
 
 box.innerHTML=html;
 
@@ -320,12 +354,14 @@ box.innerHTML=html;
 function bookTicket(){
 
 let no=
-parseInt(
-document.getElementById("ticketNo").value
-);
+document.getElementById(
+"ticketNo"
+).value;
 
 let name=
-document.getElementById("playerName").value;
+document.getElementById(
+"playerName"
+).value;
 
 if(!no || !name){
 
@@ -334,51 +370,30 @@ return;
 
 }
 
-let tickets=
-JSON.parse(
-localStorage.getItem("tickets") || "[]"
-);
-
-let found=false;
-
-tickets.forEach(function(t){
-
-if(t.ticketNo===no){
-
-if(t.booked){
+if(
+localStorage.getItem(
+"ticket_"+no
+)
+){
 
 alert("Already Booked");
+return;
 
-}else{
-
-t.booked=true;
-t.owner=name;
+}
 
 localStorage.setItem(
-"tickets",
-JSON.stringify(tickets)
+"ticket_"+no,
+name
 );
 
-found=true;
+alert(
+"Ticket Booked Successfully"
+);
 
-}
-
-}
-
-});
-
-if(found){
-
-alert("Ticket Booked");
 renderTickets();
-toggleChart();
-toggleChart();
 
-}else{
-
-alert("Ticket Not Found");
-
-}
+toggleTickets();
+toggleTickets();
 
 }
 
