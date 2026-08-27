@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 body{
 margin:0;
 padding:15px;
@@ -21,6 +22,10 @@ background-position:center;
 background:rgba(255,255,255,.95);
 padding:15px;
 border-radius:15px;
+}
+
+h2{
+text-align:center;
 }
 
 input{
@@ -44,9 +49,35 @@ cursor:pointer;
 color:white;
 }
 
-.green{background:#4caf50;}
-.blue{background:#1976d2;}
-.red{background:#f44336;}
+.blue{
+background:#1976d2;
+}
+
+.green{
+background:#4caf50;
+}
+
+.red{
+background:#f44336;
+}
+
+#games{
+display:none;
+margin-top:10px;
+}
+
+.game{
+background:#eee;
+padding:10px;
+margin:5px 0;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.selected{
+background:yellow;
+}
 
 #result{
 margin-top:15px;
@@ -54,6 +85,7 @@ padding:10px;
 background:#f5f5f5;
 border-radius:10px;
 }
+
 </style>
 </head>
 
@@ -63,19 +95,65 @@ border-radius:10px;
 
 <h2>🎮 Tombola Admin Panel</h2>
 
-<input id="gameTitle" placeholder="Game Title">
+<input
+id="gameTitle"
+placeholder="Game Title">
 
-<input type="datetime-local" id="gameTime">
+<input
+type="datetime-local"
+id="gameTime">
 
-<button class="btn blue" onclick="createGame()">
+<input
+type="number"
+id="ticketCount"
+placeholder="Enter Ticket Count (1-600)">
+
+<button
+class="btn blue"
+onclick="toggleGames()">
+SELECT GAME PRIZES
+</button>
+
+<div id="games">
+
+<div class="game" onclick="pick(this)">🏆 Early Five</div>
+<div class="game" onclick="pick(this)">🏆 Top Line</div>
+<div class="game" onclick="pick(this)">🏆 Middle Line</div>
+<div class="game" onclick="pick(this)">🏆 Bottom Line</div>
+<div class="game" onclick="pick(this)">🏆 Two Corners</div>
+<div class="game" onclick="pick(this)">🏆 Four Corners</div>
+<div class="game" onclick="pick(this)">🏆 Star Pattern</div>
+<div class="game" onclick="pick(this)">🏆 X Pattern</div>
+<div class="game" onclick="pick(this)">🏆 Pyramid Pattern</div>
+<div class="game" onclick="pick(this)">🏆 Full House 1</div>
+<div class="game" onclick="pick(this)">🏆 Full House 2</div>
+<div class="game" onclick="pick(this)">🏆 Full House 3</div>
+<div class="game" onclick="pick(this)">🏆 Lucky Number</div>
+<div class="game" onclick="pick(this)">🏆 Lucky Seven</div>
+<div class="game" onclick="pick(this)">🏆 Center Box</div>
+<div class="game" onclick="pick(this)">🏆 Queen's Corner</div>
+<div class="game" onclick="pick(this)">🏆 King's Corner</div>
+<div class="game" onclick="pick(this)">🏆 Jackpot Full House</div>
+<div class="game" onclick="pick(this)">🏆 Last Number Prize</div>
+<div class="game" onclick="pick(this)">🏆 Consolation Prize</div>
+
+</div>
+
+<button
+class="btn green"
+onclick="createGame()">
 CREATE GAME
 </button>
 
-<button class="btn green" onclick="generateTickets()">
-GENERATE 600 TICKETS
+<button
+class="btn green"
+onclick="generateTickets()">
+GENERATE TICKETS
 </button>
 
-<button class="btn red" onclick="deleteTickets()">
+<button
+class="btn red"
+onclick="deleteTickets()">
 DELETE ALL TICKETS
 </button>
 
@@ -97,7 +175,23 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
-let currentGameId="";
+function toggleGames(){
+
+let g =
+document.getElementById("games");
+
+g.style.display =
+g.style.display==="block"
+?"none"
+:"block";
+
+}
+
+function pick(x){
+
+x.classList.toggle("selected");
+
+}
 
 async function createGame(){
 
@@ -114,16 +208,34 @@ return;
 
 }
 
-let d = new Date(dt);
+let prizes=[];
+
+document
+.querySelectorAll(".selected")
+.forEach(e=>{
+
+prizes.push(e.innerText);
+
+});
+
+localStorage.setItem(
+"gamePrizes",
+JSON.stringify(prizes)
+);
+
+let d =
+new Date(dt);
 
 const {data,error} =
 await supabase
 .from("games")
 .insert([{
+
 title:title,
 game_date:d.toISOString().split("T")[0],
 game_time:d.toTimeString().slice(0,8),
 status:"upcoming"
+
 }])
 .select();
 
@@ -134,15 +246,15 @@ return;
 
 }
 
-currentGameId=data[0].id;
-
 localStorage.setItem(
 "currentGameId",
-currentGameId
+data[0].id
 );
 
-document.getElementById("result").innerHTML=
-"✅ Game Created";
+document.getElementById("result").innerHTML =
+"✅ Game Created Successfully";
+
+alert("Game Created");
 
 }
 
@@ -160,6 +272,18 @@ return [
 
 async function generateTickets(){
 
+let count =
+parseInt(
+document.getElementById("ticketCount").value
+);
+
+if(!count || count<1 || count>600){
+
+alert("Enter 1 to 600");
+return;
+
+}
+
 let gameId =
 localStorage.getItem("currentGameId");
 
@@ -172,7 +296,7 @@ return;
 
 let rows=[];
 
-for(let i=1;i<=600;i++){
+for(let i=1;i<=count;i++){
 
 rows.push({
 
@@ -196,10 +320,10 @@ return;
 
 }
 
-document.getElementById("result").innerHTML=
-"✅ 600 Tickets Generated";
+document.getElementById("result").innerHTML =
+"✅ "+count+" Tickets Generated";
 
-alert("600 Tickets Generated");
+alert(count+" Tickets Generated");
 
 }
 
@@ -212,7 +336,7 @@ const {error} =
 await supabase
 .from("tickets")
 .delete()
-.neq("id","0");
+.neq("id","00000000-0000-0000-0000-000000000000");
 
 if(error){
 
@@ -221,8 +345,10 @@ return;
 
 }
 
-document.getElementById("result").innerHTML=
-"❌ Tickets Deleted";
+document.getElementById("result").innerHTML =
+"❌ All Tickets Deleted";
+
+alert("Tickets Deleted");
 
 }
 
